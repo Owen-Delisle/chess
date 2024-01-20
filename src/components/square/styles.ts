@@ -11,7 +11,7 @@ export default class Styles {
             .black {
             height: 100px;
             width: 100px;
-            background-color: grey;
+            background-color: #1FE5DF;
             position: relative;
             }
             </style>
@@ -22,7 +22,7 @@ export default class Styles {
         .white {
             height: 100px;
             width: 100px;
-            background-color: blue;
+            background-color: #D8ECEC;
             position: relative;
           }
         </style>
