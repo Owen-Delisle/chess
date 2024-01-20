@@ -12,6 +12,7 @@ export default class Styles {
             height: 100px;
             width: 100px;
             background-color: grey;
+            position: relative;
             }
             </style>
           `
@@ -22,6 +23,7 @@ export default class Styles {
             height: 100px;
             width: 100px;
             background-color: blue;
+            position: relative;
           }
         </style>
         `
