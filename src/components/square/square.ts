@@ -18,12 +18,12 @@ export default class Square extends HTMLElement {
     }
 
     render() {
-        this.innerHTML = this.renderSquareWithPiece()
+        this.render_square_with_piece()
     }
 
-    renderSquareWithPiece(): string {
+    render_square_with_piece(): void {
         let piece_styles = new Styles()
-        return `
+        this.innerHTML = `
         ${piece_styles.piece}
         <div class="${this.color}" 
         id="${this.square_id.pos}"

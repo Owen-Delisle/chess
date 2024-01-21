@@ -25,6 +25,12 @@ export default class Board extends HTMLElement {
     this.innerHTML += `${styles.white_square}`
   }
 
+  private async setup_game_board(): Promise<void> {
+    let response = await this.board_generator()
+    console.log(response)
+    this.add_event_listeners()
+  }
+
   private board_generator(): Promise<string> {
     return new Promise(resolve => {
       let next_square: Square
@@ -51,24 +57,20 @@ export default class Board extends HTMLElement {
   private add_event_listeners(): void {
     let shadowRoot = document.querySelector("index-element")?.shadowRoot
     let squares = shadowRoot?.querySelectorAll("div.black, div.white")
-    squares?.forEach(el => {
-      el.addEventListener("click", () => console.log("clicked"))
+    squares?.forEach(square => {
+      square.addEventListener("click", () => console.log(square.id))
     })
-
-  }
-
-  async setup_game_board(): Promise<void> {
-    let response = await this.board_generator()
-    console.log(response)
-    this.add_event_listeners()
   }
 
   private color_picker(i: number): Square {
+    let square: Square
     if (i % 2 === this.current_row(i)) {
-      return new Square(Color.black, i)
+      square = new Square(Color.black, i)
     } else {
-      return new Square(Color.white, i)
+      square = new Square(Color.white, i)
     }
+
+    return square
   }
 
   private current_row(i: number): number {
