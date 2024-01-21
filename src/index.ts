@@ -1,4 +1,4 @@
-import MyCustomElement from './components/board/board'
+import Board from './components/board/board'
 
 export default class Index extends HTMLElement {
     constructor() {
@@ -11,10 +11,10 @@ export default class Index extends HTMLElement {
     }
   
     render() {
-      let el: MyCustomElement = new MyCustomElement()
-      el.render()
+      let board: Board = new Board()
+      board.render()
       this.shadowRoot!.innerHTML = `
-        ${el.innerHTML}
+        ${board.innerHTML}
       `;
     }
   }
