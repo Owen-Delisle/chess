@@ -54,42 +54,42 @@ export class InitialPieces {
     pieceList: Piece[]
 
     constructor() {
-        this.king_b = new Piece("king_b", "H5", King_B_SVG)
-        this.king_w = new Piece("king_w", "A5", King_W_SVG)
-        this.queen_b = new Piece("queen_b", "H4", Queen_B_SVG)
-        this.queen_w = new Piece("queen_w", "A4", Queen_W_SVG)
+        this.king_b = new Piece("king_b", "D8", King_B_SVG)
+        this.king_w = new Piece("king_w", "D1", King_W_SVG)
+        this.queen_b = new Piece("queen_b", "E8", Queen_B_SVG)
+        this.queen_w = new Piece("queen_w", "E1", Queen_W_SVG)
 
-        this.bishop_b1 = new Piece("bishop_b1", "H3", Bishop_B_SVG)
-        this.bishop_w1 = new Piece("bishop_w1", "A3", Bishop_W_SVG)
-        this.bishop_b2 = new Piece("bishop_b2", "H6", Bishop_B_SVG)
-        this.bishop_w2 = new Piece("bishop_w2", "A6", Bishop_W_SVG)
+        this.bishop_b1 = new Piece("bishop_b1", "C8", Bishop_B_SVG)
+        this.bishop_w1 = new Piece("bishop_w1", "C1", Bishop_W_SVG)
+        this.bishop_b2 = new Piece("bishop_b2", "F8", Bishop_B_SVG)
+        this.bishop_w2 = new Piece("bishop_w2", "F1", Bishop_W_SVG)
 
-        this.knight_b1 = new Piece("knight_b1", "H2", Knight_B_SVG)
-        this.knight_w1 = new Piece("knight_w1", "A2", Knight_W_SVG)
-        this.knight_b2 = new Piece("knight_b2", "H7", Knight_B_SVG)
-        this.knight_w2 = new Piece("knight_w2", "A7", Knight_W_SVG)
+        this.knight_b1 = new Piece("knight_b1", "B8", Knight_B_SVG)
+        this.knight_w1 = new Piece("knight_w1", "B1", Knight_W_SVG)
+        this.knight_b2 = new Piece("knight_b2", "G8", Knight_B_SVG)
+        this.knight_w2 = new Piece("knight_w2", "G1", Knight_W_SVG)
 
-        this.rook_b1 = new Piece("rook_b", "H1", Rook_B_SVG)
-        this.rook_w1 = new Piece("rook_w", "A1", Rook_W_SVG)
-        this.rook_b2 = new Piece("rook_b", "H8", Rook_B_SVG)
-        this.rook_w2 = new Piece("rook_w", "A8", Rook_W_SVG)
+        this.rook_b1 = new Piece("rook_b1", "A8", Rook_B_SVG)
+        this.rook_w1 = new Piece("rook_w1", "A1", Rook_W_SVG)
+        this.rook_b2 = new Piece("rook_b2", "H8", Rook_B_SVG)
+        this.rook_w2 = new Piece("rook_w2", "H1", Rook_W_SVG)
 
-        this.pawn_b1 = new Piece("pawn_b1", "G1", Pawn_B_SVG)
-        this.pawn_w1 = new Piece("pawn_w1", "B1", Pawn_W_SVG)
-        this.pawn_b2 = new Piece("pawn_b2", "G2", Pawn_B_SVG)
+        this.pawn_b1 = new Piece("pawn_b1", "A7", Pawn_B_SVG)
+        this.pawn_w1 = new Piece("pawn_w1", "A2", Pawn_W_SVG)
+        this.pawn_b2 = new Piece("pawn_b2", "B7", Pawn_B_SVG)
         this.pawn_w2 = new Piece("pawn_w2", "B2", Pawn_W_SVG)
-        this.pawn_b3 = new Piece("pawn_b3", "G3", Pawn_B_SVG)
-        this.pawn_w3 = new Piece("pawn_w3", "B3", Pawn_W_SVG)
-        this.pawn_b4 = new Piece("pawn_b4", "G4", Pawn_B_SVG)
-        this.pawn_w4 = new Piece("pawn_w4", "B4", Pawn_W_SVG)
-        this.pawn_b5 = new Piece("pawn_b5", "G5", Pawn_B_SVG)
-        this.pawn_w5 = new Piece("pawn_w5", "B5", Pawn_W_SVG)
-        this.pawn_b6 = new Piece("pawn_b6", "G6", Pawn_B_SVG)
-        this.pawn_w6 = new Piece("pawn_w6", "B6", Pawn_W_SVG)
+        this.pawn_b3 = new Piece("pawn_b3", "C7", Pawn_B_SVG)
+        this.pawn_w3 = new Piece("pawn_w3", "C2", Pawn_W_SVG)
+        this.pawn_b4 = new Piece("pawn_b4", "D7", Pawn_B_SVG)
+        this.pawn_w4 = new Piece("pawn_w4", "D2", Pawn_W_SVG)
+        this.pawn_b5 = new Piece("pawn_b5", "E7", Pawn_B_SVG)
+        this.pawn_w5 = new Piece("pawn_w5", "E2", Pawn_W_SVG)
+        this.pawn_b6 = new Piece("pawn_b6", "F7", Pawn_B_SVG)
+        this.pawn_w6 = new Piece("pawn_w6", "F2", Pawn_W_SVG)
         this.pawn_b7 = new Piece("pawn_b7", "G7", Pawn_B_SVG)
-        this.pawn_w7 = new Piece("pawn_w7", "B7", Pawn_W_SVG)
-        this.pawn_b8 = new Piece("pawn_b8", "G8", Pawn_B_SVG)
-        this.pawn_w8 = new Piece("pawn_w8", "B8", Pawn_W_SVG)
+        this.pawn_w7 = new Piece("pawn_w7", "G2", Pawn_W_SVG)
+        this.pawn_b8 = new Piece("pawn_b8", "H7", Pawn_B_SVG)
+        this.pawn_w8 = new Piece("pawn_w8", "H2", Pawn_W_SVG)
 
         this.pieceList = [
             this.king_b,
@@ -129,5 +129,35 @@ export class InitialPieces {
             this.pawn_b8,
             this.pawn_w8
         ]
+    }
+
+    updatePiecePositions(pieceList: Piece[], squareID: string): string {
+        let i: number = 0
+        while (i < pieceList.length) {
+            if(pieceList[i].pos === squareID) {
+                return `
+                <img src=${pieceList[i].svg} 
+                class="piece" id="${pieceList[i].title}"/>
+                `
+            }
+            i++
+        }
+        return ""
+    }
+
+    addEventListenersToPieces() {
+        let indexElement: any = document.querySelector("index-element")
+        this.pieceList.forEach((piece) => {
+            console.log(indexElement.shadowRoot.getElementById(piece.title))
+        })
+    }
+
+        
+    async doWork(): Promise<string> {
+        let ip: InitialPieces = new InitialPieces()
+        let pl: Piece[] = ip.pieceList
+        let response = await this.updatePiecePositions(pl, "pawn_w8")
+        console.log("response received")
+        return response
     }
 }

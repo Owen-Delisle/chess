@@ -20,29 +20,17 @@ export default class Square extends HTMLElement {
 
     render() {
         
-        let ip: InitialPieces = new InitialPieces()
-        let pl: Piece[] = ip.pieceList
+        let initial_pieces: InitialPieces = new InitialPieces()
+        let piece_list: Piece[] = initial_pieces.pieceList
         let piece_styles = new Styles()
 
         this.innerHTML = `
         ${piece_styles.piece}
         <div class="${this.color}" id="${this.square_id.id}">
         <p>${this.square_id.id}</p>
-        ${this.piece_placer(pl, this.square_id.id)}
+        ${initial_pieces.updatePiecePositions(piece_list, this.square_id.id)}
         </div>
       `
-    }
-
-    piece_placer(pieceList: Piece[], squareID: string): string {
-        let i: number = 0
-        let s: string = ``
-        while (i < pieceList.length) {
-            if(pieceList[i].pos === squareID) {
-                return `<img src=${pieceList[i].svg} class="piece"/>`
-            }
-            i++
-        }
-        return ""
     }
 }
 
