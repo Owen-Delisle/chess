@@ -14,7 +14,7 @@ export default class Board extends HTMLElement {
 
   render() {
     this.add_styles_to_dom()
-    this.innerHTML += this.board_generator()
+    this.setup_game_board()
   }
 
   private add_styles_to_dom() {
@@ -25,24 +25,42 @@ export default class Board extends HTMLElement {
     this.innerHTML += `${styles.white_square}`
   }
 
-  private board_generator(): string {
-    let next_square: Square
-    let board_string: string = ``
+  private board_generator(): Promise<string> {
+    return new Promise(resolve => {
+      let next_square: Square
+      let board_string: string = ``
 
-    board_string += `<div class="container">`
-    board_string += `<div class="row">`
+      board_string += `<div class="container" id="container">`
+      board_string += `<div class="row">`
 
-    for (let i = 0; i < 64; i++) {
-      next_square = this.color_picker(i)
-      next_square.render()
-      if (i % 8 === 0 && i > 1) board_string += `</div><div class="row">`
-      board_string += `${next_square.innerHTML}`
-    }
+      for (let i = 0; i < 64; i++) {
+        next_square = this.color_picker(i)
+        next_square.render()
+        if (i % 8 === 0 && i > 1) board_string += `</div><div class="row">`
+        board_string += `${next_square.innerHTML}`
+      }
 
-    board_string += `</div>`
-    board_string += `</div>`
+      board_string += `</div>`
+      board_string += `</div>`
 
-    return board_string
+      this.innerHTML += board_string
+      resolve("Finished Generating Board")
+    })
+  }
+
+  private add_event_listeners(): void {
+    let shadowRoot = document.querySelector("index-element")?.shadowRoot
+    let squares = shadowRoot?.querySelectorAll("div.black, div.white")
+    squares?.forEach(el => {
+      el.addEventListener("click", () => console.log("clicked"))
+    })
+
+  }
+
+  async setup_game_board(): Promise<void> {
+    let response = await this.board_generator()
+    console.log(response)
+    this.add_event_listeners()
   }
 
   private color_picker(i: number): Square {

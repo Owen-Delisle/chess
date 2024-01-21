@@ -9,4 +9,8 @@ export default class Piece {
         this.pos = pos
         this.svg = svg
     }
+
+    updatePosition(new_position: string) {
+        this.pos = new_position
+    }
 }

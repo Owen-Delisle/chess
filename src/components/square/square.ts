@@ -1,8 +1,7 @@
 import type { Color } from "./color";
 import { SquareID } from "./square_id"
-import type Piece from "../piece/piece";
 import Styles from "../piece/styles";
-import { InitialPieces } from "../piece/initial_pieces";
+import { PieceList } from "../piece/piece_list";
 
 export default class Square extends HTMLElement {
     square_id: SquareID
@@ -19,18 +18,19 @@ export default class Square extends HTMLElement {
     }
 
     render() {
-        
-        let initial_pieces: InitialPieces = new InitialPieces()
-        let piece_list: Piece[] = initial_pieces.pieceList
-        let piece_styles = new Styles()
+        this.innerHTML = this.renderSquareWithPiece()
+    }
 
-        this.innerHTML = `
+    renderSquareWithPiece(): string {
+        let piece_styles = new Styles()
+        return `
         ${piece_styles.piece}
-        <div class="${this.color}" id="${this.square_id.id}">
-        <p>${this.square_id.id}</p>
-        ${initial_pieces.updatePiecePositions(piece_list, this.square_id.id)}
+        <div class="${this.color}" 
+        id="${this.square_id.pos}"
+        <p>${this.square_id.pos}</p>
+        ${PieceList.pieceImageAtPosition(this.square_id.pos)}
         </div>
-      `
+        `
     }
 }
 
