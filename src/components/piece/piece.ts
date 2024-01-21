@@ -2,15 +2,14 @@ export default class Piece {
     title: string
     pos: string
     svg: string
-    taken: boolean = false
+    image: string
 
     constructor(title: string, pos: string, svg: string) {
         this.title = title
         this.pos = pos
         this.svg = svg
-    }
-
-    updatePosition(new_position: string) {
-        this.pos = new_position
+        this.image = `
+        <img src=${svg} class="piece" id="${title}"/>
+        `
     }
 }

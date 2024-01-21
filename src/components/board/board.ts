@@ -1,6 +1,10 @@
 import Square from '../square/square'
 import { Color } from "../square/color"
 import Styles from "../square/styles"
+import PieceListController from '../../controllers/piece_list_controller';
+import SquareList from '../square/square_list';
+import PieceList from '../piece/piece_list';
+import { SquareID } from '../square/square_id';
 
 export default class Board extends HTMLElement {
   constructor() {
@@ -26,12 +30,11 @@ export default class Board extends HTMLElement {
   }
 
   private async setup_game_board(): Promise<void> {
-    let response = await this.board_generator()
-    console.log(response)
+    await this.board_generator()
     this.add_event_listeners()
   }
 
-  private board_generator(): Promise<string> {
+  private board_generator(): Promise<void> {
     return new Promise(resolve => {
       let next_square: Square
       let board_string: string = ``
@@ -40,7 +43,7 @@ export default class Board extends HTMLElement {
       board_string += `<div class="row">`
 
       for (let i = 0; i < 64; i++) {
-        next_square = this.color_picker(i)
+        next_square = this.instantiate_square(i)
         next_square.render()
         if (i % 8 === 0 && i > 1) board_string += `</div><div class="row">`
         board_string += `${next_square.innerHTML}`
@@ -50,27 +53,33 @@ export default class Board extends HTMLElement {
       board_string += `</div>`
 
       this.innerHTML += board_string
-      resolve("Finished Generating Board")
+      resolve()
     })
+  }
+
+  private instantiate_square(i: number): Square {
+    let color: Color = Color.black
+    if (i % 2 === this.current_row(i)) {
+      color = Color.white
+    }
+
+    let square: Square = 
+    new Square(color, i, PieceList.pieceAt(SquareID.posAtIndex(i)))
+
+    SquareList.add_square_to_list(square)
+
+    return square
   }
 
   private add_event_listeners(): void {
     let shadowRoot = document.querySelector("index-element")?.shadowRoot
     let squares = shadowRoot?.querySelectorAll("div.black, div.white")
+
     squares?.forEach(square => {
-      square.addEventListener("click", () => console.log(square.id))
+      square.addEventListener("click", () => {
+        Square.clickHandler()
+      })
     })
-  }
-
-  private color_picker(i: number): Square {
-    let square: Square
-    if (i % 2 === this.current_row(i)) {
-      square = new Square(Color.black, i)
-    } else {
-      square = new Square(Color.white, i)
-    }
-
-    return square
   }
 
   private current_row(i: number): number {
@@ -88,6 +97,7 @@ export default class Board extends HTMLElement {
 
     return mod
   }
+  
 }
 
 customElements.define('board-element', Board);

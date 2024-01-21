@@ -13,7 +13,7 @@ import Queen_W_SVG from "./assets/queen-w.svg"
 import Rook_B_SVG from "./assets/rook-b.svg"
 import Rook_W_SVG from "./assets/rook-w.svg"
 
-export class PieceList {
+export default class PieceList {
     public static pieceList: Piece[] = [
         new Piece("king_b", "D8", King_B_SVG),
         new Piece("king_w", "D1", King_W_SVG),
@@ -54,48 +54,13 @@ export class PieceList {
         new Piece("pawn_w8", "H2", Pawn_W_SVG),
     ]
 
-    public static updatePiecePosition(piece_id: string, new_position: string) {
-        PieceList.pieceList.forEach(piece => {
-            if (piece_id === piece.title) {
-                piece.pos = new_position
+    public static pieceAt(pos: string): Piece | undefined {
+        let p: Piece | undefined
+        this.pieceList.forEach(piece => {
+            if(piece.pos === pos) {
+                p = piece
             }
         })
-        console.log(PieceList.pieceList)
+        return p
     }
-
-    public static pieceImageAtPosition(pos: string): string {
-        let image: string = ""
-        PieceList.pieceList.forEach(piece => {
-            if (piece.pos === pos) {
-                image = `
-                <img src=${piece.svg} 
-                class="piece" 
-                id="${piece.title}"
-                />
-                `
-            }
-        })
-        return image
-    }
-
-    public static checkIfSquareContainsPiece(pos: string): boolean {
-        let containsPiece: boolean = false
-        PieceList.pieceList.forEach(piece => {
-            if (piece.pos === pos) {
-                containsPiece = true
-            }
-        })
-        return containsPiece
-    }
-
-    public static pieceAtPosition(pos: string): any {
-        let returnValue: any = null
-        PieceList.pieceList.forEach(piece => {
-            if (piece.pos === pos) {
-                returnValue = piece
-            }
-        })
-        return returnValue
-    }
-
 }

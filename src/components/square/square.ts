@@ -1,15 +1,23 @@
 import type { Color } from "./color";
 import { SquareID } from "./square_id"
 import Styles from "../piece/styles";
-import { PieceList } from "../piece/piece_list";
+import PieceListController from "../../controllers/piece_list_controller";
+import type Piece from "../piece/piece";
 
 export default class Square extends HTMLElement {
     square_id: SquareID
     color: Color
-    constructor(color: Color, square_id: number) {
+    piece?: Piece
+
+    constructor(color: Color, square_id: number, piece?: Piece) {
         super();
-        this.square_id = new SquareID(square_id)
+        this.square_id = SquareID.posAtIndex(square_id)
         this.color = color
+        
+        if(piece !== undefined) {
+            this.piece = piece
+        }
+
         this.attachShadow({ mode: 'open' });
     }
 
@@ -26,11 +34,20 @@ export default class Square extends HTMLElement {
         this.innerHTML = `
         ${piece_styles.piece}
         <div class="${this.color}" 
-        id="${this.square_id.pos}"
-        <p>${this.square_id.pos}</p>
-        ${PieceList.pieceImageAtPosition(this.square_id.pos)}
+        id="${this.square_id}"
+        <p>${this.square_id}</p>
+        ${this.innerSquareImage()}
         </div>
         `
+    }
+
+    private innerSquareImage(): string | undefined {
+        if(this.piece != undefined) return this.piece?.image
+        else return ""
+    }
+
+    public static clickHandler() {
+
     }
 }
 
