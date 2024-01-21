@@ -11,10 +11,10 @@ export default class Index extends HTMLElement {
     }
   
     render() {
-      let el: Board = new Board()
-      el.render()
+      let board: Board = new Board()
+      board.render()
       this.shadowRoot!.innerHTML = `
-        ${el.innerHTML}
+        ${board.innerHTML}
       `;
     }
   }
