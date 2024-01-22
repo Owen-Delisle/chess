@@ -45,7 +45,7 @@ export default class Board extends HTMLElement {
 
 			for (let i = 0; i < 64; i++) {
 				next_square = this.instantiate_square(i)
-				next_square.append_children();
+				next_square.build_clickable_square();
 				if (i % 8 === 0 && i > 1) {
 					row_node = document.createElement("div")
 					row_node.className = "row"

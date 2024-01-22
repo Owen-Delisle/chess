@@ -15,23 +15,38 @@ export default class Square extends HTMLElement {
         if (piece !== undefined) {
             this.piece = piece
         }
-
-        // this.attachShadow({ mode: 'open' });
     }
 
-    append_children(): void {
-        let div_node: Element = document.createElement("div")
-        div_node.className = `${this.color}`
-        div_node.id = `${this.square_id}`
-        
-        let p_node: Element = document.createElement("p")
-        p_node.className = 'p'
-        p_node.innerHTML = `${this.square_id}`
+    async build_clickable_square() {
+        await this.append_children()
+        this.add_event_listener()
+    }
 
-        div_node.appendChild(p_node)
-        div_node.appendChild(this.innerSquareImage())
+    append_children(): Promise<void> {
+        return new Promise(resolve => {
+            let div_node: Element = document.createElement("div")
+            div_node.className = `${this.color}`
+            div_node.id = `${this.square_id}`
+            
+            let p_node: Element = document.createElement("p")
+            p_node.className = 'p'
+            p_node.innerHTML = `${this.square_id}`
 
-        this.appendChild(div_node)
+            div_node.appendChild(p_node)
+            div_node.appendChild(this.innerSquareImage())
+
+            this.appendChild(div_node)
+            resolve()
+        })
+    }
+
+    private add_event_listener() {
+        let square_element = document.getElementById(`${this.square_id}`)    
+        square_element?.addEventListener("click", this.handle_click.bind(this))
+    }
+
+    handle_click() {
+        console.log(`${this.square_id}`)
     }
 
     private innerSquareImage(): HTMLImageElement {
