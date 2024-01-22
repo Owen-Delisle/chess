@@ -1,7 +1,5 @@
 import type { Color } from "./color";
 import { SquareID } from "./square_id"
-import Styles from "../piece/styles";
-import PieceListController from "../../controllers/piece_list_controller";
 import type Piece from "../piece/piece";
 
 export default class Square extends HTMLElement {
@@ -13,41 +11,32 @@ export default class Square extends HTMLElement {
         super();
         this.square_id = SquareID.posAtIndex(square_id)
         this.color = color
-        
-        if(piece !== undefined) {
+
+        if (piece !== undefined) {
             this.piece = piece
         }
 
-        this.attachShadow({ mode: 'open' });
+        // this.attachShadow({ mode: 'open' });
     }
 
-    connectedCallback() {
-        this.render();
+    append_children(): void {
+        let div_node: Element = document.createElement("div")
+        div_node.className = `${this.color}`
+        div_node.id = `${this.square_id}`
+        
+        let p_node: Element = document.createElement("p")
+        p_node.className = 'p'
+        p_node.innerHTML = `${this.square_id}`
+
+        div_node.appendChild(p_node)
+        div_node.appendChild(this.innerSquareImage())
+
+        this.appendChild(div_node)
     }
 
-    render() {
-        this.render_square_with_piece()
-    }
-
-    render_square_with_piece(): void {
-        let piece_styles = new Styles()
-        this.innerHTML = `
-        ${piece_styles.piece}
-        <div class="${this.color}" 
-        id="${this.square_id}"
-        <p>${this.square_id}</p>
-        ${this.innerSquareImage()}
-        </div>
-        `
-    }
-
-    private innerSquareImage(): string | undefined {
-        if(this.piece != undefined) return this.piece?.image
-        else return ""
-    }
-
-    public static clickHandler() {
-
+    private innerSquareImage(): HTMLImageElement {
+        if (this.piece != undefined) return this.piece?.image
+        else return new Image()
     }
 }
 

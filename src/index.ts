@@ -3,7 +3,7 @@ import Board from './components/board/board'
 export default class Index extends HTMLElement {
     constructor() {
       super();
-      this.attachShadow({ mode: 'open' });
+      // this.attachShadow({ mode: 'open' });
     }
   
     connectedCallback() {
@@ -13,7 +13,7 @@ export default class Index extends HTMLElement {
     render() {
       let board: Board = new Board()
       board.render()
-      this.shadowRoot!.innerHTML = `
+      this.innerHTML = `
         ${board.innerHTML}
       `;
     }

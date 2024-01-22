@@ -21,7 +21,6 @@ export default class PieceListController {
     public static updatePiecePosition(square_pos: string, new_pos: string): void {
         PieceList.pieceList.forEach(piece => {
             if (piece.pos === square_pos) {
-                console.log(piece.title)
                 piece.pos = new_pos
             }
         })
