@@ -1,16 +1,19 @@
 import type { Color } from "./color";
-import { SquareID } from "./square_id"
+import SquareID  from "./square_id"
 import type Piece from "../piece/piece";
+import MoveController from "../../controllers/move_controller";
 
 export default class Square extends HTMLElement {
     square_id: SquareID
     color: Color
     piece?: Piece
+    element: HTMLElement | null = null
 
     constructor(color: Color, square_id: number, piece?: Piece) {
         super();
         this.square_id = SquareID.posAtIndex(square_id)
         this.color = color
+        
 
         if (piece !== undefined) {
             this.piece = piece
@@ -19,6 +22,11 @@ export default class Square extends HTMLElement {
 
     async build_clickable_square() {
         await this.append_children()
+
+        this.element = await (() => {
+            return document.getElementById(`${this.square_id}`)
+        })()
+
         this.add_event_listener()
     }
 
@@ -33,25 +41,32 @@ export default class Square extends HTMLElement {
             p_node.innerHTML = `${this.square_id}`
 
             div_node.appendChild(p_node)
-            div_node.appendChild(this.innerSquareImage())
+            div_node.appendChild(this.piece_image())
 
             this.appendChild(div_node)
             resolve()
         })
     }
 
-    private add_event_listener() {
-        let square_element = document.getElementById(`${this.square_id}`)    
-        square_element?.addEventListener("click", this.handle_click.bind(this))
+    private add_event_listener() {  
+        this.element?.addEventListener("click", this.handle_click.bind(this))
     }
 
-    handle_click() {
-        console.log(`${this.square_id}`)
+    private handle_click() {
+        MoveController.handle_square_click(this)
     }
 
-    private innerSquareImage(): HTMLImageElement {
+    private piece_image(): HTMLImageElement {
         if (this.piece != undefined) return this.piece?.image
         else return new Image()
+    }
+
+    public add_border(): void {
+        this.element!.style.border = "thick solid #0000FF";
+    }
+
+    public remove_border(): void {
+        this.element!.style.border = "";
     }
 }
 

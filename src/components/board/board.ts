@@ -2,13 +2,14 @@ import Square from '../square/square'
 import { Color } from "../square/color"
 import PieceStyles from '../piece/styles';
 import PieceList from '../piece/piece_list';
-import { SquareID } from '../square/square_id';
+import SquareID from '../square/square_id';
 import SquareStyles from '../square/styles';
+import SquareGrid from '../../models/square_grid'
 
 export default class Board extends HTMLElement {
 	constructor() {
 		super();
-		// this.attachShadow({ mode: 'open' });
+		this.attachShadow({ mode: 'open' });
 	}
 
 	connectedCallback() {
@@ -43,15 +44,24 @@ export default class Board extends HTMLElement {
 
 			container_node.appendChild(row_node)
 
-			for (let i = 0; i < 64; i++) {
-				next_square = this.instantiate_square(i)
-				next_square.build_clickable_square();
-				if (i % 8 === 0 && i > 1) {
+			let row_array: Square[] = []
+			for (let col = 0; col < 64; col++) {
+				next_square = this.instantiate_square(col)
+				next_square.build_clickable_square()
+
+				if (col % 8 === 0 && col > 0) {
 					row_node = document.createElement("div")
 					row_node.className = "row"
 					container_node.appendChild(row_node)
-				} 
+				}
+
+				row_array.push(next_square)
 				row_node.appendChild(next_square)
+
+				if (row_array.length === 8) { 
+					SquareGrid.square_grid.push(row_array)
+					row_array = []
+				}
 			}
 
 			this.append(container_node)

@@ -7,12 +7,14 @@ export default class SquareStyles {
       width: 100px;
       background-color: #1FE5DF;
       position: relative;
+      box-sizing: border-box
       }
       .white {
         height: 100px;
         width: 100px;
         background-color: #D8ECEC;
         position: relative;
+        box-sizing: border-box
       }
       .row {
         height: 100px;
