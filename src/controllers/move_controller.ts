@@ -17,7 +17,8 @@ export default class MoveController {
             square.add_border()
             
             let piece = Piece.piece_factory(square.piece)
-            piece.calculate_possible_moves()
+            let possible_moves: any = piece.calculate_possible_moves()
+            console.log(possible_moves)
         }
     }
 }
