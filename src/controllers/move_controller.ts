@@ -32,8 +32,12 @@ export default class MoveController {
                     this.prev_square = curr_square
                 })
             }
-        } else if(square.piece === undefined) {
-            
+        } else if(square.piece === undefined && this.target_square !== undefined) {
+            console.log(square.grid_point)
+            this.target_square.piece?.move("E4")
+            console.log(PieceList.pieceList)
+            console.log(SquareGrid.square_grid)
+            // Board.redraw()
         }
     }
 }

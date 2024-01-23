@@ -19,7 +19,7 @@ export default class SquareID {
     public static point_at_index(index: number): GridPoint {
         let s: string = this.positions[index]
         return {
-            row: parseInt(`${s[1]}`)-8,
+            row: 8-parseInt(`${s[1]}`),
             col: s[0].charCodeAt(0)-65
         }
     }

@@ -4,7 +4,6 @@ export default class Index extends HTMLElement {
 	board: Board = new Board()
 	constructor() {
 		super();
-		// this.attachShadow({ mode: 'open' });
 	}
 
 	connectedCallback() {
@@ -12,9 +11,6 @@ export default class Index extends HTMLElement {
 	}
 
 	render() {
-		// this.board.render()
-		// this.innerHTML = `${this.board.innerHTML}`
-		console.log("Index Render")
 		this.appendChild(this.board)
 	}
 }

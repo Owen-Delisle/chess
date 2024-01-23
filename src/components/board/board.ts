@@ -7,9 +7,10 @@ import SquareStyles from '../square/styles';
 import SquareGrid from '../../models/square_grid'
 
 export default class Board extends HTMLElement {
+	container_node: Element = document.createElement("div")
+
 	constructor() {
 		super();
-		// this.attachShadow({ mode: 'open' });
 		this.render();
 	}
 
@@ -33,16 +34,22 @@ export default class Board extends HTMLElement {
 
 	private board_generator(): Promise<string> {
 		return new Promise(resolve => {
-			let next_square: Square
+			this.container_node.className = "container"
+			this.container_node.id = "container"
 
-			let container_node: Element = document.createElement("div")
-			container_node.className = "container"
-			container_node.id = "container"
+			this.add_squares_to_board()
 
-			let row_node: Element = document.createElement("div")
+			this.append(this.container_node)
+			resolve("Board Finished")
+		})
+	}
+
+	private add_squares_to_board() {
+		let next_square: Square
+		let row_node: Element = document.createElement("div")
+
 			row_node.className = "row"
-
-			container_node.appendChild(row_node)
+			this.container_node.appendChild(row_node)
 
 			let row_array: Square[] = []
 			for (let col = 0; col < 64; col++) {
@@ -52,7 +59,7 @@ export default class Board extends HTMLElement {
 				if (col % 8 === 0 && col > 0) {
 					row_node = document.createElement("div")
 					row_node.className = "row"
-					container_node.appendChild(row_node)
+					this.container_node.appendChild(row_node)
 				}
 
 				row_array.push(next_square)
@@ -63,20 +70,16 @@ export default class Board extends HTMLElement {
 					row_array = []
 				}
 			}
-
-			this.append(container_node)
-			resolve("Board Finished")
-		})
 	}
 
-	private instantiate_square(i: number): Square {
+	private instantiate_square(index: number): Square {
 		let color: Color = Color.black
-		if (i % 2 === this.current_row(i)) {
+		if (index % 2 === this.current_row(index)) {
 			color = Color.white
 		}
 
 		let square: Square =
-			new Square(color, i, PieceList.pieceAt(SquareID.pos_at_index(i)))
+			new Square(color, index, PieceList.pieceAt(SquareID.pos_at_index(index)))
 
 		return square
 	}
@@ -97,6 +100,10 @@ export default class Board extends HTMLElement {
 		return mod
 	}
 
+	public redraw() {
+		document.querySelectorAll(".row").forEach(e => e.remove())
+		// this.add_squares_to_board()
+	}
 }
 
 customElements.define('board-element', Board);
