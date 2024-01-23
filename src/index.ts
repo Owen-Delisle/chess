@@ -1,7 +1,7 @@
 import Board from './components/board/board'
 
 export default class Index extends HTMLElement {
-	board: Board = new Board()
+	public static board: Board = new Board()
 	constructor() {
 		super();
 	}
@@ -11,7 +11,7 @@ export default class Index extends HTMLElement {
 	}
 
 	render() {
-		this.appendChild(this.board)
+		this.appendChild(Index.board)
 	}
 }
 

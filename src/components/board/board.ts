@@ -102,7 +102,7 @@ export default class Board extends HTMLElement {
 
 	public redraw() {
 		document.querySelectorAll(".row").forEach(e => e.remove())
-		// this.add_squares_to_board()
+		this.add_squares_to_board()
 	}
 }
 

@@ -2,7 +2,7 @@ import type Square from "../components/square/square"
 import Piece from "../components/piece/piece"
 import type { GridPoint } from "../global_types/grid_point"
 import SquareGrid from "../models/square_grid"
-import PieceList from "../components/piece/piece_list"
+import Index from "../index"
 
 export default class MoveController {
     static target_square: Square
@@ -33,11 +33,9 @@ export default class MoveController {
                 })
             }
         } else if(square.piece === undefined && this.target_square !== undefined) {
-            console.log(square.grid_point)
             this.target_square.piece?.move("E4")
-            console.log(PieceList.pieceList)
-            console.log(SquareGrid.square_grid)
-            // Board.redraw()
+
+            Index.board.redraw()
         }
     }
 }
