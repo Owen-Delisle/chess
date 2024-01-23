@@ -60,7 +60,7 @@ export default class Pawn extends Piece implements Piece_Interface {
                     row: current_pos.row - 1,
                     col: current_pos.col
                 }
-            ) !== undefined) {
+            ) === undefined) {
                 possible_moves.push({
                     row: current_pos.row - 1,
                     col: current_pos.col
