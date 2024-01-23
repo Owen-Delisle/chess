@@ -55,7 +55,12 @@ export default class Pawn extends Piece implements Piece_Interface {
 
     private move_north(current_pos: GridPoint, possible_moves: Array<GridPoint>) {
         if (current_pos.row - 1 >= 0) {
-            if (SquareGrid.square_grid[current_pos.row - 1][current_pos.col].piece == undefined) {
+            if (SquareGrid.piece_by_grid_point(
+                {
+                    row: current_pos.row - 1,
+                    col: current_pos.col
+                }
+            ) !== undefined) {
                 possible_moves.push({
                     row: current_pos.row - 1,
                     col: current_pos.col
@@ -66,7 +71,12 @@ export default class Pawn extends Piece implements Piece_Interface {
 
     private move_north_east(current_pos: GridPoint, possible_moves: Array<GridPoint>) {
         if (current_pos.row - 1 >= 0 && current_pos.col + 1 <= 7) {
-            if (SquareGrid.square_grid[current_pos.row - 1][current_pos.col + 1].piece != undefined) {
+            if (SquareGrid.piece_by_grid_point(
+                {
+                    row: current_pos.row - 1,
+                    col: current_pos.col + 1
+                }
+            ) !== undefined) {
                 possible_moves.push({
                     row: current_pos.row - 1,
                     col: current_pos.col + 1
