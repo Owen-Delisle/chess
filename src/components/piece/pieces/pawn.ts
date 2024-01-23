@@ -33,7 +33,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 
     private possible_moves_arr(current_pos: [number,number]): Array<[number, number]> {
         let possible_moves: Array<[number, number]> = []
-        console.log(current_pos)
+
         this.directions.forEach(direction => {
             switch(direction) {
                 case PieceDirections.north:
@@ -59,14 +59,18 @@ export default class Pawn extends Piece implements Piece_Interface {
     }
 
     private move_north_east(current_pos: [number, number], possible_moves: Array<[number, number]>) {
-        if(SquareGrid.square_grid[current_pos[0]-1][current_pos[1]-1].piece != undefined) {
-            possible_moves.push([current_pos[0]-1, current_pos[1]-1])
+        if(current_pos[0]-1 >= 0 && current_pos[1]+1 <= 7) {
+            if(SquareGrid.square_grid[current_pos[0]-1][current_pos[1]+1].piece != undefined) {
+                possible_moves.push([current_pos[0]-1, current_pos[1]+1])
+            }
         }
     }
 
     private move_north_west(current_pos: [number, number], possible_moves: Array<[number, number]>) {
-        if(SquareGrid.square_grid[current_pos[0]-1][current_pos[1]+1].piece != undefined) {
-            possible_moves.push([current_pos[0]-1, current_pos[1]+1])
+        if(current_pos[0]-1 >= 0 && current_pos[1]-1 >= 0) {
+            if(SquareGrid.square_grid[current_pos[0]-1][current_pos[1]-1].piece != undefined) {
+                possible_moves.push([current_pos[0]-1, current_pos[1]-1])
+            }
         }
     }
 }

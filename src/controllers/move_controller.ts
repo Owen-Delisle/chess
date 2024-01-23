@@ -1,7 +1,6 @@
 import type Square from "../components/square/square"
 import Piece from "../components/piece/piece"
-import type Pawn from "../components/piece/pieces/pawn"
-import {PieceType} from "../components/piece/piece_types"
+import type { GridPoint } from "../global_types/grid_point"
 
 export default class MoveController {
     static target_square: Square
@@ -17,8 +16,12 @@ export default class MoveController {
             square.add_border()
             
             let piece = Piece.piece_factory(square.piece)
-            let possible_moves: any = piece.calculate_possible_moves()
-            console.log(possible_moves)
+            let possible_moves: Array<[GridPoint]> | undefined
+
+            possible_moves = piece.calculate_possible_moves()
+            if(possible_moves !== undefined) {
+                console.log(possible_moves)
+            }
         }
     }
 }
