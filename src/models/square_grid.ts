@@ -1,14 +1,15 @@
 import type Square from "../components/square/square"
+import type { GridPoint } from "../global_types/grid_point"
 
 export default class SquareGrid {
     public static square_grid: Array<Array<Square>> = []
 
-    public static position_by_piece_id(piece_id: string): [number, number] | undefined{
-        let coors: [number, number] | undefined = undefined
+    public static position_by_piece_id(piece_id: string): GridPoint | undefined{
+        let coors: GridPoint | undefined = undefined
         this.square_grid.forEach((row, row_index) => {
             for(let col_index = 0; col_index < row.length; col_index++) {
                 if(this.square_id(row_index, col_index) == piece_id) {
-                    coors = [row_index, col_index]
+                    coors = {row: row_index, col: col_index}
                 }
             }
         })

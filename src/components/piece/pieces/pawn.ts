@@ -3,6 +3,7 @@ import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
 import SquareGrid from "../../../models/square_grid"
 import { PieceDirections } from "../piece_directions"
+import type { GridPoint } from "../../../global_types/grid_point"
 
 export default class Pawn extends Piece implements Piece_Interface {
     move_distance: number
@@ -19,11 +20,11 @@ export default class Pawn extends Piece implements Piece_Interface {
         ]
     }
 
-    public calculate_possible_moves(): Array<[number, number]> | undefined {
+    public calculate_possible_moves(): Array<GridPoint> | undefined {
         console.log("Pawn Piece")
-        let current_position: [number, number] | undefined
+        let current_position: GridPoint | undefined
         current_position = SquareGrid.position_by_piece_id(this.title)
-        let arr: Array<[number, number]> | undefined = undefined
+        let arr: Array<GridPoint> | undefined = undefined
 
         if (current_position !== undefined) {
             return this.possible_moves_arr(current_position)
@@ -31,8 +32,8 @@ export default class Pawn extends Piece implements Piece_Interface {
         return arr
     }
 
-    private possible_moves_arr(current_pos: [number,number]): Array<[number, number]> {
-        let possible_moves: Array<[number, number]> = []
+    private possible_moves_arr(current_pos: GridPoint): Array<GridPoint> {
+        let possible_moves: Array<GridPoint> = []
 
         this.directions.forEach(direction => {
             switch(direction) {
@@ -52,24 +53,35 @@ export default class Pawn extends Piece implements Piece_Interface {
         return possible_moves
     }
 
-    private move_north(current_pos: [number, number], possible_moves: Array<[number, number]>) {
-        if(SquareGrid.square_grid[current_pos[0]-1][current_pos[1]].piece == undefined) {
-            possible_moves.push([current_pos[0]-1, current_pos[1]])
-        }
-    }
-
-    private move_north_east(current_pos: [number, number], possible_moves: Array<[number, number]>) {
-        if(current_pos[0]-1 >= 0 && current_pos[1]+1 <= 7) {
-            if(SquareGrid.square_grid[current_pos[0]-1][current_pos[1]+1].piece != undefined) {
-                possible_moves.push([current_pos[0]-1, current_pos[1]+1])
+    private move_north(current_pos: GridPoint, possible_moves: Array<GridPoint>) {
+        if(current_pos.row-1 >= 0) {
+            if(SquareGrid.square_grid[current_pos.row-1][current_pos.col].piece == undefined) {
+                possible_moves.push({
+                    row: current_pos.row - 1,
+                    col: current_pos.col
+                })
             }
         }
     }
 
-    private move_north_west(current_pos: [number, number], possible_moves: Array<[number, number]>) {
-        if(current_pos[0]-1 >= 0 && current_pos[1]-1 >= 0) {
-            if(SquareGrid.square_grid[current_pos[0]-1][current_pos[1]-1].piece != undefined) {
-                possible_moves.push([current_pos[0]-1, current_pos[1]-1])
+    private move_north_east(current_pos: GridPoint, possible_moves: Array<GridPoint>) {
+        if(current_pos.row-1 >= 0 && current_pos.col+1 <= 7) {
+            if(SquareGrid.square_grid[current_pos.row-1][current_pos.col+1].piece != undefined) {
+                possible_moves.push({
+                    row: current_pos.row - 1,
+                    col: current_pos.col + 1
+                })
+            }
+        }
+    }
+
+    private move_north_west(current_pos: GridPoint, possible_moves: Array<GridPoint>) {
+        if(current_pos.row-1 >= 0 && current_pos.col-1 >= 0) {
+            if(SquareGrid.square_grid[current_pos.row-1][current_pos.col-1].piece != undefined) {
+                possible_moves.push({
+                    row: current_pos.row - 1,
+                    col: current_pos.col - 1
+                })
             }
         }
     }
