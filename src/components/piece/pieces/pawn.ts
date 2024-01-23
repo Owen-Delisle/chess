@@ -23,7 +23,7 @@ export default class Pawn extends Piece implements Piece_Interface {
     public calculate_possible_moves(): Array<GridPoint> | undefined {
         console.log("Pawn Piece")
         let current_position: GridPoint | undefined
-        current_position = SquareGrid.position_by_piece_id(this.title)
+        current_position = SquareGrid.point_by_piece_id(this.title)
         let arr: Array<GridPoint> | undefined = undefined
 
         if (current_position !== undefined) {

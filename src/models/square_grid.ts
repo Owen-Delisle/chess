@@ -5,7 +5,7 @@ import type Piece from "../components/piece/piece"
 export default class SquareGrid {
     public static square_grid: Array<Array<Square>> = []
 
-    public static position_by_piece_id(piece_id: string): GridPoint | undefined{
+    public static point_by_piece_id(piece_id: string): GridPoint | undefined{
         let coors: GridPoint | undefined = undefined
         this.square_grid.forEach((row, row_index) => {
             for(let col_index = 0; col_index < row.length; col_index++) {
@@ -23,6 +23,10 @@ export default class SquareGrid {
         } else {
             return ""
         }
+    }
+
+    public static square_by_grid_point(point: GridPoint): Square{
+        return this.square_grid[point.row][point.col]
     }
 
     public static piece_by_grid_point(point: GridPoint): Piece | undefined {
