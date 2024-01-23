@@ -1,3 +1,5 @@
+import type { GridPoint } from "../../global_types/grid_point"
+
 export default class SquareID {
     public static positions: string[] = [
         "A8","B8","C8","D8","E8","F8","G8","H8",
@@ -10,7 +12,15 @@ export default class SquareID {
         "A1","B1","C1","D1","E1","F1","G1","H1",
     ]
     
-    public static posAtIndex(index: number): string {
+    public static pos_at_index(index: number): string {
         return SquareID.positions[index]
+    }
+
+    public static point_at_index(index: number): GridPoint {
+        let s: string = this.positions[index]
+        return {
+            row: parseInt(`${s[1]}`)-8,
+            col: s[0].charCodeAt(0)-65
+        }
     }
 }

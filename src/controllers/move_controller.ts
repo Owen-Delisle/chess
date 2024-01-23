@@ -2,6 +2,7 @@ import type Square from "../components/square/square"
 import Piece from "../components/piece/piece"
 import type { GridPoint } from "../global_types/grid_point"
 import SquareGrid from "../models/square_grid"
+import PieceList from "../components/piece/piece_list"
 
 export default class MoveController {
     static target_square: Square
@@ -31,6 +32,8 @@ export default class MoveController {
                     this.prev_square = curr_square
                 })
             }
+        } else if(square.piece === undefined) {
+            
         }
     }
 }

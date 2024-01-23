@@ -48,4 +48,8 @@ export default class Piece {
                 break;
         }
     }
+
+    public move(newPos: string) {
+        this.pos = newPos
+    }
 }

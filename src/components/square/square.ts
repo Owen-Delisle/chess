@@ -2,18 +2,20 @@ import type { Color } from "./color";
 import SquareID  from "./square_id"
 import type Piece from "../piece/piece";
 import MoveController from "../../controllers/move_controller";
+import type { GridPoint } from "../../global_types/grid_point";
 
 export default class Square extends HTMLElement {
     square_id: SquareID
     color: Color
     piece?: Piece
     element: HTMLElement | null = null
+    grid_point: GridPoint
 
     constructor(color: Color, square_id: number, piece?: Piece) {
         super();
-        this.square_id = SquareID.posAtIndex(square_id)
+        this.square_id = SquareID.pos_at_index(square_id)
         this.color = color
-        
+        this.grid_point = SquareID.point_at_index(square_id)
 
         if (piece !== undefined) {
             this.piece = piece

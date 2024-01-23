@@ -9,11 +9,11 @@ import SquareGrid from '../../models/square_grid'
 export default class Board extends HTMLElement {
 	constructor() {
 		super();
-		this.attachShadow({ mode: 'open' });
+		// this.attachShadow({ mode: 'open' });
+		this.render();
 	}
 
 	connectedCallback() {
-		this.render();
 	}
 
 	render() {
@@ -76,7 +76,7 @@ export default class Board extends HTMLElement {
 		}
 
 		let square: Square =
-			new Square(color, i, PieceList.pieceAt(SquareID.posAtIndex(i)))
+			new Square(color, i, PieceList.pieceAt(SquareID.pos_at_index(i)))
 
 		return square
 	}
