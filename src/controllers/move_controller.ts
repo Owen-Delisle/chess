@@ -10,6 +10,7 @@ export default class MoveController {
     static handle_square_click(square: Square) {
         if(this.target_square !== undefined) {
             this.target_square.remove_border()
+            this.prev_square.remove_dot()
         }
 
         if(square.piece !== undefined) {
@@ -23,10 +24,10 @@ export default class MoveController {
             if(possible_moves !== undefined) {
                 possible_moves.forEach(coor => {
                     if(this.prev_square !== undefined) {
-                        this.prev_square.remove_border()
+                        this.prev_square.remove_dot()
                     }
                     let curr_square = SquareGrid.square_by_grid_point(coor)
-                    curr_square.add_border()
+                    curr_square.add_dot()
                     this.prev_square = curr_square
                 })
             }

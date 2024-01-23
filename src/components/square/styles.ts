@@ -31,6 +31,16 @@ export default class SquareStyles {
       .p {
         position: absolute;
       }
+      .dot {
+        background-color: #0000FF;
+        border-radius: 50%;
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        top: 90%;
+        left: 87%;
+        margin: -50px 0 0 -50px;
+      }
       `
 
     return style
