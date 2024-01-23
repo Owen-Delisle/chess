@@ -1,5 +1,6 @@
 import type Square from "../components/square/square"
 import type { GridPoint } from "../global_types/grid_point"
+import type Piece from "../components/piece/piece"
 
 export default class SquareGrid {
     public static square_grid: Array<Array<Square>> = []
@@ -24,7 +25,7 @@ export default class SquareGrid {
         }
     }
 
-    public static square_id_by_coors(row: number, col: number): string {
-        return this.square_grid[row][col].square_id as string
+    public static piece_by_grid_point(point: GridPoint): Piece | undefined {
+        return SquareGrid.square_grid[point.row][point.col].piece
     }
 }
