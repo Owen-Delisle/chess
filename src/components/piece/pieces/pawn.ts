@@ -20,20 +20,20 @@ export default class Pawn extends Piece implements Piece_Interface {
         ]
     }
 
-    public calculate_possible_moves(): Array<GridPoint> | undefined {
+    public calculate_possible_moves(): GridPoint[] | undefined {
         console.log("Pawn Piece")
         let current_position: GridPoint | undefined
         current_position = SquareGrid.point_by_piece_id(this.title)
-        let arr: Array<GridPoint> | undefined = undefined
 
         if (current_position !== undefined) {
             return this.possible_moves_arr(current_position)
         }
-        return arr
+        
+        return undefined
     }
 
-    private possible_moves_arr(current_pos: GridPoint): Array<GridPoint> {
-        let possible_moves: Array<GridPoint> = []
+    private possible_moves_arr(current_pos: GridPoint): GridPoint[] {
+        let possible_moves: GridPoint[] = []
 
         this.directions.forEach(direction => {
             switch (direction) {
@@ -53,7 +53,7 @@ export default class Pawn extends Piece implements Piece_Interface {
         return possible_moves
     }
 
-    private move_north(current_pos: GridPoint, possible_moves: Array<GridPoint>) {
+    private move_north(current_pos: GridPoint, possible_moves: GridPoint[]) {
         if (current_pos.row - 1 >= 0) {
             if (SquareGrid.piece_by_grid_point(
                 {
@@ -69,7 +69,7 @@ export default class Pawn extends Piece implements Piece_Interface {
         }
     }
 
-    private move_north_east(current_pos: GridPoint, possible_moves: Array<GridPoint>) {
+    private move_north_east(current_pos: GridPoint, possible_moves: GridPoint[]) {
         if (current_pos.row - 1 >= 0 && current_pos.col + 1 <= 7) {
             if (SquareGrid.piece_by_grid_point(
                 {
@@ -85,7 +85,7 @@ export default class Pawn extends Piece implements Piece_Interface {
         }
     }
 
-    private move_north_west(current_pos: GridPoint, possible_moves: Array<GridPoint>) {
+    private move_north_west(current_pos: GridPoint, possible_moves: GridPoint[]) {
         if (current_pos.row - 1 >= 0 && current_pos.col - 1 >= 0) {
             if (SquareGrid.piece_by_grid_point(
                 {
