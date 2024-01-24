@@ -14,7 +14,6 @@ export default class SquareGrid {
                 }
             }
         }
-        console.log("point_by_piece", coors!.row)
         return coors
     }
 

@@ -8,11 +8,12 @@ import type { GridPoint } from "../../../global_types/grid_point"
 export default class Pawn extends Piece implements Piece_Interface {
     move_distance: number
     directions: PieceDirections[]
+    has_moved: boolean = false
 
     constructor(title: string, pos: string, svg: string, type: PieceType) {
         super(title, pos, svg)
         this.type = type
-        this.move_distance = 1
+        this.move_distance = (this.has_moved) ? 1 : 2
         this.directions = [
             PieceDirections.north,
             PieceDirections.north_east,

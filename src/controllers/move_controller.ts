@@ -64,8 +64,6 @@ export default class MoveController {
                 should_move = true
             }
         })
-        this.possible_moves.forEach(possible_point => {
-        })
         return should_move
     }
 }
