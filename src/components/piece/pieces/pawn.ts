@@ -13,7 +13,6 @@ export default class Pawn extends Piece implements Piece_Interface {
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
         this.type = type
-        this.largest_move_distance
         this.directions = [
             PieceDirections.north,
             PieceDirections.north_east,
