@@ -89,16 +89,17 @@ export default class Pawn extends Piece implements Piece_Interface {
 
     private move_north_west(current_pos: GridPoint, possible_moves: GridPoint[]) {
         if (current_pos.row - 1 >= 0 && current_pos.col - 1 >= 0) {
-            if (SquareGrid.piece_by_grid_point(
-                {
-                    row: current_pos.row - 1,
-                    col: current_pos.col - 1
+            let north_east_piece: Piece | undefined
+            north_east_piece = this.piece_at_grid_point(
+                                    current_pos.row - 1,
+                                    current_pos.col - 1)
+            if (north_east_piece !== undefined) {
+                if(north_east_piece.color !== this.color) {
+                    possible_moves.push({
+                        row: current_pos.row - 1,
+                        col: current_pos.col - 1
+                    })
                 }
-            ) !== undefined) {
-                possible_moves.push({
-                    row: current_pos.row - 1,
-                    col: current_pos.col - 1
-                })
             }
         }
     }
