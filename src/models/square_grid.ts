@@ -7,13 +7,14 @@ export default class SquareGrid {
 
     public static point_by_piece_id(piece_id: string): GridPoint | undefined{
         let coors: GridPoint | undefined = undefined
-        this.square_grid.forEach((row, row_index) => {
-            for(let col_index = 0; col_index < row.length; col_index++) {
+        for(let row_index = 0; row_index < this.square_grid.length; row_index++) {
+            for(let col_index = 0; col_index < this.square_grid[0].length; col_index++) {
                 if(this.square_id(row_index, col_index) == piece_id) {
                     coors = {row: row_index, col: col_index}
                 }
             }
-        })
+        }
+        console.log("point_by_piece", coors!.row)
         return coors
     }
 

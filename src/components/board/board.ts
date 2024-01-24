@@ -101,6 +101,7 @@ export default class Board extends HTMLElement {
 	}
 
 	public redraw() {
+		SquareGrid.square_grid = []
 		document.querySelectorAll(".row").forEach(e => e.remove())
 		this.add_squares_to_board()
 	}

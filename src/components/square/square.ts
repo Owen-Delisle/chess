@@ -55,7 +55,7 @@ export default class Square extends HTMLElement {
     }
 
     private handle_click() {
-        MoveController.handle_square_click(this)
+        MoveController.on_square_click(this)
     }
 
     private piece_image(): HTMLImageElement {

@@ -49,7 +49,7 @@ export default class Piece {
         }
     }
 
-    public move(newPos: string) {
+    public move_to(newPos: string) {
         this.pos = newPos
     }
 }
