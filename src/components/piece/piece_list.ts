@@ -24,11 +24,11 @@ import Rook_W_SVG from "./assets/rook-w.svg"
 
 export default class PieceList {
     public static pieceList: Piece[] = [
-        new King("king_b", "D8", King_B_SVG, PieceType.king),
-        new King("king_w", "D1", King_W_SVG, PieceType.king),
+        new King("king_b", "E8", King_B_SVG, PieceType.king),
+        new King("king_w", "E1", King_W_SVG, PieceType.king),
 
-        new Queen("queen_b", "E8", Queen_B_SVG, PieceType.queen),
-        new Queen("queen_w", "E1", Queen_W_SVG, PieceType.queen),
+        new Queen("queen_b", "D8", Queen_B_SVG, PieceType.queen),
+        new Queen("queen_w", "D1", Queen_W_SVG, PieceType.queen),
 
         new Bishop("bishop_b1", "C8", Bishop_B_SVG, PieceType.bishop),
         new Bishop("bishop_w1", "C1", Bishop_W_SVG, PieceType.bishop),
