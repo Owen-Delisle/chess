@@ -58,16 +58,14 @@ export default class Rook extends Piece implements Piece_Interface {
     }
     move_north(current_pos: GridPoint, possible_moves: GridPoint[]) {
         let distance = 1
-        if (current_pos.row - 1 >= 0) {
-            while (distance <= this.largest_move_distance && this.piece_at_grid_point(
-                current_pos.row - distance,
-                current_pos.col) === undefined) {
-                possible_moves.push({
-                    row: current_pos.row - distance,
-                    col: current_pos.col
-                })
-                distance++
-            }
+        while (current_pos.row - distance >= 0 && this.piece_at_grid_point(
+            current_pos.row - distance,
+            current_pos.col,) === undefined) {
+            possible_moves.push({
+                row: current_pos.row - distance,
+                col: current_pos.col
+            })
+            distance++
         }
     }
     move_east(current_pos: GridPoint, possible_moves: GridPoint[]) {
