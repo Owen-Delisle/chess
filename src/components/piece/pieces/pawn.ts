@@ -32,7 +32,7 @@ export default class Pawn extends Piece implements Piece_Interface {
         return undefined
     }
 
-    private possible_moves_arr(current_pos: GridPoint): GridPoint[] {
+    public possible_moves_arr(current_pos: GridPoint): GridPoint[] {
         let possible_moves: GridPoint[] = []
 
         this.directions.forEach(direction => {
