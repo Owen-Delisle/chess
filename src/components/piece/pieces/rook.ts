@@ -7,7 +7,7 @@ import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
 
 export default class Rook extends Piece implements Piece_Interface {
-    largest_move_distance: number = 7
+    move_distance: number = 7
     directions: PieceDirections[]
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
@@ -39,57 +39,21 @@ export default class Rook extends Piece implements Piece_Interface {
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.move_north(current_pos, possible_moves)
+                    this.moves_list(current_pos, possible_moves, this.move_distance, -1, 0)
                     break;
                 case PieceDirections.east:
-                    this.move_east(current_pos, possible_moves)
+                    this.moves_list(current_pos, possible_moves, this.move_distance, 0, 1)
                     break;
                 case PieceDirections.south:
-                    this.move_south(current_pos, possible_moves)
+                    this.moves_list(current_pos, possible_moves, this.move_distance, 1, 0)
                     break;
                 case PieceDirections.west:
-                    this.move_west(current_pos, possible_moves)
+                    this.moves_list(current_pos, possible_moves, this.move_distance, 0, -1)
                     break;
                 default:
                     console.log("Direction Not Found")
             }
         })
         return possible_moves
-    }
-    move_north(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        this.build_possible_moves_list(
-            this.largest_move_distance,
-            current_pos,
-            possible_moves,
-            -1,
-            0
-        )
-    }
-    move_east(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        this.build_possible_moves_list(
-            this.largest_move_distance,
-            current_pos,
-            possible_moves,
-            0,
-            1
-        )
-    }
-    move_south(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        this.build_possible_moves_list(
-            this.largest_move_distance,
-            current_pos,
-            possible_moves,
-            1,
-            0
-        )
-    }
-    move_west(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        this.build_possible_moves_list(
-            this.largest_move_distance,
-            current_pos,
-            possible_moves,
-            0,
-            -1
-        )
     }
 }
