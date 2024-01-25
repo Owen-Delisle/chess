@@ -87,7 +87,7 @@ export default class Piece {
         possible_moves: GridPoint[],
         row_modifier: number,
         col_modifier: number,
-    ) {
+    ): void {
         let distance = 1
         while (
             Piece.point_within_board_bounds
@@ -109,7 +109,7 @@ export default class Piece {
         }
     }
 
-    private static point_within_board_bounds(
+    public static point_within_board_bounds(
         current_pos: GridPoint,
         new_row: number,
         new_col: number): boolean {

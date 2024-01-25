@@ -35,10 +35,10 @@ export default class PieceList {
         new Bishop("bishop_b2", "F8", Bishop_B_SVG, PieceType.bishop, Color.black),
         new Bishop("bishop_w2", "F1", Bishop_W_SVG, PieceType.bishop, Color.white),
 
-        new Knight("knight_b1", "B8", Knight_B_SVG, PieceType.knight),
-        new Knight("knight_w1", "B1", Knight_W_SVG, PieceType.knight),
-        new Knight("knight_b2", "G8", Knight_B_SVG, PieceType.knight),
-        new Knight("knight_w2", "G1", Knight_W_SVG, PieceType.knight),
+        new Knight("knight_b1", "B8", Knight_B_SVG, PieceType.knight, Color.black),
+        new Knight("knight_w1", "B1", Knight_W_SVG, PieceType.knight, Color.white),
+        new Knight("knight_b2", "G8", Knight_B_SVG, PieceType.knight, Color.black),
+        new Knight("knight_w2", "G1", Knight_W_SVG, PieceType.knight, Color.white),
 
         new Rook("rook_b1", "A8", Rook_B_SVG, PieceType.rook, Color.black),
         new Rook("rook_w1", "A1", Rook_W_SVG, PieceType.rook, Color.white),
