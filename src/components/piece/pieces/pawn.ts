@@ -7,7 +7,7 @@ import type { GridPoint } from "../../../global_types/grid_point"
 import type { Color } from "../color"
 
 export default class Pawn extends Piece implements Piece_Interface {
-    largest_move_distance: number = 2
+    largest_move_distance: number = 3
     directions: PieceDirections[]
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
@@ -41,10 +41,8 @@ export default class Pawn extends Piece implements Piece_Interface {
                     this.move_north(current_pos, possible_moves)
                     break;
                 case PieceDirections.north_east:
-                    this.move_north_east(current_pos, possible_moves)
                     break;
                 case PieceDirections.north_west:
-                    this.move_north_west(current_pos, possible_moves)
                     break;
                 default:
                     console.log("Direction Not Found")
@@ -54,52 +52,13 @@ export default class Pawn extends Piece implements Piece_Interface {
     }
 
     private move_north(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        if (current_pos.row - 1 >= 0) {
-            if (this.piece_at_grid_point(
-                current_pos.row - this.largest_move_distance,
-                current_pos.col) === undefined) {
-                for (let distance = 1; distance <= this.largest_move_distance; distance++) {
-                    possible_moves.push({
-                        row: current_pos.row - distance,
-                        col: current_pos.col
-                    })
-                }
-                this.largest_move_distance = 1
-            }
-        }
-    }
-
-    private move_north_east(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        if (current_pos.row - 1 >= 0 && current_pos.col + 1 <= 7) {
-            let north_east_piece: Piece | undefined
-            north_east_piece = this.piece_at_grid_point(
-                                    current_pos.row - 1,
-                                    current_pos.col + 1)
-            if (north_east_piece !== undefined) {
-                if(north_east_piece.color !== this.color) {
-                    possible_moves.push({
-                        row: current_pos.row - 1,
-                        col: current_pos.col + 1
-                    })
-                }
-            }
-        }
-    }
-
-    private move_north_west(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        if (current_pos.row - 1 >= 0 && current_pos.col - 1 >= 0) {
-            let north_east_piece: Piece | undefined
-            north_east_piece = this.piece_at_grid_point(
-                                    current_pos.row - 1,
-                                    current_pos.col - 1)
-            if (north_east_piece !== undefined) {
-                if(north_east_piece.color !== this.color) {
-                    possible_moves.push({
-                        row: current_pos.row - 1,
-                        col: current_pos.col - 1
-                    })
-                }
-            }
-        }
+        this.build_possible_moves_list(
+            this.largest_move_distance,
+            current_pos,
+            possible_moves,
+            -1,
+            0
+        )
+        this.largest_move_distance = 2
     }
 }

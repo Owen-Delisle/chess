@@ -8,6 +8,10 @@ import SquareGrid from '../../models/square_grid'
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement("div")
+	static start_index = 0
+	static row_size: number = 8
+	static col_size: number = 8
+	static board_size: number = (Board.row_size * Board.col_size)
 
 	constructor() {
 		super();
@@ -52,11 +56,11 @@ export default class Board extends HTMLElement {
 			this.container_node.appendChild(row_node)
 
 			let row_array: Square[] = []
-			for (let col = 0; col < 64; col++) {
+			for (let col = Board.start_index; col < Board.board_size; col++) {
 				next_square = this.instantiate_square(col)
 				next_square.build_clickable_square()
 
-				if (col % 8 === 0 && col > 0) {
+				if (col % Board.col_size === Board.start_index && col > Board.start_index) {
 					row_node = document.createElement("div")
 					row_node.className = "row"
 					this.container_node.appendChild(row_node)
@@ -65,7 +69,7 @@ export default class Board extends HTMLElement {
 				row_array.push(next_square)
 				row_node.appendChild(next_square)
 
-				if (row_array.length === 8) { 
+				if (row_array.length === Board.row_size) { 
 					SquareGrid.square_grid.push(row_array)
 					row_array = []
 				}
@@ -85,7 +89,7 @@ export default class Board extends HTMLElement {
 	}
 
 	private current_row(i: number): number {
-		let mod: number = 0
+		let mod: number = Board.start_index
 
 		if (i > 7 && i < 16) {
 			mod = 1

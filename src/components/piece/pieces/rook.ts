@@ -57,51 +57,39 @@ export default class Rook extends Piece implements Piece_Interface {
         return possible_moves
     }
     move_north(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        let distance = 1
-        while (current_pos.row - distance >= 0 && this.piece_at_grid_point(
-            current_pos.row - distance,
-            current_pos.col,) === undefined) {
-            possible_moves.push({
-                row: current_pos.row - distance,
-                col: current_pos.col
-            })
-            distance++
-        }
+        this.build_possible_moves_list(
+            this.largest_move_distance,
+            current_pos,
+            possible_moves,
+            -1,
+            0
+        )
     }
     move_east(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        let distance = 1
-        while (current_pos.col + distance <= this.largest_move_distance && this.piece_at_grid_point(
-            current_pos.row,
-            current_pos.col + distance) === undefined) {
-            possible_moves.push({
-                row: current_pos.row,
-                col: current_pos.col + distance
-            })
-            distance++
-        }
+        this.build_possible_moves_list(
+            this.largest_move_distance,
+            current_pos,
+            possible_moves,
+            0,
+            1
+        )
     }
     move_south(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        let distance = 1
-        while (current_pos.row + distance <= this.largest_move_distance && this.piece_at_grid_point(
-            current_pos.row + distance,
-            current_pos.col) === undefined) {
-            possible_moves.push({
-                row: current_pos.row + distance,
-                col: current_pos.col
-            })
-            distance++
-        }
+        this.build_possible_moves_list(
+            this.largest_move_distance,
+            current_pos,
+            possible_moves,
+            1,
+            0
+        )
     }
     move_west(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        let distance = 1
-        while (current_pos.col - distance >= 0 && this.piece_at_grid_point(
-            current_pos.row,
-            current_pos.col - distance) === undefined) {
-            possible_moves.push({
-                row: current_pos.row,
-                col: current_pos.col - distance
-            })
-            distance++
-        }
+        this.build_possible_moves_list(
+            this.largest_move_distance,
+            current_pos,
+            possible_moves,
+            0,
+            -1
+        )
     }
 }
