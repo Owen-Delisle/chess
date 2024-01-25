@@ -7,7 +7,7 @@ import type { GridPoint } from "../../../global_types/grid_point"
 import type { Color } from "../color"
 
 export default class Pawn extends Piece implements Piece_Interface {
-    largest_move_distance: number = 3
+    move_distance: number = 3
     directions: PieceDirections[]
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
@@ -38,7 +38,8 @@ export default class Pawn extends Piece implements Piece_Interface {
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.move_north(current_pos, possible_moves)
+                    this.moves_list(current_pos, possible_moves, this.move_distance, -1, 0)
+                    this.move_distance = 2
                     break;
                 case PieceDirections.north_east:
                     break;
@@ -49,16 +50,5 @@ export default class Pawn extends Piece implements Piece_Interface {
             }
         })
         return possible_moves
-    }
-
-    private move_north(current_pos: GridPoint, possible_moves: GridPoint[]) {
-        this.build_possible_moves_list(
-            this.largest_move_distance,
-            current_pos,
-            possible_moves,
-            -1,
-            0
-        )
-        this.largest_move_distance = 2
     }
 }

@@ -14,9 +14,13 @@ export default class Queen extends Piece implements Piece_Interface {
         super(title, pos, svg, color)
         this.type = type
         this.directions = [
+            PieceDirections.north,
             PieceDirections.north_east,
+            PieceDirections.east,
             PieceDirections.south_east,
+            PieceDirections.south,
             PieceDirections.south_west,
+            PieceDirections.west,
             PieceDirections.north_west
         ]
     }
@@ -38,17 +42,29 @@ export default class Queen extends Piece implements Piece_Interface {
 
         this.directions.forEach(direction => {
             switch (direction) {
+                case PieceDirections.north:
+                    this.moves_list(current_pos, possible_moves, this.move_distance, -1, 0)
+                    break;
                 case PieceDirections.north_east:
-                    this.move_piece(current_pos, possible_moves, this.move_distance, -1, -1)
+                    this.moves_list(current_pos, possible_moves, this.move_distance, -1, 1)
+                    break;
+                case PieceDirections.east:
+                    this.moves_list(current_pos, possible_moves, this.move_distance, 0, 1)
                     break;
                 case PieceDirections.south_east:
-                    this.move_piece(current_pos, possible_moves, this.move_distance, 1, 1)
+                    this.moves_list(current_pos, possible_moves, this.move_distance, 1, 1)
+                    break;
+                case PieceDirections.south:
+                    this.moves_list(current_pos, possible_moves, this.move_distance, 1, 0)
                     break;
                 case PieceDirections.south_west:
-                    this.move_piece(current_pos, possible_moves, this.move_distance, 1, -1)
+                    this.moves_list(current_pos, possible_moves, this.move_distance, 1, -1)
+                    break;
+                case PieceDirections.west:
+                    this.moves_list(current_pos, possible_moves, this.move_distance, 0, -1)
                     break;
                 case PieceDirections.north_west:
-                    this.move_piece(current_pos, possible_moves, this.move_distance, -1, 1)
+                    this.moves_list(current_pos, possible_moves, this.move_distance, -1, -1)
                     break;
                 default:
                     console.log("Direction Not Found")

@@ -24,26 +24,26 @@ import Rook_W_SVG from "./assets/rook-w.svg"
 
 export default class PieceList {
     public static pieceList: Piece[] = [
-        new King("king_b", "E8", King_B_SVG, PieceType.king),
-        new King("king_w", "E1", King_W_SVG, PieceType.king),
+        new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
+        new King("king_w", "E1", King_W_SVG, PieceType.king, Color.white),
 
-        new Queen("queen_b", "D8", Queen_B_SVG, PieceType.queen),
-        new Queen("queen_w", "D1", Queen_W_SVG, PieceType.queen),
+        new Queen("queen_b", "D8", Queen_B_SVG, PieceType.queen, Color.black),
+        new Queen("queen_w", "D1", Queen_W_SVG, PieceType.queen, Color.white),
 
-        new Bishop("bishop_b1", "C8", Bishop_B_SVG, PieceType.bishop),
-        new Bishop("bishop_w1", "C1", Bishop_W_SVG, PieceType.bishop),
-        new Bishop("bishop_b2", "F8", Bishop_B_SVG, PieceType.bishop),
-        new Bishop("bishop_w2", "F1", Bishop_W_SVG, PieceType.bishop),
+        new Bishop("bishop_b1", "C8", Bishop_B_SVG, PieceType.bishop, Color.black),
+        new Bishop("bishop_w1", "C1", Bishop_W_SVG, PieceType.bishop, Color.white),
+        new Bishop("bishop_b2", "F8", Bishop_B_SVG, PieceType.bishop, Color.black),
+        new Bishop("bishop_w2", "F1", Bishop_W_SVG, PieceType.bishop, Color.white),
 
         new Knight("knight_b1", "B8", Knight_B_SVG, PieceType.knight),
         new Knight("knight_w1", "B1", Knight_W_SVG, PieceType.knight),
         new Knight("knight_b2", "G8", Knight_B_SVG, PieceType.knight),
         new Knight("knight_w2", "G1", Knight_W_SVG, PieceType.knight),
 
-        new Rook("rook_b1", "A8", Rook_B_SVG, PieceType.rook),
-        new Rook("rook_w1", "A1", Rook_W_SVG, PieceType.rook),
-        new Rook("rook_b2", "H8", Rook_B_SVG, PieceType.rook),
-        new Rook("rook_w2", "H1", Rook_W_SVG, PieceType.rook),
+        new Rook("rook_b1", "A8", Rook_B_SVG, PieceType.rook, Color.black),
+        new Rook("rook_w1", "A1", Rook_W_SVG, PieceType.rook, Color.white),
+        new Rook("rook_b2", "H8", Rook_B_SVG, PieceType.rook, Color.black),
+        new Rook("rook_w2", "H1", Rook_W_SVG, PieceType.rook, Color.white),
 
         new Pawn("pawn_b1", "A7", Pawn_B_SVG, PieceType.pawn, Color.black),
         new Pawn("pawn_w1", "A2", Pawn_W_SVG, PieceType.pawn, Color.white),

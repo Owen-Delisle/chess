@@ -65,7 +65,7 @@ export default class Piece {
         this.pos = newPos
     }
 
-    public move_piece(
+    public moves_list(
         current_pos: GridPoint, 
         possible_moves: GridPoint[], 
         move_distance: number,
@@ -78,62 +78,6 @@ export default class Piece {
             possible_moves,
             row_modifier,
             col_modifier
-        )
-    }
-
-    move_north_west(
-        current_pos: GridPoint, 
-        possible_moves: GridPoint[], 
-        move_distance: number
-        ): void {
-        this.build_possible_moves_list(
-            move_distance,
-            current_pos,
-            possible_moves,
-            -1,
-            1
-        )
-    }
-    
-    public move_south_east(
-        current_pos: GridPoint, 
-        possible_moves: GridPoint[], 
-        move_distance: number
-        ): void {
-        this.build_possible_moves_list(
-            move_distance,
-            current_pos,
-            possible_moves,
-            1,
-            1
-        )
-    }
-
-    public move_south_west(
-        current_pos: GridPoint, 
-        possible_moves: GridPoint[], 
-        move_distance: number
-        ) {
-        this.build_possible_moves_list(
-            move_distance,
-            current_pos,
-            possible_moves,
-            1,
-            -1
-        )
-    }
-
-    public move_north_east(
-        current_pos: GridPoint, 
-        possible_moves: GridPoint[], 
-        move_distance: number
-        ) {
-        this.build_possible_moves_list(
-            move_distance,
-            current_pos,
-            possible_moves,
-            -1,
-            -1
         )
     }
 
