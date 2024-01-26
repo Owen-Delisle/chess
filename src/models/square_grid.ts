@@ -5,12 +5,12 @@ import type Piece from "../components/piece/piece"
 export default class SquareGrid {
     public static square_grid: Array<Array<Square>> = []
 
-    public static point_by_piece(piece: Piece): GridPoint | undefined{
+    public static point_by_piece(piece: Piece): GridPoint | undefined {
         let piece_id: string = piece.title
         let coors: GridPoint | undefined = undefined
         for(let row_index = 0; row_index < this.square_grid.length; row_index++) {
             for(let col_index = 0; col_index < this.square_grid[0].length; col_index++) {
-                if(this.square_id(row_index, col_index) == piece_id) {
+                if(this.piece_title_at_point(row_index, col_index) == piece_id) {
                     coors = {row: row_index, col: col_index}
                 }
             }
@@ -18,7 +18,7 @@ export default class SquareGrid {
         return coors
     }
 
-    private static square_id(row: number, col: number): string {
+    private static piece_title_at_point(row: number, col: number): string {
         if(this.square_grid[row][col].piece !== undefined) {
             return this.square_grid[row][col].piece!.title
         } else {
@@ -28,6 +28,18 @@ export default class SquareGrid {
 
     public static square_by_grid_point(point: GridPoint): Square{
         return this.square_grid[point.row][point.col]
+    }
+
+    public static square_by_id(id: string): Square | undefined {
+        let square: Square | undefined = undefined
+        for(let row_index = 0; row_index < this.square_grid.length; row_index++) {
+            for(let col_index = 0; col_index < this.square_grid[0].length; col_index++) {
+                if(this.square_grid[row_index][col_index].square_id == id) {
+                    square = this.square_grid[row_index][col_index]
+                }
+            }
+        }
+        return square
     }
 
     public static piece_by_grid_point(point: GridPoint): Piece | undefined {

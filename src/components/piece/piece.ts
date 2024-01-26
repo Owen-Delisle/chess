@@ -10,6 +10,7 @@ import type Rook from "./pieces/rook"
 import type { GridPoint } from "src/global_types/grid_point"
 import type { Color } from "./color"
 import Board from "../board/board"
+import type Square from "../square/square"
 
 export default class Piece {
     title: string
@@ -57,8 +58,8 @@ export default class Piece {
         }
     }
 
-    public move_to(newPos: string) {
-        this.pos = newPos
+    public move_to(new_square: Square) {
+        this.pos = new_square.square_id as string
     }
 
     public moves_list(
