@@ -28,10 +28,6 @@ export default class Knight extends Piece implements Piece_Interface {
         let possible_moves: GridPoint[] = []
         this.grid_point = SquareGrid.point_by_piece(this)
 
-        if (this.grid_point == undefined) {
-            return []
-        }
-
         this.directions.forEach(direction => {
             switch (direction) {
                 case KnightDirections.up_right:
@@ -71,7 +67,7 @@ export default class Knight extends Piece implements Piece_Interface {
         row_mod: number,
         col_mod: number,
     ): void {
-        if (Piece.point_within_board_bounds(current_pos, row_mod, col_mod)) {
+        if (Piece.is_point_within_board_bounds(current_pos, row_mod, col_mod)) {
             let point_to_add: GridPoint = 
             {
                 row: current_pos.row + row_mod, 

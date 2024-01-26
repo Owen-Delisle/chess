@@ -5,8 +5,6 @@ import { PieceDirections } from "../piece_directions"
 import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
 import SquareGrid from "../../../models/square_grid"
-import PieceList from "../piece_list"
-import type Rook from "./rook"
 
 export default class King extends Piece implements Piece_Interface {
     move_distance: number = 2
@@ -31,10 +29,6 @@ export default class King extends Piece implements Piece_Interface {
     public calculate_possible_moves(): GridPoint[] {
         let possible_moves: GridPoint[] = []
         this.grid_point = SquareGrid.point_by_piece(this)
-
-        if (this.grid_point == undefined) {
-            return []
-        }
 
         this.directions.forEach(direction => {
             switch (direction) {
@@ -67,33 +61,5 @@ export default class King extends Piece implements Piece_Interface {
             }
         })
         return possible_moves
-    }
-
-    private check_if_king_can_castle() {
-        if(!this.has_moved) {
-            this.check_short_castle()
-            this.check_long_castle()
-        }
-    }
-
-    private check_short_castle() {
-        let short_rook: Rook | undefined = PieceList.piece_by_id("rook_w1") as Rook
-        if (short_rook !== undefined && !short_rook.has_moved) {
-            if (PieceList.piece_by_position("F1") == undefined &&
-                PieceList.piece_by_position("G1") == undefined) {
-                    console.log("Can Short Castle")
-            }
-        }
-    }
-
-    private check_long_castle() {
-        let long_rook: Rook | undefined = PieceList.piece_by_id("rook_w2") as Rook
-        if (long_rook !== undefined && !long_rook.has_moved) {
-            if (PieceList.piece_by_position("D1") == undefined &&
-                PieceList.piece_by_position("C1") == undefined &&
-                PieceList.piece_by_position("B1") == undefined) {
-                console.log("Can Long Castle")
-            }
-        }
     }
 }

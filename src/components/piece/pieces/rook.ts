@@ -28,10 +28,6 @@ export default class Rook extends Piece implements Piece_Interface {
         let possible_moves: GridPoint[] = []
         this.grid_point = SquareGrid.point_by_piece(this)
 
-        if (this.grid_point == undefined) {
-            return []
-        }
-
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:

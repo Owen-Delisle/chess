@@ -87,7 +87,7 @@ export default class Piece {
     ): void {
         let distance = 1
         while (
-            Piece.point_within_board_bounds
+            Piece.is_point_within_board_bounds
                 (current_pos, (row_modifier*distance), (col_modifier*distance))
             &&
             SquareGrid.piece_by_grid_point
@@ -106,7 +106,7 @@ export default class Piece {
         }
     }
 
-    public static point_within_board_bounds(
+    public static is_point_within_board_bounds(
         current_pos: GridPoint,
         new_row: number,
         new_col: number): boolean {
