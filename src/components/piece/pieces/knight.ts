@@ -88,7 +88,6 @@ export default class Knight extends Piece implements Piece_Interface {
                     col: current_pos.col + col_mod
                 })
             }
-            console.log(possible_moves)
         }
     }
 }

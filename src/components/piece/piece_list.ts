@@ -1,6 +1,7 @@
 import type Piece from "./piece"
 import {PieceType} from "./piece_types"
 import {Color} from "./color"
+import {RookType} from "./pieces/rook"
 
 import Bishop from "./pieces/bishop"
 import King from "./pieces/king"
@@ -40,10 +41,10 @@ export default class PieceList {
         new Knight("knight_b2", "G8", Knight_B_SVG, PieceType.knight, Color.black),
         new Knight("knight_w2", "G1", Knight_W_SVG, PieceType.knight, Color.white),
 
-        new Rook("rook_b1", "A8", Rook_B_SVG, PieceType.rook, Color.black),
-        new Rook("rook_w1", "A1", Rook_W_SVG, PieceType.rook, Color.white),
-        new Rook("rook_b2", "H8", Rook_B_SVG, PieceType.rook, Color.black),
-        new Rook("rook_w2", "H1", Rook_W_SVG, PieceType.rook, Color.white),
+        new Rook("rook_b1", "A8", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
+        new Rook("rook_w1", "A1", Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
+        new Rook("rook_b2", "H8", Rook_B_SVG, PieceType.rook, Color.black, RookType.short_rook),
+        new Rook("rook_w2", "H1", Rook_W_SVG, PieceType.rook, Color.white, RookType.short_rook),
 
         new Pawn("pawn_b1", "A7", Pawn_B_SVG, PieceType.pawn, Color.black),
         new Pawn("pawn_w1", "A2", Pawn_W_SVG, PieceType.pawn, Color.white),
@@ -63,10 +64,20 @@ export default class PieceList {
         new Pawn("pawn_w8", "H2", Pawn_W_SVG, PieceType.pawn, Color.white),
     ]
 
-    public static pieceAt(pos: string): Piece | undefined {
+    public static piece_by_position(pos: string): Piece | undefined {
         let p: Piece | undefined
         this.pieceList.forEach(piece => {
             if(piece.pos === pos) {
+                p = piece
+            }
+        })
+        return p
+    }
+
+    public static piece_by_id(id: string): Piece | undefined {
+        let p: Piece | undefined
+        this.pieceList.forEach(piece => {
+            if(piece.title == id) {
                 p = piece
             }
         })

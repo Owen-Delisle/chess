@@ -83,7 +83,7 @@ export default class Board extends HTMLElement {
 		}
 
 		let square: Square =
-			new Square(color, index, PieceList.pieceAt(SquareID.pos_at_index(index)))
+			new Square(color, index, PieceList.piece_by_position(SquareID.pos_at_index(index)))
 
 		return square
 	}

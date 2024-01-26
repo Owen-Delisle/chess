@@ -3,6 +3,9 @@ import Piece from "../components/piece/piece"
 import type { GridPoint } from "../global_types/grid_point"
 import SquareGrid from "../models/square_grid"
 import Index from "../index"
+import type King from "../components/piece/pieces/king"
+import { PieceType } from "src/components/piece/piece_types"
+import type Rook from "../components/piece/pieces/rook"
 
 export default class MoveController {
     private static focused_square: Square | undefined
@@ -13,21 +16,35 @@ export default class MoveController {
             this.clear_visuals()
         }
         if (this.new_square_contains_piece(new_square)) {
+            this.check_for_castle(this.focused_square, new_square)
             this.focused_square = new_square
             new_square.add_border()
             this.load_possible_moves_list(new_square)
-        } else if (!this.new_square_contains_piece(new_square) &&
-            this.already_has_piece_focused()) {
+        } else if (this.already_has_piece_focused()) {
             this.move_piece_at(new_square)
         }
     }
-
+    
     private static already_has_piece_focused(): boolean {
         return this.focused_square !== undefined
     }
 
     private static new_square_contains_piece(new_square: Square): boolean {
         return new_square.piece !== undefined
+    }
+
+    private static check_for_castle(focused_square: Square | undefined, new_square: Square | undefined) {
+        let focused_piece: Piece = focused_square?.piece!
+        let new_piece: Piece = new_square?.piece!
+        let king_piece: King
+        let rook_piece: Rook
+
+        if(focused_piece.type == PieceType.king && new_piece.type == PieceType.rook) {
+            king_piece = focused_piece as King
+            rook_piece = new_piece as Rook
+
+            
+        }
     }
 
     private static clear_visuals(): void {

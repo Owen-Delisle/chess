@@ -9,8 +9,10 @@ import type { PieceType } from "../piece_types"
 export default class Rook extends Piece implements Piece_Interface {
     move_distance: number = 7
     directions: PieceDirections[]
+    has_moved: boolean = false
+    rook_type: RookType
 
-    constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
+    constructor(title: string, pos: string, svg: string, type: PieceType, color: Color, rook_type: RookType) {
         super(title, pos, svg, color)
         this.type = type
         this.directions = [
@@ -19,6 +21,7 @@ export default class Rook extends Piece implements Piece_Interface {
             PieceDirections.south,
             PieceDirections.west
         ]
+        this.rook_type = rook_type
     }
 
     public calculate_possible_moves(): GridPoint[] | undefined {
@@ -56,4 +59,9 @@ export default class Rook extends Piece implements Piece_Interface {
         })
         return possible_moves
     }
+}
+
+export enum RookType {
+    long_rook,
+    short_rook
 }
