@@ -20,24 +20,18 @@ export default class Pawn extends Piece implements Piece_Interface {
         ]
     }
 
-    public calculate_possible_moves(): GridPoint[] | undefined {
-        console.log("Pawn Piece")
-
-        this.grid_point = SquareGrid.point_by_piece(this)
-        if (this.grid_point !== undefined) {
-            return this.possible_moves_arr(this.grid_point)
-        }
-
-        return undefined
-    }
-
-    public possible_moves_arr(current_pos: GridPoint): GridPoint[] {
+    public calculate_possible_moves(): GridPoint[] {
         let possible_moves: GridPoint[] = []
+        this.grid_point = SquareGrid.point_by_piece(this)
+
+        if (this.grid_point == undefined) {
+            return []
+        }
 
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.moves_list(current_pos, possible_moves, this.move_distance, -1, 0)
+                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, -1, 0)
                     this.move_distance = 2
                     break;
                 case PieceDirections.north_east:

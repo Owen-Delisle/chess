@@ -24,44 +24,39 @@ export default class Knight extends Piece implements Piece_Interface {
         ]
     }
 
-    public calculate_possible_moves(): GridPoint[] | undefined {
-        console.log("Knight Piece")
-
-        if (this.grid_point !== undefined) {
-            return this.possible_moves_arr(this.grid_point)
-        }
-
-        return undefined
-    }
-
-    public possible_moves_arr(current_pos: GridPoint): GridPoint[] {
+    public calculate_possible_moves(): GridPoint[] {
         let possible_moves: GridPoint[] = []
+        this.grid_point = SquareGrid.point_by_piece(this)
+
+        if (this.grid_point == undefined) {
+            return []
+        }
 
         this.directions.forEach(direction => {
             switch (direction) {
                 case KnightDirections.up_right:
-                    this.add_possible_move_point(current_pos, possible_moves, -2, 1)
+                    this.add_possible_move_point(this.grid_point!, possible_moves, -2, 1)
                     break;
                 case KnightDirections.right_up:
-                    this.add_possible_move_point(current_pos, possible_moves, -1, 2)
+                    this.add_possible_move_point(this.grid_point!, possible_moves, -1, 2)
                     break;
                 case KnightDirections.right_down:
-                    this.add_possible_move_point(current_pos, possible_moves, 1, 2)
+                    this.add_possible_move_point(this.grid_point!, possible_moves, 1, 2)
                     break;
                 case KnightDirections.down_right:
-                    this.add_possible_move_point(current_pos, possible_moves, 2, 1)
+                    this.add_possible_move_point(this.grid_point!, possible_moves, 2, 1)
                     break;
                 case KnightDirections.down_left:
-                    this.add_possible_move_point(current_pos, possible_moves, 2, -1)
+                    this.add_possible_move_point(this.grid_point!, possible_moves, 2, -1)
                     break;
                 case KnightDirections.left_down:
-                    this.add_possible_move_point(current_pos, possible_moves, 1, -2)
+                    this.add_possible_move_point(this.grid_point!, possible_moves, 1, -2)
                     break;
                 case KnightDirections.left_up:
-                    this.add_possible_move_point(current_pos, possible_moves, -1, -2)
+                    this.add_possible_move_point(this.grid_point!, possible_moves, -1, -2)
                     break;
                 case KnightDirections.up_left:
-                    this.add_possible_move_point(current_pos, possible_moves, -2, -1)
+                    this.add_possible_move_point(this.grid_point!, possible_moves, -2, -1)
                     break;
                 default:
                     console.log("Direction Not Found")

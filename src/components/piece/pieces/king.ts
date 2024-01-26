@@ -28,44 +28,39 @@ export default class King extends Piece implements Piece_Interface {
         ]
     }
 
-    public calculate_possible_moves(): GridPoint[] | undefined {
-        console.log("King Piece")
-
-        if (this.grid_point !== undefined) {
-            return this.possible_moves_arr(this.grid_point)
-        }
-
-        return undefined
-    }
-
-    public possible_moves_arr(current_pos: GridPoint): GridPoint[] {
+    public calculate_possible_moves(): GridPoint[] {
         let possible_moves: GridPoint[] = []
+        this.grid_point = SquareGrid.point_by_piece(this)
+
+        if (this.grid_point == undefined) {
+            return []
+        }
 
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.moves_list(current_pos, possible_moves, this.move_distance, -1, 0)
+                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, -1, 0)
                     break;
                 case PieceDirections.north_east:
-                    this.moves_list(current_pos, possible_moves, this.move_distance, -1, 1)
+                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, -1, 1)
                     break;
                 case PieceDirections.east:
-                    this.moves_list(current_pos, possible_moves, this.move_distance, 0, 1)
+                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 0, 1)
                     break;
                 case PieceDirections.south_east:
-                    this.moves_list(current_pos, possible_moves, this.move_distance, 1, 1)
+                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 1, 1)
                     break;
                 case PieceDirections.south:
-                    this.moves_list(current_pos, possible_moves, this.move_distance, 1, 0)
+                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 1, 0)
                     break;
                 case PieceDirections.south_west:
-                    this.moves_list(current_pos, possible_moves, this.move_distance, 1, -1)
+                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 1, -1)
                     break;
                 case PieceDirections.west:
-                    this.moves_list(current_pos, possible_moves, this.move_distance, 0, -1)
+                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 0, -1)
                     break;
                 case PieceDirections.north_west:
-                    this.moves_list(current_pos, possible_moves, this.move_distance, -1, -1)
+                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, -1, -1)
                     break;
                 default:
                     console.log("Direction Not Found")
