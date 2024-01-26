@@ -27,11 +27,9 @@ export default class Queen extends Piece implements Piece_Interface {
 
     public calculate_possible_moves(): GridPoint[] | undefined {
         console.log("Bishop Piece")
-        let current_position: GridPoint | undefined
-        current_position = SquareGrid.point_by_piece_id(this.title)
 
-        if (current_position !== undefined) {
-            return this.possible_moves_arr(current_position)
+        if (this.grid_point !== undefined) {
+            return this.possible_moves_arr(this.grid_point)
         }
 
         return undefined

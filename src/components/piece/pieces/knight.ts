@@ -26,11 +26,9 @@ export default class Knight extends Piece implements Piece_Interface {
 
     public calculate_possible_moves(): GridPoint[] | undefined {
         console.log("Knight Piece")
-        let current_position: GridPoint | undefined
-        current_position = SquareGrid.point_by_piece_id(this.title)
 
-        if (current_position !== undefined) {
-            return this.possible_moves_arr(current_position)
+        if (this.grid_point !== undefined) {
+            return this.possible_moves_arr(this.grid_point)
         }
 
         return undefined
@@ -79,14 +77,13 @@ export default class Knight extends Piece implements Piece_Interface {
         col_mod: number,
     ): void {
         if (Piece.point_within_board_bounds(current_pos, row_mod, col_mod)) {
-            if (this.piece_at_grid_point(
-                current_pos.row + row_mod,
-                current_pos.col + col_mod)
-                === undefined) {
-                possible_moves.push({
-                    row: current_pos.row + row_mod,
-                    col: current_pos.col + col_mod
-                })
+            let point_to_add: GridPoint = 
+            {
+                row: current_pos.row + row_mod, 
+                col: current_pos.col + col_mod
+            }
+            if (SquareGrid.piece_by_grid_point(point_to_add) == undefined) {
+                possible_moves.push(point_to_add)
             }
         }
     }

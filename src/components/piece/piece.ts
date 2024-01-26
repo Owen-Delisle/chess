@@ -18,6 +18,7 @@ export default class Piece {
     image: HTMLImageElement
     type?: PieceType
     color: Color
+    grid_point: GridPoint | undefined
 
     constructor(title: string, pos: string, svg: string, color: Color) {
         this.title = title
@@ -25,6 +26,7 @@ export default class Piece {
         this.svg = svg
         this.image = this.imageBuilder()
         this.color = color
+        this.grid_point = undefined
     }
 
     public imageBuilder(): HTMLImageElement {
@@ -53,12 +55,6 @@ export default class Piece {
             default:
                 break;
         }
-    }
-
-    public piece_at_grid_point(row: number, col: number): Piece | undefined {
-        const gp: GridPoint = { row, col }
-        const p: Piece | undefined = SquareGrid.piece_by_grid_point(gp)
-        return p
     }
 
     public move_to(newPos: string) {
@@ -93,11 +89,11 @@ export default class Piece {
             Piece.point_within_board_bounds
                 (current_pos, (row_modifier*distance), (col_modifier*distance))
             &&
-            this.piece_at_grid_point
-                (
-                    current_pos.row + (row_modifier*distance),
-                    current_pos.col + (col_modifier*distance)
-                ) === undefined
+            SquareGrid.piece_by_grid_point
+                ({
+                    row: current_pos.row + (row_modifier*distance),
+                    col: current_pos.col + (col_modifier*distance)
+                }) === undefined
             &&
             distance < move_distance
         ) {

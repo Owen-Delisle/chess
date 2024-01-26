@@ -6,6 +6,7 @@ import Index from "../index"
 import type King from "../components/piece/pieces/king"
 import { PieceType } from "src/components/piece/piece_types"
 import type Rook from "../components/piece/pieces/rook"
+import { RookType } from "../components/piece/pieces/rook"
 
 export default class MoveController {
     private static focused_square: Square | undefined
@@ -43,7 +44,12 @@ export default class MoveController {
             king_piece = focused_piece as King
             rook_piece = new_piece as Rook
 
-            
+            if(rook_piece.rook_type == RookType.short_rook) {
+
+            }
+            if(rook_piece.rook_type == RookType.short_rook) {
+
+            }
         }
     }
 
