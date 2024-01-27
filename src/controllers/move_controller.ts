@@ -18,7 +18,7 @@ export default class MoveController {
                 this.move_piece_to(clicked_square, this.focused_square!.piece!)
             }
             
-            if (this.should_play_castle(clicked_square)) {
+            if (this.should_attempt_to_castle(clicked_square)) {
                 this.castle(clicked_square)
             }   
         }
@@ -26,30 +26,14 @@ export default class MoveController {
     }
 
     private static should_move_piece_at(clicked_square: Square): boolean {
-        return !this.clicked_square_contains_piece(clicked_square) && !this.should_castle(clicked_square)
-    }
-
-    private static should_play_castle(clicked_square: Square): boolean {
-        return this.should_castle(clicked_square)
+        return !this.clicked_square_contains_piece(clicked_square) && !this.should_attempt_to_castle(clicked_square)
     }
 
     private static can_make_move_now(): boolean {
         return this.focused_square !== undefined
     }
 
-    private static assign_values_to_movement_variables(clicked_square: Square) {
-        if (this.clicked_square_contains_piece(clicked_square)) {
-            this.focused_square = clicked_square
-            clicked_square.add_border()
-            this.load_possible_moves_list(clicked_square)
-        }
-    }
-
-    private static clicked_square_contains_piece(clicked_square: Square): boolean {
-        return clicked_square.piece !== undefined
-    }
-
-    private static should_castle(clicked_square: Square | undefined): boolean {
+    private static should_attempt_to_castle(clicked_square: Square | undefined): boolean {
         let should_castle: boolean = false
         let focused_piece: Piece | undefined = this.focused_square?.piece
         let new_piece: Piece | undefined = clicked_square?.piece
@@ -66,6 +50,26 @@ export default class MoveController {
         }
 
         return should_castle
+    }
+
+    private static assign_values_to_movement_variables(clicked_square: Square) {
+        if (this.clicked_square_contains_piece(clicked_square)) {
+            this.clear_square_visuals()
+            this.focused_square = clicked_square
+            clicked_square.add_border()
+            this.load_possible_moves_list(clicked_square)
+        }
+    }
+
+    private static clear_square_visuals() {
+        if(this.focused_square != undefined) {
+            this.focused_square.remove_border() 
+         }
+         this.remove_dots_from_possible_moves()
+    }
+
+    private static clicked_square_contains_piece(clicked_square: Square): boolean {
+        return clicked_square.piece !== undefined
     }
 
     private static castle(clicked_square: Square | undefined): void {
