@@ -1,4 +1,4 @@
-# New Project
+# Full Stack Typescript Chess
 
 > ✨ Bootstrapped with Create Snowpack App (CSA).
 
