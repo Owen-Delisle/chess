@@ -1,93 +1,121 @@
 import Square from '../square/square'
 import { Color } from "../square/color"
-import Styles from "../square/styles"
+import PieceStyles from '../piece/styles';
+import PieceList from '../piece/piece_list';
+import SquareID from '../square/square_id';
+import SquareStyles from '../square/styles';
+import SquareGrid from '../../models/square_grid'
 
 export default class Board extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
+	container_node: Element = document.createElement("div")
+	static start_index = 0
+	static row_size: number = 8
+	static col_size: number = 8
+	static board_size: number = (Board.row_size * Board.col_size)
 
-  connectedCallback() {
-    this.render();
-  }
+	constructor() {
+		super();
+		this.render();
+	}
 
-  render() {
-    this.add_styles_to_dom()
-    this.setup_game_board()
-  }
+	connectedCallback() {
+	}
 
-  private add_styles_to_dom() {
-    let styles: Styles = new Styles()
-    this.innerHTML += `${styles.container}`
-    this.innerHTML += `${styles.row}`
-    this.innerHTML += `${styles.black_square}`
-    this.innerHTML += `${styles.white_square}`
-  }
+	render() {
+		this.add_styles_to_dom()
+		this.setup_game_board()
+	}
 
-  private async setup_game_board(): Promise<void> {
-    let response = await this.board_generator()
-    console.log(response)
-    this.add_event_listeners()
-  }
+	private add_styles_to_dom() {
+		this.appendChild(SquareStyles.square_style())
+		this.appendChild(PieceStyles.piece_style())
+	}
 
-  private board_generator(): Promise<string> {
-    return new Promise(resolve => {
-      let next_square: Square
-      let board_string: string = ``
+	private async setup_game_board(): Promise<void> {
+		let res = await this.board_generator()
+		console.log(res)
+	}
 
-      board_string += `<div class="container" id="container">`
-      board_string += `<div class="row">`
+	private board_generator(): Promise<string> {
+		return new Promise(resolve => {
+			this.container_node.className = "container"
+			this.container_node.id = "container"
 
-      for (let i = 0; i < 64; i++) {
-        next_square = this.color_picker(i)
-        next_square.render()
-        if (i % 8 === 0 && i > 1) board_string += `</div><div class="row">`
-        board_string += `${next_square.innerHTML}`
-      }
+			this.add_squares_to_board()
 
-      board_string += `</div>`
-      board_string += `</div>`
+			this.append(this.container_node)
+			resolve("Board Finished")
+		})
+	}
 
-      this.innerHTML += board_string
-      resolve("Finished Generating Board")
-    })
-  }
+	private add_squares_to_board() {
+		let next_square: Square
+		let row_node: Element = document.createElement("div")
 
-  private add_event_listeners(): void {
-    let shadowRoot = document.querySelector("index-element")?.shadowRoot
-    let squares = shadowRoot?.querySelectorAll("div.black, div.white")
-    squares?.forEach(square => {
-      square.addEventListener("click", () => console.log(square.id))
-    })
-  }
+			row_node.className = "row"
+			this.container_node.appendChild(row_node)
 
-  private color_picker(i: number): Square {
-    let square: Square
-    if (i % 2 === this.current_row(i)) {
-      square = new Square(Color.black, i)
-    } else {
-      square = new Square(Color.white, i)
-    }
+			let row_array: Square[] = []
+			for (let col = Board.start_index; col < Board.board_size; col++) {
+				next_square = this.instantiate_square(col)
+				next_square.build_clickable_square()
 
-    return square
-  }
+				if (col % Board.col_size === Board.start_index && col > Board.start_index) {
+					row_node = document.createElement("div")
+					row_node.className = "row"
+					this.container_node.appendChild(row_node)
+				}
 
-  private current_row(i: number): number {
-    let mod: number = 0
+				row_array.push(next_square)
+				row_node.appendChild(next_square)
 
-    if (i > 7 && i < 16) {
-      mod = 1
-    } else if (i > 23 && i < 32) {
-      mod = 1
-    } else if (i > 39 && i < 48) {
-      mod = 1
-    } else if (i > 55) {
-      mod = 1
-    }
+				if (row_array.length === Board.row_size) { 
+					SquareGrid.square_grid.push(row_array)
+					row_array = []
+				}
+			}
+			this.add_grid_point_property_to_all_pieces()
+	}
 
-    return mod
-  }
+	private instantiate_square(index: number): Square {
+		let color: Color = Color.black
+		if (index % 2 === this.current_row(index)) {
+			color = Color.white
+		}
+
+		let square: Square =
+			new Square(color, index, PieceList.piece_by_position(SquareID.pos_at_index(index)))
+
+		return square
+	}
+
+	private add_grid_point_property_to_all_pieces(): void {
+		PieceList.pieceList.forEach(piece => {
+			piece.grid_point = SquareGrid.point_by_piece(piece)
+		})
+	}
+
+	private current_row(i: number): number {
+		let mod: number = Board.start_index
+
+		if (i > 7 && i < 16) {
+			mod = 1
+		} else if (i > 23 && i < 32) {
+			mod = 1
+		} else if (i > 39 && i < 48) {
+			mod = 1
+		} else if (i > 55) {
+			mod = 1
+		}
+
+		return mod
+	}
+
+	public redraw() {
+		SquareGrid.square_grid = []
+		document.querySelectorAll(".row").forEach(e => e.remove())
+		this.add_squares_to_board()
+	}
 }
 
 customElements.define('board-element', Board);
