@@ -56,7 +56,6 @@ export default class MoveController {
     }
 
     private static castle(focused_square: Square | undefined, new_square: Square | undefined): void {
-        console.log("Check for castle called")
         let focused_piece: Piece = focused_square?.piece!
         let new_piece: Piece = new_square?.piece!
 
@@ -99,6 +98,7 @@ export default class MoveController {
         this.move_piece_to(rook_piece, SquareGrid.square_by_grid_point(next_rook_point))
 
         new_square!.piece = undefined
+        this.focused_square = undefined
     }
 
     private static clear_visuals(): void {
