@@ -5,6 +5,7 @@ import { PieceDirections } from "../piece_directions"
 import SquareGrid from "../../../models/square_grid"
 import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
+import type Square from "../../../components/square/square"
 
 export default class Rook extends Piece implements Piece_Interface {
     move_distance: number = 7
@@ -47,6 +48,11 @@ export default class Rook extends Piece implements Piece_Interface {
             }
         })
         return possible_moves
+    }
+
+    public move_to(new_square: Square) {
+        this.pos = new_square.square_id as string
+        this.has_moved = true
     }
 }
 

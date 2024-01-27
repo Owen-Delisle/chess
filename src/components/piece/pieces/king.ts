@@ -5,6 +5,7 @@ import { PieceDirections } from "../piece_directions"
 import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
 import SquareGrid from "../../../models/square_grid"
+import type Square from "../../../components/square/square"
 
 export default class King extends Piece implements Piece_Interface {
     move_distance: number = 2
@@ -61,5 +62,10 @@ export default class King extends Piece implements Piece_Interface {
             }
         })
         return possible_moves
+    }
+
+    public move_to(new_square: Square) {
+        this.pos = new_square.square_id as string
+        this.has_moved = true
     }
 }

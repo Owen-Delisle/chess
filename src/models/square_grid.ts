@@ -30,7 +30,7 @@ export default class SquareGrid {
         return this.square_grid[point.row][point.col]
     }
 
-    public static square_by_id(id: string): Square | undefined {
+    public static square_by_board_position(id: string): Square | undefined {
         let square: Square | undefined = undefined
         for(let row_index = 0; row_index < this.square_grid.length; row_index++) {
             for(let col_index = 0; col_index < this.square_grid[0].length; col_index++) {
@@ -44,5 +44,12 @@ export default class SquareGrid {
 
     public static piece_by_grid_point(point: GridPoint): Piece | undefined {
         return SquareGrid.square_grid[point.row][point.col].piece
+    }
+
+    public static point_at_board_position(s: string) {
+        return {
+            row: 8-parseInt(`${s[1]}`),
+            col: s[0].charCodeAt(0)-65
+        }
     }
 }

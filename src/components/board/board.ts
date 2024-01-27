@@ -74,6 +74,7 @@ export default class Board extends HTMLElement {
 					row_array = []
 				}
 			}
+			this.add_grid_point_property_to_all_pieces()
 	}
 
 	private instantiate_square(index: number): Square {
@@ -86,6 +87,12 @@ export default class Board extends HTMLElement {
 			new Square(color, index, PieceList.piece_by_position(SquareID.pos_at_index(index)))
 
 		return square
+	}
+
+	private add_grid_point_property_to_all_pieces(): void {
+		PieceList.pieceList.forEach(piece => {
+			piece.grid_point = SquareGrid.point_by_piece(piece)
+		})
 	}
 
 	private current_row(i: number): number {

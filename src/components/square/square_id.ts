@@ -23,11 +23,4 @@ export default class SquareID {
             col: s[0].charCodeAt(0)-65
         }
     }
-
-    public static point_at_id(s: string) {
-        return {
-            row: 8-parseInt(`${s[1]}`),
-            col: s[0].charCodeAt(0)-65
-        }
-    }
 }
