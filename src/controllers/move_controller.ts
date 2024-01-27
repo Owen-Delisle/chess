@@ -7,7 +7,6 @@ import type King from "../components/piece/pieces/king"
 import { PieceType } from "../components/piece/piece_types"
 import type Rook from "../components/piece/pieces/rook"
 import { RookType } from "../components/piece/pieces/rook"
-import SquareID from "../components/square/square_id"
 
 export default class MoveController {
     private static focused_square: Square | undefined
@@ -104,6 +103,7 @@ export default class MoveController {
 
     private static clear_visuals(): void {
         this.focused_square?.remove_border()
+        this.remove_dots_from_possible_moves()
     }
 
     private static load_possible_moves_list(square: Square): void {
@@ -116,6 +116,12 @@ export default class MoveController {
     private static add_dots_to_possible_moves() {
         this.possible_moves.forEach(possible_move => {
             SquareGrid.square_by_grid_point(possible_move).add_dot()
+        })
+    }
+
+    private static remove_dots_from_possible_moves() {
+        this.possible_moves.forEach(possible_move => {
+            SquareGrid.square_by_grid_point(possible_move).remove_dot()
         })
     }
 
