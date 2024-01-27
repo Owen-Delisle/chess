@@ -67,22 +67,25 @@ export default class MoveController {
         let number_of_squares_between_king_and_rook: number
         let king_col_modifier: number
         let rook_col_modifier: number
+        let index_modifier: number
 
         switch (rook_piece.rook_type) {
             case RookType.long_rook:
                 king_col_modifier = -2
                 rook_col_modifier = 3
                 number_of_squares_between_king_and_rook = 3
+                index_modifier = -1
                 break;
             case RookType.short_rook:
                 king_col_modifier = 2
                 rook_col_modifier = -2
                 number_of_squares_between_king_and_rook = 2
+                index_modifier = 1
                 break;
         }
 
         for (let index = 1; index <= number_of_squares_between_king_and_rook; index++) {
-            let point: GridPoint = { row: king_piece.grid_point!.row, col: king_piece.grid_point!.col - index }
+            let point: GridPoint = { row: king_piece.grid_point!.row, col: king_piece.grid_point!.col + (index*index_modifier) }
             if (SquareGrid.piece_by_grid_point(point) != undefined) {
                 return
             }
