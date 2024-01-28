@@ -6,7 +6,6 @@ import Index from "../index"
 import type King from "../components/piece/pieces/king"
 import { PieceType } from "../components/piece/piece_types"
 import type Rook from "../components/piece/pieces/rook"
-import { RookType } from "../components/piece/pieces/rook"
 import type { CastleVars } from "../components/piece/pieces/king"
 
 export default class MoveController {

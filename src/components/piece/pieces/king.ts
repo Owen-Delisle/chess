@@ -76,16 +76,7 @@ export default class King extends Piece implements Piece_Interface {
         const rooks = PieceList.piece_list.filter(rook =>
             rook.type === PieceType.rook && rook.color === this.color)
 
-        rooks.forEach(rook => {
-            let r = rook as Rook
-            if (
-                this.squares_between_king_and_rook_empty(r) &&
-                !this.has_moved && !r.has_moved && r
-            ) {
-                SquareGrid.square_by_grid_point({ row: r.grid_point!.row, col: r.grid_point!.col })
-                    .add_border()
-            }
-        })
+            this.add_borders_to_castleable_rooks(rooks)
     }
 
     public squares_between_king_and_rook_empty(rook: Rook): boolean {
@@ -117,6 +108,19 @@ export default class King extends Piece implements Piece_Interface {
                     index_modifier: 1
                 }
         }
+    }
+
+    private add_borders_to_castleable_rooks(rooks: Piece[]) {
+        rooks.forEach(piece => {
+            let rook = piece as Rook
+            if (
+                this.squares_between_king_and_rook_empty(rook) &&
+                !this.has_moved && !rook.has_moved
+            ) {
+                SquareGrid.square_by_grid_point({ row: rook.grid_point!.row, col: rook.grid_point!.col })
+                    .add_border()
+            }
+        })
     }
 }
 
