@@ -4,6 +4,7 @@ import Piece from "../piece"
 import SquareGrid from "../../../models/square_grid"
 import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
+import Board from "../../board/board"
 
 export default class Knight extends Piece implements Piece_Interface {
     move_distance: number = 3
@@ -67,7 +68,7 @@ export default class Knight extends Piece implements Piece_Interface {
         row_mod: number,
         col_mod: number,
     ): void {
-        if (Piece.is_point_within_board_bounds(current_pos, row_mod, col_mod)) {
+        if (Board.are_coors_within_board_bounds(current_pos.row + row_mod, current_pos.col + col_mod)) {
             let point_to_add: GridPoint = 
             {
                 row: current_pos.row + row_mod, 
