@@ -147,7 +147,6 @@ export default class Piece {
     private target_to_highlight(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
         switch(this.type) {
             case PieceType.pawn:
-                console.log("pawn")
                 if(Board.are_coors_within_board_bounds(current_pos.row - 1, current_pos.col - 1)) {
                     this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row - 1,
@@ -163,7 +162,6 @@ export default class Piece {
                 break
             
             case PieceType.king:
-                console.log("king")
                 if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier), current_pos.col + (col_modifier))) {
                     this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row + (row_modifier),
@@ -173,7 +171,6 @@ export default class Piece {
                 break
 
             default:
-                console.log("default")
                 if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier * distance), current_pos.col + (col_modifier * distance))) {
                     this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row + (row_modifier * distance),

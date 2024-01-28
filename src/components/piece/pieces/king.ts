@@ -82,6 +82,8 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public squares_between_king_and_rook_empty(rook: Rook): boolean {
+        if(this.has_moved) return false
+        
         let castle_vars: CastleVars = this.castle_vars_for_rook_type(rook.rook_type)
 
         for (let index = 1; index <= castle_vars.number_of_squares_between_king_and_rook; index++) {
