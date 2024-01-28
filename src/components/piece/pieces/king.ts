@@ -75,46 +75,54 @@ export default class King extends Piece implements Piece_Interface {
     public piece_specific_highlight_steps(): void {
         const rooks = PieceList.piece_list.filter(rook =>
             rook.type === PieceType.rook && rook.color === this.color)
-        
+
         rooks.forEach(rook => {
             let r = rook as Rook
             if (
                 this.squares_between_king_and_rook_empty(r) &&
                 !this.has_moved && !r.has_moved && r
             ) {
-                SquareGrid.square_by_grid_point({row: r.grid_point!.row, col: r.grid_point!.col})
-                .add_border()
+                SquareGrid.square_by_grid_point({ row: r.grid_point!.row, col: r.grid_point!.col })
+                    .add_border()
             }
         })
     }
 
-    private squares_between_king_and_rook_empty(rook: Rook): boolean {
-        let number_of_squares_between_king_and_rook: number
-        let king_col_modifier: number
-        let rook_col_modifier: number
-        let index_modifier: number
+    public squares_between_king_and_rook_empty(rook: Rook): boolean {
+        let castle_vars: CastleVars = this.castle_vars_for_rook_type(rook.rook_type)
 
-        switch (rook.rook_type) {
-            case RookType.long_rook:
-                king_col_modifier = -2
-                rook_col_modifier = 3
-                number_of_squares_between_king_and_rook = 3
-                index_modifier = -1
-                break;
-            case RookType.short_rook:
-                king_col_modifier = 2
-                rook_col_modifier = -2
-                number_of_squares_between_king_and_rook = 2
-                index_modifier = 1
-                break;
-        }
-
-        for (let index = 1; index <= number_of_squares_between_king_and_rook; index++) {
-            let point: GridPoint = { row: this.grid_point!.row, col: this.grid_point!.col + (index * index_modifier) }
+        for (let index = 1; index <= castle_vars.number_of_squares_between_king_and_rook; index++) {
+            let point: GridPoint = { row: this.grid_point!.row, col: this.grid_point!.col + (index * castle_vars.index_modifier) }
             if (SquareGrid.piece_by_grid_point(point) != undefined) {
                 return false
             }
         }
         return true
     }
+
+    public castle_vars_for_rook_type(rook_type: RookType): CastleVars {
+        switch (rook_type) {
+            case RookType.long_rook:
+                return {
+                    king_col_modifier: -2,
+                    rook_col_modifier: 3,
+                    number_of_squares_between_king_and_rook: 3,
+                    index_modifier: -1
+                }
+            case RookType.short_rook:
+                return {
+                    king_col_modifier: 2,
+                    rook_col_modifier: -2,
+                    number_of_squares_between_king_and_rook: 2,
+                    index_modifier: 1
+                }
+        }
+    }
+}
+
+export type CastleVars = {
+    king_col_modifier: number
+    rook_col_modifier: number
+    number_of_squares_between_king_and_rook: number
+    index_modifier: number
 }

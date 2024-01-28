@@ -7,20 +7,21 @@ import type King from "../components/piece/pieces/king"
 import { PieceType } from "../components/piece/piece_types"
 import type Rook from "../components/piece/pieces/rook"
 import { RookType } from "../components/piece/pieces/rook"
+import type { CastleVars } from "../components/piece/pieces/king"
 
 export default class MoveController {
     private static focused_square: Square | undefined
     private static possible_moves: GridPoint[] = []
 
     public static on_square_click(clicked_square: Square): void {
-        if(this.can_make_move_now()) {
+        if (this.can_make_move_now()) {
             if (this.should_move_piece_at(clicked_square)) {
                 this.move_piece_to(clicked_square, this.focused_square!.piece!)
             }
-            
+
             if (this.should_attempt_to_castle(clicked_square)) {
                 this.castle(clicked_square)
-            }   
+            }
         }
         this.assign_values_to_movement_variables(clicked_square)
     }
@@ -44,7 +45,7 @@ export default class MoveController {
             let king_piece: King = focused_piece as King
             let rook_piece: Rook = clicked_piece as Rook
 
-            if(!king_piece.has_moved && !rook_piece.has_moved) {
+            if (!king_piece.has_moved && !rook_piece.has_moved) {
                 should_castle = true
             }
         }
@@ -62,10 +63,10 @@ export default class MoveController {
     }
 
     private static clear_square_visuals() {
-        if(this.focused_square != undefined) {
-            this.focused_square.remove_border() 
-         }
-         this.remove_dots_from_possible_moves()
+        if (this.focused_square != undefined) {
+            this.focused_square.remove_border()
+        }
+        this.remove_dots_from_possible_moves()
     }
 
     private static clicked_square_contains_piece(clicked_square: Square): boolean {
@@ -74,48 +75,31 @@ export default class MoveController {
 
     private static castle(clicked_square: Square | undefined): void {
         let focused_piece: Piece = this.focused_square?.piece!
-        let new_piece: Piece = clicked_square?.piece!
+        let clicked_piece: Piece = clicked_square?.piece!
 
         let king_piece: King = focused_piece as King
-        let rook_piece: Rook = new_piece as Rook
+        let rook_piece: Rook = clicked_piece as Rook
 
-        let number_of_squares_between_king_and_rook: number
-        let king_col_modifier: number
-        let rook_col_modifier: number
-        let index_modifier: number
+        let castle_vars: CastleVars = king_piece.castle_vars_for_rook_type(rook_piece.rook_type)
 
-        switch (rook_piece.rook_type) {
-            case RookType.long_rook:
-                king_col_modifier = -2
-                rook_col_modifier = 3
-                number_of_squares_between_king_and_rook = 3
-                index_modifier = -1
-                break;
-            case RookType.short_rook:
-                king_col_modifier = 2
-                rook_col_modifier = -2
-                number_of_squares_between_king_and_rook = 2
-                index_modifier = 1
-                break;
-        }
-
-        for (let index = 1; index <= number_of_squares_between_king_and_rook; index++) {
-            let point: GridPoint = { row: king_piece.grid_point!.row, col: king_piece.grid_point!.col + (index*index_modifier) }
-            if (SquareGrid.piece_by_grid_point(point) != undefined) {
-                return
+        if (king_piece.squares_between_king_and_rook_empty(rook_piece)) {
+            let next_king_point: GridPoint = {
+                row: king_piece.grid_point!.row,
+                col: king_piece.grid_point!.col + (castle_vars.king_col_modifier)
             }
+            let next_rook_point: GridPoint = {
+                row: rook_piece.grid_point!.row,
+                col: rook_piece.grid_point!.col + (castle_vars.rook_col_modifier)
+            }
+            this.possible_moves.push(next_king_point)
+            this.possible_moves.push(next_rook_point)
+
+            this.move_piece_to(SquareGrid.square_by_grid_point(next_king_point), king_piece)
+            this.move_piece_to(SquareGrid.square_by_grid_point(next_rook_point), rook_piece)
+
+            clicked_square!.piece = undefined
+            this.focused_square = undefined
         }
-
-        let next_king_point: GridPoint = { row: king_piece.grid_point!.row, col: king_piece.grid_point!.col + (king_col_modifier) }
-        let next_rook_point: GridPoint = { row: rook_piece.grid_point!.row, col: rook_piece.grid_point!.col + (rook_col_modifier) }
-        this.possible_moves.push(next_king_point)
-        this.possible_moves.push(next_rook_point)
-
-        this.move_piece_to(SquareGrid.square_by_grid_point(next_king_point), king_piece)
-        this.move_piece_to(SquareGrid.square_by_grid_point(next_rook_point), rook_piece)
-
-        clicked_square!.piece = undefined
-        this.focused_square = undefined
     }
 
     private static load_possible_moves_list(square: Square): void {
@@ -128,7 +112,7 @@ export default class MoveController {
     private static add_dots_to_possible_moves(): void {
         this.possible_moves.forEach(possible_move => {
             let square: Square = SquareGrid.square_by_grid_point(possible_move)
-            if(square.piece == undefined) {
+            if (square.piece == undefined) {
                 square.add_dot()
             }
         })
