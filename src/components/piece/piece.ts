@@ -127,10 +127,10 @@ export default class Piece {
     }
 
     public highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
-        this.func(current_pos, row_modifier, col_modifier, distance, possible_moves)
+        this.target_to_highlight(current_pos, row_modifier, col_modifier, distance, possible_moves)
     }
 
-    public should_highlight_target(square: Square, possible_moves: GridPoint[] ): void {
+    public highlight_target(square: Square, possible_moves: GridPoint[] ): void {
         if(square.piece != undefined) {
             if(square.piece.color != this.color){
                  possible_moves.push(square.grid_point)
@@ -144,18 +144,18 @@ export default class Piece {
     public piece_specific_highlight_steps(): void {
     }
 
-    private func(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
+    private target_to_highlight(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
         switch(this.type) {
             case PieceType.pawn:
                 console.log("pawn")
                 if(Board.are_coors_within_board_bounds(current_pos.row - 1, current_pos.col - 1)) {
-                    this.should_highlight_target(SquareGrid.square_by_grid_point({
+                    this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row - 1,
                         col: current_pos.col - 1
                     }), possible_moves)
                 }
                 if(Board.are_coors_within_board_bounds(current_pos.row + 1, current_pos.col + 1)) {
-                    this.should_highlight_target(SquareGrid.square_by_grid_point({
+                    this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row - 1,
                         col: current_pos.col + 1
                     }), possible_moves)
@@ -165,7 +165,7 @@ export default class Piece {
             case PieceType.king:
                 console.log("king")
                 if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier), current_pos.col + (col_modifier))) {
-                    this.should_highlight_target(SquareGrid.square_by_grid_point({
+                    this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row + (row_modifier),
                         col: current_pos.col + (col_modifier)
                     }), possible_moves)
@@ -175,7 +175,7 @@ export default class Piece {
             default:
                 console.log("default")
                 if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier * distance), current_pos.col + (col_modifier * distance))) {
-                    this.should_highlight_target(SquareGrid.square_by_grid_point({
+                    this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row + (row_modifier * distance),
                         col: current_pos.col + (col_modifier * distance)
                     }), possible_moves)
