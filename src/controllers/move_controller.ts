@@ -65,7 +65,7 @@ export default class MoveController {
         if (this.focused_square != undefined) {
             this.focused_square.remove_border()
         }
-        this.remove_dots_from_possible_moves()
+        this.remove_visuals_from_possible_moves()
     }
 
     private static clicked_square_contains_piece(clicked_square: Square): boolean {
@@ -117,15 +117,16 @@ export default class MoveController {
         })
     }
 
-    private static remove_dots_from_possible_moves(): void {
+    private static remove_visuals_from_possible_moves(): void {
         this.possible_moves.forEach(possible_move => {
             SquareGrid.square_by_grid_point(possible_move).remove_dot()
+            SquareGrid.square_by_grid_point(possible_move).remove_border()
         })
     }
 
     private static move_piece_to(selected_square: Square, piece: Piece): void {
-        if (this.piece_can_move_to(selected_square)) {
-            piece?.move_to(selected_square)
+        if (this.piece_can_move_to(selected_square) && piece != undefined) {
+            piece.move_to(selected_square)
         }
         Index.board.redraw()
     }
@@ -141,5 +142,9 @@ export default class MoveController {
             }
         })
         return should_move
+    }
+
+    public static reset_possible_moves(): void {
+        this.possible_moves = []
     }
 }
