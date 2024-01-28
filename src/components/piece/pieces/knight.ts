@@ -1,10 +1,11 @@
-import type { GridPoint } from "src/global_types/grid_point"
+import type { GridPoint } from "../../../global_types/grid_point"
 import type { Color } from "../color"
 import Piece from "../piece"
 import SquareGrid from "../../../models/square_grid"
 import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
 import Board from "../../board/board"
+import type Square from "../../../components/square/square"
 
 export default class Knight extends Piece implements Piece_Interface {
     move_distance: number = 3
@@ -69,13 +70,17 @@ export default class Knight extends Piece implements Piece_Interface {
         col_mod: number,
     ): void {
         if (Board.are_coors_within_board_bounds(current_pos.row + row_mod, current_pos.col + col_mod)) {
-            let point_to_add: GridPoint = 
+            let point_to_add: GridPoint =
             {
-                row: current_pos.row + row_mod, 
+                row: current_pos.row + row_mod,
                 col: current_pos.col + col_mod
             }
-            if (SquareGrid.piece_by_grid_point(point_to_add) == undefined) {
+            let square_being_checked: Square | undefined = SquareGrid.square_by_grid_point(point_to_add)
+            if (square_being_checked.piece == undefined) {
                 possible_moves.push(point_to_add)
+            } else if (square_being_checked.piece.color != this.color) {
+                possible_moves.push(point_to_add)
+                square_being_checked.add_border()
             }
         }
     }

@@ -103,7 +103,7 @@ export default class Piece {
             this.should_highlight_next(SquareGrid.square_by_grid_point({
                 row: current_pos.row + (row_modifier * distance),
                 col: current_pos.col + (col_modifier * distance)
-            }))
+            }), possible_moves)
         }
     }
 
@@ -127,17 +127,16 @@ export default class Piece {
     }
 
     public correct_conditions_of_piece_at_square(row: number, col: number): boolean {
-        return this.piece_at_square_being_checked(row, col) === undefined
-    }
-
-    public should_highlight_next(square: Square): void {
-        if(square != undefined && square.piece != undefined) {
-            if(square.piece.color != this.color) square.add_border()
-        }
-    }
-
-    public piece_at_square_being_checked(row: number, col: number): Piece {
         const grid_point: GridPoint = { row, col }
-        return SquareGrid.piece_by_grid_point(grid_point)!
+        return SquareGrid.piece_by_grid_point(grid_point)! === undefined
+    }
+
+    public should_highlight_next(square: Square, possible_moves: GridPoint[] ): void {
+        if(square.piece != undefined) {
+            if(square.piece.color != this.color){
+                 possible_moves.push(square.grid_point)
+                 square.add_border()
+            }
+        }
     }
 }
