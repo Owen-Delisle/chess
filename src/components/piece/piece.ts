@@ -85,7 +85,7 @@ export default class Piece {
         row_modifier: number,
         col_modifier: number,
     ): void {
-        let distance = 1
+        let distance: number = 1
         while (this.conditions_to_continue_adding_moves(
             current_pos,
             move_distance,
@@ -99,19 +99,12 @@ export default class Piece {
             })
             distance++
         }
-    }
-
-    public static is_point_within_board_bounds(
-        current_pos: GridPoint,
-        new_row: number,
-        new_col: number): boolean {
-        if (current_pos.row + new_row < Board.start_index) return false
-        if (current_pos.row + new_row >= Board.row_size) return false
-
-        if (current_pos.col + new_col < Board.start_index) return false
-        if (current_pos.col + new_col >= Board.col_size) return false
-
-        return true
+        if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier * distance), current_pos.col + (col_modifier * distance))) {
+            this.should_highlight_next(SquareGrid.square_by_grid_point({
+                row: current_pos.row + (row_modifier * distance),
+                col: current_pos.col + (col_modifier * distance)
+            }))
+        }
     }
 
     public conditions_to_continue_adding_moves(
@@ -135,6 +128,12 @@ export default class Piece {
 
     public correct_conditions_of_piece_at_square(row: number, col: number): boolean {
         return this.piece_at_square_being_checked(row, col) === undefined
+    }
+
+    public should_highlight_next(square: Square): void {
+        if(square != undefined && square.piece != undefined) {
+            if(square.piece.color != this.color) square.add_border()
+        }
     }
 
     public piece_at_square_being_checked(row: number, col: number): Piece {
