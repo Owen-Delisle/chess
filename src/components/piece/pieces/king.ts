@@ -9,6 +9,7 @@ import type Square from "../../../components/square/square"
 import type Rook from "./rook"
 import { RookType } from "./rook"
 import PieceList from "../piece_list"
+import Board from "../../../components/board/board"
 
 export default class King extends Piece implements Piece_Interface {
     move_distance: number = 2
@@ -121,6 +122,16 @@ export default class King extends Piece implements Piece_Interface {
                     .add_border()
             }
         })
+    }
+
+    //Overloaded from Piece
+    public highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
+        if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier), current_pos.col + (col_modifier))) {
+            this.should_highlight_target(SquareGrid.square_by_grid_point({
+                row: current_pos.row + (row_modifier),
+                col: current_pos.col + (col_modifier)
+            }), possible_moves)
+        }
     }
 }
 

@@ -85,21 +85,21 @@ export default class Piece {
         row_modifier: number,
         col_modifier: number,
     ): void {
-        let distance: number = 1
+        let index: number = 1
         while (this.conditions_to_continue_adding_moves(
             current_pos,
             move_distance,
             row_modifier,
             col_modifier,
-            distance)
+            index)
         ) {
             possible_moves.push({
-                row: current_pos.row + (row_modifier * distance),
-                col: current_pos.col + (col_modifier * distance)
+                row: current_pos.row + (row_modifier * index),
+                col: current_pos.col + (col_modifier * index)
             })
-            distance++
+            index++
         }
-        this.highlight_action_piece(current_pos, row_modifier, col_modifier, distance, possible_moves)
+        this.highlight_action_piece(current_pos, row_modifier, col_modifier, index, possible_moves)
     }
 
     public conditions_to_continue_adding_moves(
@@ -128,14 +128,14 @@ export default class Piece {
 
     public highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
         if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier * distance), current_pos.col + (col_modifier * distance))) {
-            this.should_highlight_next(SquareGrid.square_by_grid_point({
+            this.should_highlight_target(SquareGrid.square_by_grid_point({
                 row: current_pos.row + (row_modifier * distance),
                 col: current_pos.col + (col_modifier * distance)
             }), possible_moves)
         }
     }
 
-    public should_highlight_next(square: Square, possible_moves: GridPoint[] ): void {
+    public should_highlight_target(square: Square, possible_moves: GridPoint[] ): void {
         if(square.piece != undefined) {
             if(square.piece.color != this.color){
                  possible_moves.push(square.grid_point)
