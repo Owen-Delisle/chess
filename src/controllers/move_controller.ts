@@ -36,13 +36,13 @@ export default class MoveController {
     private static should_attempt_to_castle(clicked_square: Square | undefined): boolean {
         let should_castle: boolean = false
         let focused_piece: Piece | undefined = this.focused_square?.piece
-        let new_piece: Piece | undefined = clicked_square?.piece
+        let clicked_piece: Piece | undefined = clicked_square?.piece
 
-        if (focused_piece == undefined || new_piece == undefined) {
+        if (focused_piece == undefined || clicked_piece == undefined) {
             should_castle = false
-        } else if (focused_piece.type == PieceType.king && new_piece.type == PieceType.rook) {
+        } else if (focused_piece.type == PieceType.king && clicked_piece.type == PieceType.rook) {
             let king_piece: King = focused_piece as King
-            let rook_piece: Rook = new_piece as Rook
+            let rook_piece: Rook = clicked_piece as Rook
 
             if(!king_piece.has_moved && !rook_piece.has_moved) {
                 should_castle = true
@@ -56,8 +56,8 @@ export default class MoveController {
         if (this.clicked_square_contains_piece(clicked_square)) {
             this.clear_square_visuals()
             this.focused_square = clicked_square
-            clicked_square.add_border()
-            this.load_possible_moves_list(clicked_square)
+            this.focused_square.add_border()
+            this.load_possible_moves_list(this.focused_square)
         }
     }
 

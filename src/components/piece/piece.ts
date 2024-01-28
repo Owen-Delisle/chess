@@ -63,12 +63,12 @@ export default class Piece {
     }
 
     public moves_list(
-        current_pos: GridPoint, 
-        possible_moves: GridPoint[], 
+        current_pos: GridPoint,
+        possible_moves: GridPoint[],
         move_distance: number,
         row_modifier: number,
         col_modifier: number
-        ): void {
+    ): void {
         this.build_possible_moves_list(
             move_distance,
             current_pos,
@@ -86,21 +86,16 @@ export default class Piece {
         col_modifier: number,
     ): void {
         let distance = 1
-        while (
-            Piece.is_point_within_board_bounds
-                (current_pos, (row_modifier*distance), (col_modifier*distance))
-            &&
-            SquareGrid.piece_by_grid_point
-                ({
-                    row: current_pos.row + (row_modifier*distance),
-                    col: current_pos.col + (col_modifier*distance)
-                }) === undefined
-            &&
-            distance < move_distance
+        while (this.conditions_to_continue_adding_moves(
+            current_pos,
+            move_distance,
+            row_modifier,
+            col_modifier,
+            distance)
         ) {
             possible_moves.push({
-                row: current_pos.row + (row_modifier*distance),
-                col: current_pos.col + (col_modifier*distance)
+                row: current_pos.row + (row_modifier * distance),
+                col: current_pos.col + (col_modifier * distance)
             })
             distance++
         }
@@ -117,5 +112,33 @@ export default class Piece {
         if (current_pos.col + new_col >= Board.col_size) return false
 
         return true
+    }
+
+    public conditions_to_continue_adding_moves(
+        current_pos: GridPoint,
+        move_distance: number,
+        row_modifier: number,
+        col_modifier: number,
+        distance: number): boolean {
+        return Board.are_coors_within_board_bounds(
+            current_pos.row + (row_modifier * distance),
+            current_pos.col + (col_modifier * distance)
+        ) &&
+            this.correct_conditions_of_piece_at_square
+                (
+                    current_pos.row + (row_modifier * distance),
+                    current_pos.col + (col_modifier * distance)
+                )
+            &&
+            distance < move_distance
+    }
+
+    public correct_conditions_of_piece_at_square(row: number, col: number): boolean {
+        return this.piece_at_square_being_checked(row, col) === undefined
+    }
+
+    public piece_at_square_being_checked(row: number, col: number): Piece {
+        const grid_point: GridPoint = { row, col }
+        return SquareGrid.piece_by_grid_point(grid_point)!
     }
 }
