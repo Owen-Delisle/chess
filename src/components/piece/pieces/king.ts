@@ -73,6 +73,7 @@ export default class King extends Piece implements Piece_Interface {
         this.has_moved = true
     }
 
+    //Overloaded from Piece
     public piece_specific_highlight_steps(): void {
         const rooks = PieceList.piece_list.filter(rook =>
             rook.type === PieceType.rook && rook.color === this.color)
@@ -122,16 +123,6 @@ export default class King extends Piece implements Piece_Interface {
                     .add_border()
             }
         })
-    }
-
-    //Overloaded from Piece
-    public highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
-        if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier), current_pos.col + (col_modifier))) {
-            this.should_highlight_target(SquareGrid.square_by_grid_point({
-                row: current_pos.row + (row_modifier),
-                col: current_pos.col + (col_modifier)
-            }), possible_moves)
-        }
     }
 }
 
