@@ -12,7 +12,7 @@ export default class MoveController {
     private static focused_square: Square | undefined
     private static possible_moves: GridPoint[] = []
 
-    public static on_square_click(clicked_square: Square) {
+    public static on_square_click(clicked_square: Square): void {
         if(this.can_make_move_now()) {
             if (this.should_move_piece_at(clicked_square)) {
                 this.move_piece_to(clicked_square, this.focused_square!.piece!)
@@ -52,7 +52,7 @@ export default class MoveController {
         return should_castle
     }
 
-    private static assign_values_to_movement_variables(clicked_square: Square) {
+    private static assign_values_to_movement_variables(clicked_square: Square): void {
         if (this.clicked_square_contains_piece(clicked_square)) {
             this.clear_square_visuals()
             this.focused_square = clicked_square
@@ -125,19 +125,22 @@ export default class MoveController {
         this.add_dots_to_possible_moves()
     }
 
-    private static add_dots_to_possible_moves() {
+    private static add_dots_to_possible_moves(): void {
         this.possible_moves.forEach(possible_move => {
-            SquareGrid.square_by_grid_point(possible_move).add_dot()
+            let square: Square = SquareGrid.square_by_grid_point(possible_move)
+            if(square.piece == undefined) {
+                square.add_dot()
+            }
         })
     }
 
-    private static remove_dots_from_possible_moves() {
+    private static remove_dots_from_possible_moves(): void {
         this.possible_moves.forEach(possible_move => {
             SquareGrid.square_by_grid_point(possible_move).remove_dot()
         })
     }
 
-    private static move_piece_to(selected_square: Square, piece: Piece) {
+    private static move_piece_to(selected_square: Square, piece: Piece): void {
         if (this.piece_can_move_to(selected_square)) {
             piece?.move_to(selected_square)
         }

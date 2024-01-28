@@ -99,12 +99,7 @@ export default class Piece {
             })
             distance++
         }
-        if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier * distance), current_pos.col + (col_modifier * distance))) {
-            this.should_highlight_next(SquareGrid.square_by_grid_point({
-                row: current_pos.row + (row_modifier * distance),
-                col: current_pos.col + (col_modifier * distance)
-            }), possible_moves)
-        }
+        this.highlight_action_piece(current_pos, row_modifier, col_modifier, distance, possible_moves)
     }
 
     public conditions_to_continue_adding_moves(
@@ -131,6 +126,15 @@ export default class Piece {
         return SquareGrid.piece_by_grid_point(grid_point)! === undefined
     }
 
+    public highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
+        if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier * distance), current_pos.col + (col_modifier * distance))) {
+            this.should_highlight_next(SquareGrid.square_by_grid_point({
+                row: current_pos.row + (row_modifier * distance),
+                col: current_pos.col + (col_modifier * distance)
+            }), possible_moves)
+        }
+    }
+
     public should_highlight_next(square: Square, possible_moves: GridPoint[] ): void {
         if(square.piece != undefined) {
             if(square.piece.color != this.color){
@@ -138,5 +142,10 @@ export default class Piece {
                  square.add_border()
             }
         }
+        this.piece_specific_highlight_steps()
+    }
+
+    //Function definition to be used by subclasses
+    public piece_specific_highlight_steps(): void {
     }
 }

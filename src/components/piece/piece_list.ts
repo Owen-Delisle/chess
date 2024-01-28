@@ -24,7 +24,7 @@ import Rook_B_SVG from "./assets/rook-b.svg"
 import Rook_W_SVG from "./assets/rook-w.svg"
 
 export default class PieceList {
-    public static pieceList: Piece[] = [
+    public static piece_list: Piece[] = [
         new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
         new King("king_w", "E1", King_W_SVG, PieceType.king, Color.white),
 
@@ -66,7 +66,7 @@ export default class PieceList {
 
     public static piece_by_position(pos: string): Piece | undefined {
         let p: Piece | undefined
-        this.pieceList.forEach(piece => {
+        this.piece_list.forEach(piece => {
             if(piece.pos === pos) {
                 p = piece
             }
@@ -76,12 +76,22 @@ export default class PieceList {
 
     public static piece_by_id(id: string): Piece | undefined {
         let p: Piece | undefined
-        this.pieceList.forEach(piece => {
+        this.piece_list.forEach(piece => {
             if(piece.title == id) {
                 p = piece
             }
         })
         return p
     }
-    
+
+    public static list_of_pieces_by_type(type: PieceType): Piece[] {
+        let piece_list: Piece[] = []
+        this.piece_list.forEach(piece => {
+            if(piece.type == type) {
+                piece_list.push(piece)
+            }
+        })
+
+        return piece_list
+    }
 }

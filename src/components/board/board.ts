@@ -90,7 +90,7 @@ export default class Board extends HTMLElement {
 	}
 
 	private add_grid_point_property_to_all_pieces(): void {
-		PieceList.pieceList.forEach(piece => {
+		PieceList.piece_list.forEach(piece => {
 			piece.grid_point = SquareGrid.point_by_piece(piece)
 		})
 	}
