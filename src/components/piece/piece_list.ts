@@ -24,22 +24,22 @@ import Rook_B_SVG from "./assets/rook-b.svg"
 import Rook_W_SVG from "./assets/rook-w.svg"
 
 export default class PieceList {
-    public static pieceList: Piece[] = [
+    public static piece_list: Piece[] = [
         new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
         new King("king_w", "E1", King_W_SVG, PieceType.king, Color.white),
 
         new Queen("queen_b", "D8", Queen_B_SVG, PieceType.queen, Color.black),
-        // new Queen("queen_w", "D1", Queen_W_SVG, PieceType.queen, Color.white),
+        new Queen("queen_w", "D1", Queen_W_SVG, PieceType.queen, Color.white),
 
         new Bishop("bishop_b1", "C8", Bishop_B_SVG, PieceType.bishop, Color.black),
-        // new Bishop("bishop_w1", "C1", Bishop_W_SVG, PieceType.bishop, Color.white),
+        new Bishop("bishop_w1", "C1", Bishop_W_SVG, PieceType.bishop, Color.white),
         new Bishop("bishop_b2", "F8", Bishop_B_SVG, PieceType.bishop, Color.black),
-        // new Bishop("bishop_w2", "F1", Bishop_W_SVG, PieceType.bishop, Color.white),
+        new Bishop("bishop_w2", "F1", Bishop_W_SVG, PieceType.bishop, Color.white),
 
         new Knight("knight_b1", "B8", Knight_B_SVG, PieceType.knight, Color.black),
-        // new Knight("knight_w1", "B1", Knight_W_SVG, PieceType.knight, Color.white),
+        new Knight("knight_w1", "B1", Knight_W_SVG, PieceType.knight, Color.white),
         new Knight("knight_b2", "G8", Knight_B_SVG, PieceType.knight, Color.black),
-        // new Knight("knight_w2", "G1", Knight_W_SVG, PieceType.knight, Color.white),
+        new Knight("knight_w2", "G1", Knight_W_SVG, PieceType.knight, Color.white),
 
         new Rook("rook_b1", "A8", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
         new Rook("rook_w1", "A1", Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
@@ -66,7 +66,7 @@ export default class PieceList {
 
     public static piece_by_position(pos: string): Piece | undefined {
         let p: Piece | undefined
-        this.pieceList.forEach(piece => {
+        this.piece_list.forEach(piece => {
             if(piece.pos === pos) {
                 p = piece
             }
@@ -76,12 +76,22 @@ export default class PieceList {
 
     public static piece_by_id(id: string): Piece | undefined {
         let p: Piece | undefined
-        this.pieceList.forEach(piece => {
+        this.piece_list.forEach(piece => {
             if(piece.title == id) {
                 p = piece
             }
         })
         return p
     }
-    
+
+    public static list_of_pieces_by_type(type: PieceType): Piece[] {
+        let piece_list: Piece[] = []
+        this.piece_list.forEach(piece => {
+            if(piece.type == type) {
+                piece_list.push(piece)
+            }
+        })
+
+        return piece_list
+    }
 }

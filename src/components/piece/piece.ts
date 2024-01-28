@@ -85,33 +85,21 @@ export default class Piece {
         row_modifier: number,
         col_modifier: number,
     ): void {
-        let distance = 1
+        let index: number = 1
         while (this.conditions_to_continue_adding_moves(
             current_pos,
             move_distance,
             row_modifier,
             col_modifier,
-            distance)
+            index)
         ) {
             possible_moves.push({
-                row: current_pos.row + (row_modifier * distance),
-                col: current_pos.col + (col_modifier * distance)
+                row: current_pos.row + (row_modifier * index),
+                col: current_pos.col + (col_modifier * index)
             })
-            distance++
+            index++
         }
-    }
-
-    public static is_point_within_board_bounds(
-        current_pos: GridPoint,
-        new_row: number,
-        new_col: number): boolean {
-        if (current_pos.row + new_row < Board.start_index) return false
-        if (current_pos.row + new_row >= Board.row_size) return false
-
-        if (current_pos.col + new_col < Board.start_index) return false
-        if (current_pos.col + new_col >= Board.col_size) return false
-
-        return true
+        this.highlight_action_piece(current_pos, row_modifier, col_modifier, index, possible_moves)
     }
 
     public conditions_to_continue_adding_moves(
@@ -134,11 +122,62 @@ export default class Piece {
     }
 
     public correct_conditions_of_piece_at_square(row: number, col: number): boolean {
-        return this.piece_at_square_being_checked(row, col) === undefined
+        const grid_point: GridPoint = { row, col }
+        return SquareGrid.piece_by_grid_point(grid_point)! === undefined
     }
 
-    public piece_at_square_being_checked(row: number, col: number): Piece {
-        const grid_point: GridPoint = { row, col }
-        return SquareGrid.piece_by_grid_point(grid_point)!
+    public highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
+        this.target_to_highlight(current_pos, row_modifier, col_modifier, distance, possible_moves)
+    }
+
+    public highlight_target(square: Square, possible_moves: GridPoint[] ): void {
+        if(square.piece != undefined) {
+            if(square.piece.color != this.color){
+                 possible_moves.push(square.grid_point)
+                 square.add_border()
+            }
+        }
+        this.piece_specific_highlight_steps()
+    }
+
+    //Function definition to be used by subclasses
+    public piece_specific_highlight_steps(): void {
+    }
+
+    private target_to_highlight(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
+        switch(this.type) {
+            case PieceType.pawn:
+                if(Board.are_coors_within_board_bounds(current_pos.row - 1, current_pos.col - 1)) {
+                    this.highlight_target(SquareGrid.square_by_grid_point({
+                        row: current_pos.row - 1,
+                        col: current_pos.col - 1
+                    }), possible_moves)
+                }
+                if(Board.are_coors_within_board_bounds(current_pos.row + 1, current_pos.col + 1)) {
+                    this.highlight_target(SquareGrid.square_by_grid_point({
+                        row: current_pos.row - 1,
+                        col: current_pos.col + 1
+                    }), possible_moves)
+                }
+                break
+            
+            case PieceType.king:
+                if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier), current_pos.col + (col_modifier))) {
+                    this.highlight_target(SquareGrid.square_by_grid_point({
+                        row: current_pos.row + (row_modifier),
+                        col: current_pos.col + (col_modifier)
+                    }), possible_moves)
+                }
+                break
+
+            default:
+                if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier * distance), current_pos.col + (col_modifier * distance))) {
+                    this.highlight_target(SquareGrid.square_by_grid_point({
+                        row: current_pos.row + (row_modifier * distance),
+                        col: current_pos.col + (col_modifier * distance)
+                    }), possible_moves)
+                }
+                break
+        }
     }
 }
