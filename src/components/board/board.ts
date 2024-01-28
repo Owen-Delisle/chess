@@ -116,6 +116,16 @@ export default class Board extends HTMLElement {
 		document.querySelectorAll(".row").forEach(e => e.remove())
 		this.add_squares_to_board()
 	}
+
+	public static are_coors_within_board_bounds(row: number, col: number): boolean {
+        if (row < Board.start_index) return false
+        if (row >= Board.row_size) return false
+
+        if (col < Board.start_index) return false
+        if (col >= Board.col_size) return false
+
+        return true
+    }
 }
 
 customElements.define('board-element', Board);
