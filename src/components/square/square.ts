@@ -4,7 +4,6 @@ import type Piece from "../piece/piece";
 import MoveController from "../../controllers/move_controller";
 import type { GridPoint } from "../../global_types/grid_point";
 import PieceList from "../piece/piece_list";
-import SquareGrid from "../../models/square_grid";
 
 export default class Square extends HTMLElement {
     square_id: SquareID
@@ -21,11 +20,7 @@ export default class Square extends HTMLElement {
 
     async build_clickable_square() {
         await this.append_children()
-
-        this.element = await (() => {
-            return document.getElementById(`${this.square_id}`)
-        })()
-
+        this.element = document.getElementById(`${this.square_id}`);
         this.add_event_listener()
     }
 
@@ -62,7 +57,8 @@ export default class Square extends HTMLElement {
     }
 
     public piece_attached_to_square(): Piece | undefined {
-        return PieceList.piece_by_position(SquareID.pos_at_point(this.grid_point))
+        const position: string = this.square_id as string
+        return PieceList.piece_by_position(position)
     }
 
     public add_border(): void {
