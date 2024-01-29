@@ -76,9 +76,9 @@ export default class Knight extends Piece implements Piece_Interface {
                 col: current_pos.col + col_mod
             }
             let square_being_checked: Square | undefined = SquareGrid.square_by_grid_point(point_to_add)
-            if (square_being_checked.piece == undefined) {
+            if (square_being_checked.piece_attached_to_square() == undefined) {
                 possible_moves.push(point_to_add)
-            } else if (square_being_checked.piece.color != this.color) {
+            } else if (square_being_checked.piece_attached_to_square()!.color != this.color) {
                 possible_moves.push(point_to_add)
                 square_being_checked.add_border()
             }

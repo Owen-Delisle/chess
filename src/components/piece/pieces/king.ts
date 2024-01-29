@@ -9,7 +9,6 @@ import type Square from "../../../components/square/square"
 import type Rook from "./rook"
 import { RookType } from "./rook"
 import PieceList from "../piece_list"
-import Board from "../../../components/board/board"
 
 export default class King extends Piece implements Piece_Interface {
     move_distance: number = 2
@@ -68,9 +67,12 @@ export default class King extends Piece implements Piece_Interface {
         return possible_moves
     }
 
-    public move_to(new_square: Square) {
-        this.pos = new_square.square_id as string
-        this.has_moved = true
+    public move_to(new_square: Square): Promise<void> {
+        return new Promise(async resolve => {
+            this.pos = new_square.square_id as string
+            this.has_moved = true
+            resolve()
+        })
     }
 
     //Overloaded from Piece

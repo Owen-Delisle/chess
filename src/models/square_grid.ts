@@ -19,8 +19,8 @@ export default class SquareGrid {
     }
 
     private static piece_title_at_point(row: number, col: number): string {
-        if(this.square_grid[row][col].piece !== undefined) {
-            return this.square_grid[row][col].piece!.title
+        if(this.square_grid[row][col].piece_attached_to_square() !== undefined) {
+            return this.square_grid[row][col].piece_attached_to_square()!.title
         } else {
             return ""
         }
@@ -43,7 +43,7 @@ export default class SquareGrid {
     }
 
     public static piece_by_grid_point(point: GridPoint): Piece | undefined {
-        return SquareGrid.square_grid[point.row][point.col].piece
+        return SquareGrid.square_grid[point.row][point.col].piece_attached_to_square()
     }
 
     public static point_at_board_position(s: string) {

@@ -58,8 +58,11 @@ export default class Piece {
         }
     }
 
-    public move_to(new_square: Square) {
-        this.pos = new_square.square_id as string
+    public move_to(new_square: Square): Promise<void> {
+        return new Promise(async resolve => {
+            this.pos = new_square.square_id as string
+            resolve()
+        })
     }
 
     public moves_list(
@@ -131,8 +134,9 @@ export default class Piece {
     }
 
     public highlight_target(square: Square, possible_moves: GridPoint[] ): void {
-        if(square.piece != undefined) {
-            if(square.piece.color != this.color){
+        let piece: Piece | undefined = square.piece_attached_to_square()
+        if(piece != undefined) {
+            if(piece.color != this.color){
                  possible_moves.push(square.grid_point)
                  square.add_border()
             }

@@ -3,23 +3,20 @@ import SquareID  from "./square_id"
 import type Piece from "../piece/piece";
 import MoveController from "../../controllers/move_controller";
 import type { GridPoint } from "../../global_types/grid_point";
+import PieceList from "../piece/piece_list";
+import SquareGrid from "../../models/square_grid";
 
 export default class Square extends HTMLElement {
     square_id: SquareID
     color: Color
-    piece?: Piece
     element: HTMLElement | null = null
     grid_point: GridPoint
 
-    constructor(color: Color, square_id: number, piece?: Piece) {
+    constructor(color: Color, square_id: number) {
         super();
         this.square_id = SquareID.pos_at_index(square_id)
         this.color = color
         this.grid_point = SquareID.point_at_index(square_id)
-
-        if (piece !== undefined) {
-            this.piece = piece
-        }
     }
 
     async build_clickable_square() {
@@ -32,8 +29,8 @@ export default class Square extends HTMLElement {
         this.add_event_listener()
     }
 
-    append_children(): Promise<void> {
-        return new Promise(resolve => {
+    private append_children(): Promise<void> {
+        return new Promise(async resolve => {
             let div_node: Element = document.createElement("div")
             div_node.className = `${this.color}`
             div_node.id = `${this.square_id}`
@@ -59,8 +56,13 @@ export default class Square extends HTMLElement {
     }
 
     private piece_image(): HTMLImageElement {
-        if (this.piece != undefined) return this.piece?.image
+        let piece: Piece | undefined = this.piece_attached_to_square()
+        if (piece != undefined) return piece.image
         else return new Image()
+    }
+
+    public piece_attached_to_square(): Piece | undefined {
+        return PieceList.piece_by_position(SquareID.pos_at_point(this.grid_point))
     }
 
     public add_border(): void {
@@ -79,10 +81,15 @@ export default class Square extends HTMLElement {
     }
 
     public remove_dot(): void {
-        const node = document.getElementById(`${this.square_id}-dot`)
+        const node: HTMLElement | null = document.getElementById(`${this.square_id}-dot`)
         if(node !== null) {
             this.element!.removeChild(node)
         }
+    }
+
+    public remove_piece(): void {
+        let piece: Piece | undefined = this.piece_attached_to_square()
+        if(piece != undefined) PieceList.remove_piece_by_id(piece.title)
     }
 }
 

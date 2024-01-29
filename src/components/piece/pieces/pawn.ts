@@ -43,9 +43,12 @@ export default class Pawn extends Piece implements Piece_Interface {
         return possible_moves
     }
 
-    public move_to(new_square: Square) {
-        this.pos = new_square.square_id as string
-        this.move_distance = this.minimum_move_distance
-        MoveController.reset_possible_moves()
+    public move_to(new_square: Square): Promise<void> {
+        return new Promise(async resolve => {
+            this.pos = new_square.square_id as string
+            this.move_distance = this.minimum_move_distance
+            MoveController.reset_possible_moves()
+            resolve()
+        })
     }
 }
