@@ -11,7 +11,6 @@ import type { GridPoint } from "src/global_types/grid_point"
 import type { Color } from "./color"
 import Board from "../board/board"
 import type Square from "../square/square"
-import PieceList from "./piece_list"
 
 export default class Piece {
     title: string
@@ -44,24 +43,25 @@ export default class Piece {
         switch (piece.type) {
             case PieceType.bishop:
                 return piece as Bishop
-            // case PieceType.king:
-            //     return piece as King
+            case PieceType.king:
+                return piece as King
             case PieceType.knight:
                 return piece as Knight
-            // case PieceType.pawn:
-            //     return piece as Pawn
+            case PieceType.pawn:
+                return piece as Pawn
             case PieceType.queen:
                 return piece as Queen
-            // case PieceType.rook:
-            //     return piece as Rook
+            case PieceType.rook:
+                return piece as Rook
             default:
                 break;
         }
     }
 
-    public move_to(new_square: Square): Promise<string> {
-        return new Promise(resolve => {
+    public move_to(new_square: Square): Promise<void> {
+        return new Promise(async resolve => {
             this.pos = new_square.square_id as string
+            resolve()
         })
     }
 

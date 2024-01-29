@@ -2,7 +2,6 @@ import type Piece from "./piece"
 import {PieceType} from "./piece_types"
 import {Color} from "./color"
 import {RookType} from "./pieces/rook"
-import type { GridPoint } from "../../global_types/grid_point"
 
 import Bishop from "./pieces/bishop"
 import King from "./pieces/king"
@@ -26,8 +25,8 @@ import Rook_W_SVG from "./assets/rook-w.svg"
 
 export default class PieceList {
     public static piece_list: Piece[] = [
-        // new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
-        // new King("king_w", "E1", King_W_SVG, PieceType.king, Color.white),
+        new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
+        new King("king_w", "E1", King_W_SVG, PieceType.king, Color.white),
 
         new Queen("queen_b", "D8", Queen_B_SVG, PieceType.queen, Color.black),
         new Queen("queen_w", "D1", Queen_W_SVG, PieceType.queen, Color.white),
@@ -42,27 +41,27 @@ export default class PieceList {
         new Knight("knight_b2", "G8", Knight_B_SVG, PieceType.knight, Color.black),
         new Knight("knight_w2", "G1", Knight_W_SVG, PieceType.knight, Color.white),
 
-        // new Rook("rook_b1", "A8", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
-        // new Rook("rook_w1", "A1", Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
-        // new Rook("rook_b2", "H8", Rook_B_SVG, PieceType.rook, Color.black, RookType.short_rook),
-        // new Rook("rook_w2", "H1", Rook_W_SVG, PieceType.rook, Color.white, RookType.short_rook),
+        new Rook("rook_b1", "A8", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
+        new Rook("rook_w1", "A1", Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
+        new Rook("rook_b2", "H8", Rook_B_SVG, PieceType.rook, Color.black, RookType.short_rook),
+        new Rook("rook_w2", "H1", Rook_W_SVG, PieceType.rook, Color.white, RookType.short_rook),
 
-        // new Pawn("pawn_b1", "A7", Pawn_B_SVG, PieceType.pawn, Color.black),
-        // new Pawn("pawn_w1", "A2", Pawn_W_SVG, PieceType.pawn, Color.white),
-        // new Pawn("pawn_b2", "B7", Pawn_B_SVG, PieceType.pawn, Color.black),
-        // new Pawn("pawn_w2", "B2", Pawn_W_SVG, PieceType.pawn, Color.white),
-        // new Pawn("pawn_b3", "C7", Pawn_B_SVG, PieceType.pawn, Color.black),
-        // new Pawn("pawn_w3", "C2", Pawn_W_SVG, PieceType.pawn, Color.white),
-        // new Pawn("pawn_b4", "D7", Pawn_B_SVG, PieceType.pawn, Color.black),
-        // new Pawn("pawn_w4", "D2", Pawn_W_SVG, PieceType.pawn, Color.white),
-        // new Pawn("pawn_b5", "E7", Pawn_B_SVG, PieceType.pawn, Color.black),
-        // new Pawn("pawn_w5", "E2", Pawn_W_SVG, PieceType.pawn, Color.white),
-        // new Pawn("pawn_b6", "F7", Pawn_B_SVG, PieceType.pawn, Color.black),
-        // new Pawn("pawn_w6", "F2", Pawn_W_SVG, PieceType.pawn, Color.white),
-        // new Pawn("pawn_b7", "G7", Pawn_B_SVG, PieceType.pawn, Color.black),
-        // new Pawn("pawn_w7", "G2", Pawn_W_SVG, PieceType.pawn, Color.white),
-        // new Pawn("pawn_b8", "H7", Pawn_B_SVG, PieceType.pawn, Color.black),
-        // new Pawn("pawn_w8", "H2", Pawn_W_SVG, PieceType.pawn, Color.white),
+        new Pawn("pawn_b1", "A7", Pawn_B_SVG, PieceType.pawn, Color.black),
+        new Pawn("pawn_w1", "A2", Pawn_W_SVG, PieceType.pawn, Color.white),
+        new Pawn("pawn_b2", "B7", Pawn_B_SVG, PieceType.pawn, Color.black),
+        new Pawn("pawn_w2", "B2", Pawn_W_SVG, PieceType.pawn, Color.white),
+        new Pawn("pawn_b3", "C7", Pawn_B_SVG, PieceType.pawn, Color.black),
+        new Pawn("pawn_w3", "C2", Pawn_W_SVG, PieceType.pawn, Color.white),
+        new Pawn("pawn_b4", "D7", Pawn_B_SVG, PieceType.pawn, Color.black),
+        new Pawn("pawn_w4", "D2", Pawn_W_SVG, PieceType.pawn, Color.white),
+        new Pawn("pawn_b5", "E7", Pawn_B_SVG, PieceType.pawn, Color.black),
+        new Pawn("pawn_w5", "E2", Pawn_W_SVG, PieceType.pawn, Color.white),
+        new Pawn("pawn_b6", "F7", Pawn_B_SVG, PieceType.pawn, Color.black),
+        new Pawn("pawn_w6", "F2", Pawn_W_SVG, PieceType.pawn, Color.white),
+        new Pawn("pawn_b7", "G7", Pawn_B_SVG, PieceType.pawn, Color.black),
+        new Pawn("pawn_w7", "G2", Pawn_W_SVG, PieceType.pawn, Color.white),
+        new Pawn("pawn_b8", "H7", Pawn_B_SVG, PieceType.pawn, Color.black),
+        new Pawn("pawn_w8", "H2", Pawn_W_SVG, PieceType.pawn, Color.white),
     ]
 
     public static piece_by_position(pos: string): Piece | undefined {

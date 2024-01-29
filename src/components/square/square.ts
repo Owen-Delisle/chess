@@ -40,7 +40,6 @@ export default class Square extends HTMLElement {
             p_node.innerHTML = `${this.square_id}`
 
             div_node.appendChild(p_node)
-            // console.log(PieceList.piece_by_id("pawn_w1"))
             div_node.appendChild(this.piece_image())
 
             this.appendChild(div_node)

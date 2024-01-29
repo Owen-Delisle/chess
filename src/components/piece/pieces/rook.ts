@@ -50,9 +50,12 @@ export default class Rook extends Piece implements Piece_Interface {
         return possible_moves
     }
 
-    public move_to(new_square: Square) {
-        this.pos = new_square.square_id as string
-        this.has_moved = true
+    public move_to(new_square: Square): Promise<void> {
+        return new Promise(async resolve => {
+            this.pos = new_square.square_id as string
+            this.has_moved = true
+            resolve()
+        })
     }
 }
 
