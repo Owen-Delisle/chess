@@ -6,6 +6,7 @@ import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
 import Board from "../../board/board"
 import type Square from "../../../components/square/square"
+import SquareID from "../../../components/square/square_id"
 
 export default class Knight extends Piece implements Piece_Interface {
     move_distance: number = 3
@@ -33,28 +34,28 @@ export default class Knight extends Piece implements Piece_Interface {
         this.directions.forEach(direction => {
             switch (direction) {
                 case KnightDirections.up_right:
-                    this.add_possible_move_point(this.grid_point!, possible_moves, -2, 1)
+                    this.add_possible_move_point(this.grid_point!, -2, 1)
                     break;
                 case KnightDirections.right_up:
-                    this.add_possible_move_point(this.grid_point!, possible_moves, -1, 2)
+                    this.add_possible_move_point(this.grid_point!, -1, 2)
                     break;
                 case KnightDirections.right_down:
-                    this.add_possible_move_point(this.grid_point!, possible_moves, 1, 2)
+                    this.add_possible_move_point(this.grid_point!, 1, 2)
                     break;
                 case KnightDirections.down_right:
-                    this.add_possible_move_point(this.grid_point!, possible_moves, 2, 1)
+                    this.add_possible_move_point(this.grid_point!, 2, 1)
                     break;
                 case KnightDirections.down_left:
-                    this.add_possible_move_point(this.grid_point!, possible_moves, 2, -1)
+                    this.add_possible_move_point(this.grid_point!, 2, -1)
                     break;
                 case KnightDirections.left_down:
-                    this.add_possible_move_point(this.grid_point!, possible_moves, 1, -2)
+                    this.add_possible_move_point(this.grid_point!, 1, -2)
                     break;
                 case KnightDirections.left_up:
-                    this.add_possible_move_point(this.grid_point!, possible_moves, -1, -2)
+                    this.add_possible_move_point(this.grid_point!, -1, -2)
                     break;
                 case KnightDirections.up_left:
-                    this.add_possible_move_point(this.grid_point!, possible_moves, -2, -1)
+                    this.add_possible_move_point(this.grid_point!, -2, -1)
                     break;
                 default:
                     console.log("Direction Not Found")
@@ -65,21 +66,18 @@ export default class Knight extends Piece implements Piece_Interface {
 
     private add_possible_move_point(
         current_pos: GridPoint,
-        possible_moves: GridPoint[],
         row_mod: number,
         col_mod: number,
     ): void {
         if (Board.are_coors_within_board_bounds(current_pos.row + row_mod, current_pos.col + col_mod)) {
-            let point_to_add: GridPoint =
-            {
-                row: current_pos.row + row_mod,
-                col: current_pos.col + col_mod
-            }
-            let square_being_checked: Square | undefined = SquareGrid.square_by_grid_point(point_to_add)
+            let point_of_square: GridPoint = {row: current_pos.row + row_mod,col: current_pos.col + col_mod}
+            let pos_to_add: string = SquareID.pos_at_point(point_of_square)
+            
+            let square_being_checked: Square | undefined = SquareGrid.square_by_grid_point(point_of_square)
             if (square_being_checked.piece_attached_to_square() == undefined) {
-                possible_moves.push(point_to_add)
+                this.possible_moves.push(pos_to_add)
             } else if (square_being_checked.piece_attached_to_square()!.color != this.color) {
-                possible_moves.push(point_to_add)
+                this.possible_moves.push(pos_to_add)
                 square_being_checked.add_border()
             }
         }

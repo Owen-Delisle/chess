@@ -6,7 +6,6 @@ import { PieceDirections } from "../piece_directions"
 import type { GridPoint } from "../../../global_types/grid_point"
 import type { Color } from "../color"
 import type Square from "../../square/square"
-import MoveController from "../../../controllers/move_controller"
 
 export default class Pawn extends Piece implements Piece_Interface {
     move_distance: number = 3
@@ -30,7 +29,7 @@ export default class Pawn extends Piece implements Piece_Interface {
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, -1, 0)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0)
                     break;
                 case PieceDirections.north_east:
                     break;
@@ -47,7 +46,7 @@ export default class Pawn extends Piece implements Piece_Interface {
         return new Promise(async resolve => {
             this.pos = new_square.square_id as string
             this.move_distance = this.minimum_move_distance
-            MoveController.reset_possible_moves()
+            this.possible_moves = []
             resolve()
         })
     }
