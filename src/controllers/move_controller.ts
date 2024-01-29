@@ -138,14 +138,14 @@ export default class MoveController {
     }
 
     private static async move_piece_to(selected_square: Square, piece: Piece): Promise<void> {
+        if(selected_square.piece_attached_to_square() != undefined && selected_square.piece_attached_to_square()!.color != this.focused_square!.piece_attached_to_square()!.color) {
+            selected_square.remove_piece()
+        }
+        
         if (this.piece_can_move_to(selected_square) && piece != undefined) {
             await piece.move_to(selected_square)
         }
 
-        // TODO: add piece capturing
-        // if(selected_square.piece_attached_to_square() != undefined) {
-        //     selected_square.remove_piece()
-        // }
         Index.board.redraw()
     }
 
