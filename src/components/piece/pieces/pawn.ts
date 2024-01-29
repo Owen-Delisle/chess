@@ -7,6 +7,7 @@ import type { GridPoint } from "../../../global_types/grid_point"
 import type { Color } from "../color"
 import type Square from "../../square/square"
 import MoveController from "../../../controllers/move_controller"
+import PieceList from "../piece_list"
 
 export default class Pawn extends Piece implements Piece_Interface {
     move_distance: number = 3

@@ -23,4 +23,9 @@ export default class SquareID {
             col: s[0].charCodeAt(0)-65
         }
     }
+
+    public static pos_at_point(point: GridPoint): string {
+        let position: number = (point.row*8)+point.col
+        return SquareID.positions[position]
+    }
 }

@@ -83,9 +83,7 @@ export default class Board extends HTMLElement {
 			color = Color.white
 		}
 
-		// TODO Make Piece a Calculated Field in Square
-		let square: Square =
-			new Square(color, index, PieceList.piece_by_position(SquareID.pos_at_index(index)))
+		let square: Square = new Square(color, index)
 
 		return square
 	}
