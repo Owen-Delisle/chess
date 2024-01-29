@@ -7,10 +7,10 @@ import type King from "../components/piece/pieces/king"
 import { PieceType } from "../components/piece/piece_types"
 import type Rook from "../components/piece/pieces/rook"
 import type { CastleVars } from "../components/piece/pieces/king"
+import SquareID from "../components/square/square_id"
 
 export default class MoveController {
     private static focused_square: Square | undefined
-    private static possible_moves: GridPoint[] = []
 
     public static on_square_click(clicked_square: Square): void {
         let piece_attached_to_focused_square: Piece | undefined
@@ -25,7 +25,7 @@ export default class MoveController {
                 this.castle(clicked_square)
             }
         }
-        this.assign_values_to_movement_variables(clicked_square, piece_attached_to_focused_square!)
+        this.assign_values_to_movement_variables(clicked_square)
     }
 
     private static can_move_piece_to(clicked_square: Square): boolean {
@@ -63,20 +63,20 @@ export default class MoveController {
         return should_castle
     }
 
-    private static assign_values_to_movement_variables(clicked_square: Square, prev_piece: Piece): void {
+    private static assign_values_to_movement_variables(clicked_square: Square): void {
         if (this.piece_exists_at(clicked_square)) {
-            this.clear_square_visuals()
+            this.clear_square_visuals(clicked_square.piece_attached_to_square()!)
             this.focused_square = clicked_square
             this.focused_square.add_border()
             this.load_possible_moves_list(this.focused_square)
         }
     }
 
-    private static clear_square_visuals() {
+    private static clear_square_visuals(piece: Piece) {
         if (this.focused_square != undefined) {
             this.focused_square.remove_border()
         }
-        this.remove_visuals_from_possible_moves()
+        this.remove_visuals_from_possible_moves(piece)
     }
 
     private static piece_exists_at(clicked_square: Square): boolean {
@@ -101,8 +101,9 @@ export default class MoveController {
                 row: rook_piece.grid_point!.row,
                 col: rook_piece.grid_point!.col + (castle_vars.rook_col_modifier)
             }
-            this.possible_moves.push(next_king_point)
-            this.possible_moves.push(next_rook_point)
+
+            king_piece.possible_moves.push(SquareID.pos_at_point(next_king_point))
+            king_piece.possible_moves.push(SquareID.pos_at_point(next_rook_point))
 
             this.move_piece_to(SquareGrid.square_by_grid_point(next_king_point), king_piece)
             this.move_piece_to(SquareGrid.square_by_grid_point(next_rook_point), rook_piece)
@@ -115,25 +116,31 @@ export default class MoveController {
         let piece_attached_to_square: Piece | undefined
         piece_attached_to_square = square.piece_attached_to_square()
 
-        let typed_piece = Piece.piece_factory(piece_attached_to_square!)
-        this.possible_moves = typed_piece.calculate_possible_moves()
-
-        this.add_dots_to_possible_moves()
+        if(piece_attached_to_square != undefined) {
+            const typed_piece = Piece.piece_factory(piece_attached_to_square)
+            typed_piece.calculate_possible_moves()
+            this.add_dots_to_possible_moves(typed_piece)
+        }
     }
 
-    private static add_dots_to_possible_moves(): void {
-        this.possible_moves.forEach(possible_move => {
-            let square: Square = SquareGrid.square_by_grid_point(possible_move)
-            if (square.piece_attached_to_square() == undefined) {
-                square.add_dot()
+    private static add_dots_to_possible_moves(piece: Piece): void {
+        piece.possible_moves.forEach(possible_move => {
+            let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
+            if(square != undefined) {
+                if (square.piece_attached_to_square() == undefined) {
+                    square.add_dot()
+                }
             }
         })
     }
 
-    private static remove_visuals_from_possible_moves(): void {
-        this.possible_moves.forEach(possible_move => {
-            SquareGrid.square_by_grid_point(possible_move).remove_dot()
-            SquareGrid.square_by_grid_point(possible_move).remove_border()
+    private static remove_visuals_from_possible_moves(piece: Piece): void {
+        piece.possible_moves.forEach(possible_move => {
+            let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
+            if(square != undefined) {
+                square.remove_dot()
+                square.remove_border()
+            }
         })
     }
 
@@ -151,18 +158,17 @@ export default class MoveController {
 
     private static piece_can_move_to(selected_square: Square): boolean {
         let should_move: boolean = false
-        this.possible_moves.forEach(possible_point => {
+
+        if(this.focused_square?.piece_attached_to_square() == undefined) return false
+
+        this.focused_square?.piece_attached_to_square()!.possible_moves.forEach(move => {
             if (
-                possible_point.row == selected_square.grid_point.row &&
-                possible_point.col == selected_square.grid_point.col
+                move == selected_square.square_id
             ) {
                 should_move = true
             }
         })
         return should_move
     }
-
-    public static reset_possible_moves(): void {
-        this.possible_moves = []
-    }
+    
 }

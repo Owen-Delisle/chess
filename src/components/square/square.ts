@@ -6,7 +6,7 @@ import type { GridPoint } from "../../global_types/grid_point";
 import PieceList from "../piece/piece_list";
 
 export default class Square extends HTMLElement {
-    square_id: SquareID
+    square_id: string
     color: Color
     element: HTMLElement | null = null
     grid_point: GridPoint

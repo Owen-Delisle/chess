@@ -11,6 +11,7 @@ import type { GridPoint } from "src/global_types/grid_point"
 import type { Color } from "./color"
 import Board from "../board/board"
 import type Square from "../square/square"
+import SquareID from "../square/square_id"
 
 export default class Piece {
     title: string
@@ -20,6 +21,7 @@ export default class Piece {
     type?: PieceType
     color: Color
     grid_point: GridPoint | undefined
+    possible_moves: string[] = []
 
     constructor(title: string, pos: string, svg: string, color: Color) {
         this.title = title
@@ -61,30 +63,14 @@ export default class Piece {
     public move_to(new_square: Square): Promise<void> {
         return new Promise(async resolve => {
             this.pos = new_square.square_id as string
+            this.possible_moves = []
             resolve()
         })
     }
 
-    public moves_list(
-        current_pos: GridPoint,
-        possible_moves: GridPoint[],
-        move_distance: number,
-        row_modifier: number,
-        col_modifier: number
-    ): void {
-        this.build_possible_moves_list(
-            move_distance,
-            current_pos,
-            possible_moves,
-            row_modifier,
-            col_modifier
-        )
-    }
-
     public build_possible_moves_list(
-        move_distance: number,
         current_pos: GridPoint,
-        possible_moves: GridPoint[],
+        move_distance: number,
         row_modifier: number,
         col_modifier: number,
     ): void {
@@ -96,13 +82,11 @@ export default class Piece {
             col_modifier,
             index)
         ) {
-            possible_moves.push({
-                row: current_pos.row + (row_modifier * index),
-                col: current_pos.col + (col_modifier * index)
-            })
+            let square_id: string = SquareID.pos_at_point({row: current_pos.row + (row_modifier * index),col: current_pos.col + (col_modifier * index)})
+            this.possible_moves.push(square_id)
             index++
         }
-        this.highlight_action_piece(current_pos, row_modifier, col_modifier, index, possible_moves)
+        this.highlight_action_piece(current_pos, row_modifier, col_modifier, index)
     }
 
     public conditions_to_continue_adding_moves(
@@ -129,16 +113,12 @@ export default class Piece {
         return SquareGrid.piece_by_grid_point(grid_point)! === undefined
     }
 
-    public highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
-        this.target_to_highlight(current_pos, row_modifier, col_modifier, distance, possible_moves)
-    }
-
-    public highlight_target(square: Square, possible_moves: GridPoint[] ): void {
+    public highlight_target(square: Square): void {
         let piece: Piece | undefined = square.piece_attached_to_square()
         if(piece != undefined) {
             if(piece.color != this.color){
-                 possible_moves.push(square.grid_point)
-                 square.add_border()
+                this.possible_moves.push(SquareID.pos_at_point(square.grid_point))
+                square.add_border()
             }
         }
         this.piece_specific_highlight_steps()
@@ -148,20 +128,20 @@ export default class Piece {
     public piece_specific_highlight_steps(): void {
     }
 
-    private target_to_highlight(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number, possible_moves: GridPoint[]) {
+    private highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number) {
         switch(this.type) {
             case PieceType.pawn:
                 if(Board.are_coors_within_board_bounds(current_pos.row - 1, current_pos.col - 1)) {
                     this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row - 1,
                         col: current_pos.col - 1
-                    }), possible_moves)
+                    }))
                 }
                 if(Board.are_coors_within_board_bounds(current_pos.row + 1, current_pos.col + 1)) {
                     this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row - 1,
                         col: current_pos.col + 1
-                    }), possible_moves)
+                    }))
                 }
                 break
             
@@ -170,7 +150,7 @@ export default class Piece {
                     this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row + (row_modifier),
                         col: current_pos.col + (col_modifier)
-                    }), possible_moves)
+                    }))
                 }
                 break
 
@@ -179,7 +159,7 @@ export default class Piece {
                     this.highlight_target(SquareGrid.square_by_grid_point({
                         row: current_pos.row + (row_modifier * distance),
                         col: current_pos.col + (col_modifier * distance)
-                    }), possible_moves)
+                    }))
                 }
                 break
         }
