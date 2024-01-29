@@ -13,27 +13,29 @@ export default class MoveController {
     private static possible_moves: GridPoint[] = []
 
     public static on_square_click(clicked_square: Square): void {
-        if (this.can_make_move_now()) {
-            if (this.should_move_piece_at(clicked_square)) {
+        if (this.focused_square_is_defined()) {
+            if (this.can_move_piece_to(clicked_square)) {
                 this.move_piece_to(clicked_square, this.focused_square!.piece!)
             }
 
-            if (this.should_attempt_to_castle(clicked_square)) {
+            if (this.can_initiate_castle(clicked_square)) {
                 this.castle(clicked_square)
             }
         }
         this.assign_values_to_movement_variables(clicked_square)
     }
 
-    private static should_move_piece_at(clicked_square: Square): boolean {
-        return !this.clicked_square_contains_piece(clicked_square) && !this.should_attempt_to_castle(clicked_square)
+    private static can_move_piece_to(clicked_square: Square): boolean {
+        return (!this.piece_exists_at(clicked_square) || clicked_square.piece!.color != this.focused_square?.piece!.color)
+            &&
+            !this.can_initiate_castle(clicked_square)
     }
 
-    private static can_make_move_now(): boolean {
+    private static focused_square_is_defined(): boolean {
         return this.focused_square !== undefined
     }
 
-    private static should_attempt_to_castle(clicked_square: Square | undefined): boolean {
+    private static can_initiate_castle(clicked_square: Square | undefined): boolean {
         let should_castle: boolean = false
         let focused_piece: Piece | undefined = this.focused_square?.piece
         let clicked_piece: Piece | undefined = clicked_square?.piece
@@ -53,7 +55,7 @@ export default class MoveController {
     }
 
     private static assign_values_to_movement_variables(clicked_square: Square): void {
-        if (this.clicked_square_contains_piece(clicked_square)) {
+        if (this.piece_exists_at(clicked_square)) {
             this.clear_square_visuals()
             this.focused_square = clicked_square
             this.focused_square.add_border()
@@ -68,7 +70,7 @@ export default class MoveController {
         this.remove_visuals_from_possible_moves()
     }
 
-    private static clicked_square_contains_piece(clicked_square: Square): boolean {
+    private static piece_exists_at(clicked_square: Square): boolean {
         return clicked_square.piece !== undefined
     }
 
@@ -120,13 +122,16 @@ export default class MoveController {
     private static remove_visuals_from_possible_moves(): void {
         this.possible_moves.forEach(possible_move => {
             SquareGrid.square_by_grid_point(possible_move).remove_dot()
-            SquareGrid.square_by_grid_point(possible_move).remove_border()
+            // SquareGrid.square_by_grid_point(possible_move).remove_border()
         })
     }
 
     private static move_piece_to(selected_square: Square, piece: Piece): void {
         if (this.piece_can_move_to(selected_square) && piece != undefined) {
             piece.move_to(selected_square)
+        }
+        if(selected_square.piece != undefined) {
+            // selected_square.remove_piece()
         }
         Index.board.redraw()
     }

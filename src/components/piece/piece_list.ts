@@ -85,13 +85,20 @@ export default class PieceList {
     }
 
     public static list_of_pieces_by_type(type: PieceType): Piece[] {
-        let piece_list: Piece[] = []
+        let typed_piece_list: Piece[] = []
         this.piece_list.forEach(piece => {
             if(piece.type == type) {
-                piece_list.push(piece)
+                typed_piece_list.push(piece)
             }
         })
 
-        return piece_list
+        return typed_piece_list
+    }
+
+    public static remove_piece_by_id(id: string): void {
+        let index = this.piece_list.findIndex(piece => piece.title === id)
+        if(index != -1) {
+            this.piece_list.splice(index, 1)
+        }
     }
 }

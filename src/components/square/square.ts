@@ -3,6 +3,7 @@ import SquareID  from "./square_id"
 import type Piece from "../piece/piece";
 import MoveController from "../../controllers/move_controller";
 import type { GridPoint } from "../../global_types/grid_point";
+import PieceList from "../piece/piece_list";
 
 export default class Square extends HTMLElement {
     square_id: SquareID
@@ -79,10 +80,14 @@ export default class Square extends HTMLElement {
     }
 
     public remove_dot(): void {
-        const node = document.getElementById(`${this.square_id}-dot`)
+        const node: HTMLElement | null = document.getElementById(`${this.square_id}-dot`)
         if(node !== null) {
             this.element!.removeChild(node)
         }
+    }
+
+    public remove_piece(): void {
+        PieceList.remove_piece_by_id(this.piece!.title)
     }
 }
 
