@@ -4,6 +4,7 @@ import PieceStyles from '../piece/styles';
 import PieceList from '../piece/piece_list';
 import SquareStyles from '../square/styles';
 import SquareGrid from '../../models/square_grid'
+import SquareID from '../square/square_id';
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement("div")
@@ -37,6 +38,8 @@ export default class Board extends HTMLElement {
 	}
 
 	private add_squares_to_board() {
+		SquareID.update_board_positions()
+		
 		let next_square: Square
 		let row_node: Element = document.createElement("div")
 

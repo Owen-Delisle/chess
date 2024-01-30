@@ -8,6 +8,7 @@ import { PieceType } from "../components/piece/piece_types"
 import type Rook from "../components/piece/pieces/rook"
 import type { CastleVars } from "../components/piece/pieces/king"
 import SquareID from "../components/square/square_id"
+import { GameController } from "./game_controller"
 
 export default class MoveController {
     private static focused_square: Square | undefined
@@ -103,10 +104,10 @@ export default class MoveController {
             }
 
             king_piece.possible_moves.push(SquareID.pos_at_point(next_king_point))
-            king_piece.possible_moves.push(SquareID.pos_at_point(next_rook_point))
+            rook_piece.possible_moves.push(SquareID.pos_at_point(next_rook_point))
 
-            this.move_piece_to(SquareGrid.square_by_grid_point(next_king_point), king_piece)
             this.move_piece_to(SquareGrid.square_by_grid_point(next_rook_point), rook_piece)
+            this.move_piece_to(SquareGrid.square_by_grid_point(next_king_point), king_piece)
 
             this.focused_square = undefined
         }
@@ -153,6 +154,7 @@ export default class MoveController {
             await piece.move_to(selected_square)
         }
 
+        GameController.switch_turn()
         Index.board.redraw()
     }
 
@@ -162,9 +164,7 @@ export default class MoveController {
         if(this.focused_square?.piece_attached_to_square() == undefined) return false
 
         this.focused_square?.piece_attached_to_square()!.possible_moves.forEach(move => {
-            if (
-                move == selected_square.square_id
-            ) {
+            if (move == selected_square.square_id) {
                 should_move = true
             }
         })

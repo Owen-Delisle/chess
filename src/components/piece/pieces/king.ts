@@ -1,5 +1,5 @@
 import type { GridPoint } from "../../../global_types/grid_point"
-import type { Color } from "../color"
+import { Color } from "../color"
 import Piece from "../piece"
 import { PieceDirections } from "../piece_directions"
 import type Piece_Interface from "../piece_interface"
@@ -99,21 +99,40 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public castle_vars_for_rook_type(rook_type: RookType): CastleVars {
-        switch (rook_type) {
-            case RookType.long_rook:
-                return {
-                    king_col_modifier: -2,
-                    rook_col_modifier: 3,
-                    number_of_squares_between_king_and_rook: 3,
-                    index_modifier: -1
-                }
-            case RookType.short_rook:
-                return {
-                    king_col_modifier: 2,
-                    rook_col_modifier: -2,
-                    number_of_squares_between_king_and_rook: 2,
-                    index_modifier: 1
-                }
+        if(this.color == Color.white) {
+            switch (rook_type) {
+                case RookType.long_rook:
+                    return {
+                        king_col_modifier: -2,
+                        rook_col_modifier: 3,
+                        number_of_squares_between_king_and_rook: 3,
+                        index_modifier: -1
+                    }
+                case RookType.short_rook:
+                    return {
+                        king_col_modifier: 2,
+                        rook_col_modifier: -2,
+                        number_of_squares_between_king_and_rook: 2,
+                        index_modifier: 1
+                    }
+            }
+        } else {
+            switch (rook_type) {
+                case RookType.long_rook:
+                    return {
+                        king_col_modifier: 2,
+                        rook_col_modifier: -3,
+                        number_of_squares_between_king_and_rook: 3,
+                        index_modifier: 1
+                    }
+                case RookType.short_rook:
+                    return {
+                        king_col_modifier: -2,
+                        rook_col_modifier: 2,
+                        number_of_squares_between_king_and_rook: 2,
+                        index_modifier: -1
+                    }
+            }
         }
     }
 

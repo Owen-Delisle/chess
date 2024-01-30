@@ -62,18 +62,24 @@ export default class Square extends HTMLElement {
     }
 
     public add_border(): void {
-        this.element!.style.border = "thick solid #0000FF";
+        if(this.element != undefined) {
+            this.element.style.border = "thick solid #0000FF";
+        }
     }
 
     public remove_border(): void {
-        this.element!.style.border = "";
+        if(this.element != undefined) {
+            this.element.style.border = "";
+        }
     }
 
     public add_dot(): void {
         const node = document.createElement("span")
         node.className = "dot"
         node.id = `${this.square_id}-dot`
-        this.element!.appendChild(node)
+        if(this.element != undefined) {
+            this.element!.appendChild(node)
+        }
     }
 
     public remove_dot(): void {
