@@ -56,6 +56,10 @@ export default class Square extends HTMLElement {
         else return new Image()
     }
 
+    public is_empty(): boolean {
+        return this.piece_attached_to_square() == undefined
+    }
+
     public piece_attached_to_square(): Piece | undefined {
         const position: string = this.square_id as string
         return PieceList.piece_by_position(position)

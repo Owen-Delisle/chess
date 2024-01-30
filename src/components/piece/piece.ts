@@ -117,7 +117,7 @@ export default class Piece {
         let piece: Piece | undefined = square.piece_attached_to_square()
         if(piece != undefined) {
             if(piece.color != this.color){
-                this.possible_moves.push(SquareID.pos_at_point(square.grid_point))
+                this.possible_moves.push(square.square_id)
                 square.add_border()
             }
         }

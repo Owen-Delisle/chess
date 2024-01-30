@@ -14,19 +14,14 @@ export default class MoveController {
     private static focused_square: Square | undefined
 
     public static on_square_click(clicked_square: Square): void {
-        let piece_attached_to_focused_square: Piece | undefined
-        if (this.focused_square_is_defined()) {
+        if (this.conditions_for_standard_move(clicked_square)) {
             this.clear_prev_focused_square()
-            piece_attached_to_focused_square = this.focused_square!.piece_attached_to_square()
-            if (this.can_move_piece_to(clicked_square)) {
-                this.move_piece_to(clicked_square, piece_attached_to_focused_square!)
-            }
-
-            if (this.can_initiate_castle(clicked_square)) {
-                this.castle(clicked_square)
-            }
+            this.make_standard_move(clicked_square)
+        } else if (this.conditions_for_castle(clicked_square)) {
+            this.clear_prev_focused_square()
+            this.castle(clicked_square)
         } else {
-            this.assign_values_to_movement_variables(clicked_square)
+            this.setup_values_for_move(clicked_square)
         }
     }
 
@@ -34,26 +29,26 @@ export default class MoveController {
         return this.focused_square !== undefined
     }
 
-    private static clear_prev_focused_square() {
-        this.focused_square!.remove_border()
-            if(this.focused_square!.piece_attached_to_square() != undefined) {
-                this.remove_visuals_from_possible_moves(this.focused_square!.piece_attached_to_square()!)
+    private static conditions_for_standard_move(clicked_square: Square): boolean {
+        let conditions_met: boolean = false
+        if (this.focused_square_is_defined()) {
+            if (!this.focused_square?.is_empty()) {
+                if (this.focused_square?.piece_attached_to_square()?.possible_moves.includes(clicked_square.square_id)) {
+                    conditions_met = true
+                }
             }
+        }
+        return conditions_met
     }
 
-    private static can_move_piece_to(clicked_square: Square): boolean {
-        let piece_attached_to_click: Piece | undefined
-        piece_attached_to_click = clicked_square.piece_attached_to_square()
-
-        let piece_attached_to_focused: Piece | undefined
-        piece_attached_to_focused = this.focused_square?.piece_attached_to_square()
-
-        return (!this.piece_exists_at(clicked_square) || piece_attached_to_click!.color != piece_attached_to_focused!.color)
-            &&
-            !this.can_initiate_castle(clicked_square)
+    private static make_standard_move(clicked_square: Square): void {
+        let piece_attached_to_focused_square: Piece | undefined = this.focused_square?.piece_attached_to_square()
+        if(piece_attached_to_focused_square != undefined) {
+            this.move_piece_to(clicked_square, piece_attached_to_focused_square)
+        }
     }
 
-    private static can_initiate_castle(clicked_square: Square | undefined): boolean {
+    private static conditions_for_castle(clicked_square: Square): boolean {
         let should_castle: boolean = false
         let focused_piece: Piece | undefined = this.focused_square?.piece_attached_to_square()
         let clicked_piece: Piece | undefined = clicked_square?.piece_attached_to_square()
@@ -64,31 +59,14 @@ export default class MoveController {
             let king_piece: King = focused_piece as King
             let rook_piece: Rook = clicked_piece as Rook
 
-            if (!king_piece.has_moved && !rook_piece.has_moved) {
-                should_castle = true
+            if (king_piece.color == rook_piece.color) {
+                if (!king_piece.has_moved && !rook_piece.has_moved) {
+                    should_castle = true
+                }
             }
         }
 
         return should_castle
-    }
-
-    private static assign_values_to_movement_variables(clicked_square: Square): void {
-        if (this.piece_exists_at(clicked_square)) {
-            this.focused_square = clicked_square
-            this.focused_square.add_border()
-            this.load_possible_moves_list(this.focused_square)
-        }
-    }
-
-    private static clear_square_visuals(piece: Piece) {
-        if (this.focused_square != undefined) {
-            this.focused_square.remove_border()
-        }
-        this.remove_visuals_from_possible_moves(piece)
-    }
-
-    private static piece_exists_at(clicked_square: Square): boolean {
-        return clicked_square.piece_attached_to_square() !== undefined
     }
 
     private static castle(clicked_square: Square | undefined): void {
@@ -120,11 +98,40 @@ export default class MoveController {
         }
     }
 
+    private static clear_prev_focused_square() {
+        this.focused_square!.remove_border()
+        if (this.focused_square!.piece_attached_to_square() != undefined) {
+            this.remove_visuals_from_possible_moves(this.focused_square!.piece_attached_to_square()!)
+        }
+    }
+
+    private static setup_values_for_move(clicked_square: Square): void {
+        if (this.conditions_to_setup_values(clicked_square)) {
+            this.clear_focused_square_visuals()
+            this.focused_square = clicked_square
+            this.focused_square.add_border()
+            this.load_possible_moves_list(this.focused_square)
+        }
+    }
+
+    private static conditions_to_setup_values(clicked_square: Square): boolean {
+        return !clicked_square.is_empty() && clicked_square.piece_attached_to_square()!.color == GameController.turn
+    }
+
+    private static clear_focused_square_visuals() {
+        if (this.focused_square != undefined) {
+            this.focused_square.remove_border()
+            if (this.focused_square.piece_attached_to_square() != undefined) {
+                this.remove_visuals_from_possible_moves(this.focused_square.piece_attached_to_square()!)
+            }
+        }
+    }
+
     private static load_possible_moves_list(square: Square): void {
         let piece_attached_to_square: Piece | undefined
         piece_attached_to_square = square.piece_attached_to_square()
 
-        if(piece_attached_to_square != undefined) {
+        if (piece_attached_to_square != undefined) {
             const typed_piece = Piece.piece_factory(piece_attached_to_square)
             typed_piece.calculate_possible_moves()
             this.add_dots_to_possible_moves(typed_piece)
@@ -134,7 +141,7 @@ export default class MoveController {
     private static add_dots_to_possible_moves(piece: Piece): void {
         piece.possible_moves.forEach(possible_move => {
             let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
-            if(square != undefined) {
+            if (square != undefined) {
                 if (square.piece_attached_to_square() == undefined) {
                     square.add_dot()
                 }
@@ -145,7 +152,7 @@ export default class MoveController {
     private static remove_visuals_from_possible_moves(piece: Piece): void {
         piece.possible_moves.forEach(possible_move => {
             let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
-            if(square != undefined) {
+            if (square != undefined) {
                 square.remove_dot()
                 square.remove_border()
             }
@@ -153,15 +160,23 @@ export default class MoveController {
     }
 
     private static async move_piece_to(selected_square: Square, piece: Piece): Promise<void> {
-        if(this.remove_piece_conditions(selected_square)) {
+        if (this.remove_piece_conditions(selected_square)) {
             selected_square.remove_piece()
         }
-        
-        if (this.piece_can_move_to(selected_square) && piece != undefined) {
-            await piece.move_to(selected_square)
-        }
+
+        await piece.move_to(selected_square)
 
         this.redraw()
+    }
+
+    private static remove_piece_conditions(selected_square: Square): boolean {
+        let should_remove_piece: boolean = false
+        if(!selected_square.is_empty()) {
+            if(selected_square.piece_attached_to_square()!.color != GameController.turn) {
+                should_remove_piece = true
+            }
+        }
+        return should_remove_piece
     }
 
     private static async move_castle_pieces(new_king_square: Square, king_piece: Piece, new_rook_square: Square, rook_piece: Piece): Promise<void> {
@@ -175,22 +190,4 @@ export default class MoveController {
         GameController.switch_turn()
         Index.board.redraw()
     }
-
-    private static remove_piece_conditions(selected_square: Square): boolean {
-        return selected_square.piece_attached_to_square() != undefined && selected_square.piece_attached_to_square()!.color != this.focused_square!.piece_attached_to_square()!.color
-    }
-
-    private static piece_can_move_to(selected_square: Square): boolean {
-        let should_move: boolean = false
-
-        if(this.focused_square?.piece_attached_to_square() == undefined) return false
-
-        this.focused_square?.piece_attached_to_square()!.possible_moves.forEach(move => {
-            if (move == selected_square.square_id) {
-                should_move = true
-            }
-        })
-        return should_move
-    }
-    
 }
