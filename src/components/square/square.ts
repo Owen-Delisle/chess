@@ -4,10 +4,9 @@ import type Piece from "../piece/piece";
 import MoveController from "../../controllers/move_controller";
 import type { GridPoint } from "../../global_types/grid_point";
 import PieceList from "../piece/piece_list";
-import SquareGrid from "../../models/square_grid";
 
 export default class Square extends HTMLElement {
-    square_id: SquareID
+    square_id: string
     color: Color
     element: HTMLElement | null = null
     grid_point: GridPoint
@@ -21,11 +20,7 @@ export default class Square extends HTMLElement {
 
     async build_clickable_square() {
         await this.append_children()
-
-        this.element = await (() => {
-            return document.getElementById(`${this.square_id}`)
-        })()
-
+        this.element = document.getElementById(`${this.square_id}`);
         this.add_event_listener()
     }
 
@@ -61,23 +56,34 @@ export default class Square extends HTMLElement {
         else return new Image()
     }
 
+    public is_empty(): boolean {
+        return this.piece_attached_to_square() == undefined
+    }
+
     public piece_attached_to_square(): Piece | undefined {
-        return PieceList.piece_by_position(SquareID.pos_at_point(this.grid_point))
+        const position: string = this.square_id as string
+        return PieceList.piece_by_position(position)
     }
 
     public add_border(): void {
-        this.element!.style.border = "thick solid #0000FF";
+        if(this.element != undefined) {
+            this.element.style.border = "thick solid #0000FF";
+        }
     }
 
     public remove_border(): void {
-        this.element!.style.border = "";
+        if(this.element != undefined) {
+            this.element.style.border = "";
+        }
     }
 
     public add_dot(): void {
         const node = document.createElement("span")
         node.className = "dot"
         node.id = `${this.square_id}-dot`
-        this.element!.appendChild(node)
+        if(this.element != undefined) {
+            this.element!.appendChild(node)
+        }
     }
 
     public remove_dot(): void {

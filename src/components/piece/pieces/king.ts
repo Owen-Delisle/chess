@@ -1,5 +1,5 @@
 import type { GridPoint } from "../../../global_types/grid_point"
-import type { Color } from "../color"
+import { Color } from "../color"
 import Piece from "../piece"
 import { PieceDirections } from "../piece_directions"
 import type Piece_Interface from "../piece_interface"
@@ -37,28 +37,28 @@ export default class King extends Piece implements Piece_Interface {
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, -1, 0)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0)
                     break;
                 case PieceDirections.north_east:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, -1, 1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 1)
                     break;
                 case PieceDirections.east:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 0, 1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, 1)
                     break;
                 case PieceDirections.south_east:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 1, 1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 1)
                     break;
                 case PieceDirections.south:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 1, 0)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 0)
                     break;
                 case PieceDirections.south_west:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 1, -1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, -1)
                     break;
                 case PieceDirections.west:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 0, -1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, -1)
                     break;
                 case PieceDirections.north_west:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, -1, -1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, -1)
                     break;
                 default:
                     console.log("Direction Not Found")
@@ -71,6 +71,7 @@ export default class King extends Piece implements Piece_Interface {
         return new Promise(async resolve => {
             this.pos = new_square.square_id as string
             this.has_moved = true
+            this.possible_moves = []
             resolve()
         })
     }
@@ -98,21 +99,40 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public castle_vars_for_rook_type(rook_type: RookType): CastleVars {
-        switch (rook_type) {
-            case RookType.long_rook:
-                return {
-                    king_col_modifier: -2,
-                    rook_col_modifier: 3,
-                    number_of_squares_between_king_and_rook: 3,
-                    index_modifier: -1
-                }
-            case RookType.short_rook:
-                return {
-                    king_col_modifier: 2,
-                    rook_col_modifier: -2,
-                    number_of_squares_between_king_and_rook: 2,
-                    index_modifier: 1
-                }
+        if(this.color == Color.white) {
+            switch (rook_type) {
+                case RookType.long_rook:
+                    return {
+                        king_col_modifier: -2,
+                        rook_col_modifier: 3,
+                        number_of_squares_between_king_and_rook: 3,
+                        index_modifier: -1
+                    }
+                case RookType.short_rook:
+                    return {
+                        king_col_modifier: 2,
+                        rook_col_modifier: -2,
+                        number_of_squares_between_king_and_rook: 2,
+                        index_modifier: 1
+                    }
+            }
+        } else {
+            switch (rook_type) {
+                case RookType.long_rook:
+                    return {
+                        king_col_modifier: 2,
+                        rook_col_modifier: -3,
+                        number_of_squares_between_king_and_rook: 3,
+                        index_modifier: 1
+                    }
+                case RookType.short_rook:
+                    return {
+                        king_col_modifier: -2,
+                        rook_col_modifier: 2,
+                        number_of_squares_between_king_and_rook: 2,
+                        index_modifier: -1
+                    }
+            }
         }
     }
 

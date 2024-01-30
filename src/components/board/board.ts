@@ -2,9 +2,9 @@ import Square from '../square/square'
 import { Color } from "../square/color"
 import PieceStyles from '../piece/styles';
 import PieceList from '../piece/piece_list';
-import SquareID from '../square/square_id';
 import SquareStyles from '../square/styles';
 import SquareGrid from '../../models/square_grid'
+import SquareID from '../square/square_id';
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement("div")
@@ -18,12 +18,9 @@ export default class Board extends HTMLElement {
 		this.render();
 	}
 
-	connectedCallback() {
-	}
-
-	render() {
+	render(): void {
 		this.add_styles_to_dom()
-		this.setup_game_board()
+		this.board_generator()
 	}
 
 	private add_styles_to_dom() {
@@ -31,24 +28,18 @@ export default class Board extends HTMLElement {
 		this.appendChild(PieceStyles.piece_style())
 	}
 
-	private async setup_game_board(): Promise<void> {
-		let res = await this.board_generator()
-		console.log(res)
-	}
-
-	private board_generator(): Promise<string> {
-		return new Promise(resolve => {
+	private board_generator(): void {
 			this.container_node.className = "container"
 			this.container_node.id = "container"
 
 			this.add_squares_to_board()
 
 			this.append(this.container_node)
-			resolve("Board Finished")
-		})
 	}
 
 	private add_squares_to_board() {
+		SquareID.update_board_positions()
+		
 		let next_square: Square
 		let row_node: Element = document.createElement("div")
 

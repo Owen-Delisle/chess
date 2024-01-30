@@ -32,16 +32,16 @@ export default class Rook extends Piece implements Piece_Interface {
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, -1, 0)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0)
                     break;
                 case PieceDirections.east:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 0, 1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, 1)
                     break;
                 case PieceDirections.south:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 1, 0)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 0)
                     break;
                 case PieceDirections.west:
-                    this.moves_list(this.grid_point!, possible_moves, this.move_distance, 0, -1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, -1)
                     break;
                 default:
                     console.log("Direction Not Found")
@@ -54,6 +54,7 @@ export default class Rook extends Piece implements Piece_Interface {
         return new Promise(async resolve => {
             this.pos = new_square.square_id as string
             this.has_moved = true
+            this.possible_moves = []
             resolve()
         })
     }
