@@ -82,11 +82,11 @@ export default class Piece {
             col_modifier,
             index)
         ) {
-            let square_id: string = SquareID.pos_at_point({row: current_pos.row + (row_modifier * index),col: current_pos.col + (col_modifier * index)})
+            let square_id: string = SquareID.pos_at_point({ row: current_pos.row + (row_modifier * index), col: current_pos.col + (col_modifier * index) })
             this.possible_moves.push(square_id)
             index++
         }
-        this.highlight_action_piece(current_pos, row_modifier, col_modifier, index)
+        this.setup_action_piece(current_pos, row_modifier, col_modifier, index)
     }
 
     public conditions_to_continue_adding_moves(
@@ -113,10 +113,15 @@ export default class Piece {
         return SquareGrid.piece_by_grid_point(grid_point)! === undefined
     }
 
-    public highlight_target(square: Square): void {
-        let piece: Piece | undefined = square.piece_attached_to_square()
-        if(piece != undefined) {
-            if(piece.color != this.color){
+    public highlight_target(grid_point: GridPoint): void {
+        let square: Square | undefined
+        let piece: Piece | undefined
+        if (Board.are_coors_within_board_bounds(grid_point.row, grid_point.col)) {
+            square = SquareGrid.square_by_grid_point(grid_point)
+            piece = square.piece_attached_to_square()
+        }
+        if (square != undefined && piece != undefined) {
+            if (piece.color != this.color) {
                 this.possible_moves.push(square.square_id)
                 square.add_border()
             }
@@ -128,45 +133,36 @@ export default class Piece {
     public piece_specific_highlight_steps(): void {
     }
 
-    private highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number) {
-        switch(this.type) {
+    private setup_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number) {
+        switch (this.type) {
             case PieceType.pawn:
-                if(Board.are_coors_within_board_bounds(current_pos.row - 1, current_pos.col - 1)) {
-                    this.highlight_target(SquareGrid.square_by_grid_point({
-                        row: current_pos.row - 1,
-                        col: current_pos.col - 1
-                    }))
-                }
-                if(Board.are_coors_within_board_bounds(current_pos.row + 1, current_pos.col + 1)) {
-                    this.highlight_target(SquareGrid.square_by_grid_point({
-                        row: current_pos.row - 1,
-                        col: current_pos.col + 1
-                    }))
-                }
+                this.highlight_target({
+                    row: current_pos.row - 1,
+                    col: current_pos.col - 1
+                })
+                this.highlight_target({
+                    row: current_pos.row - 1,
+                    col: current_pos.col + 1
+                })
                 break
-            
+
             case PieceType.king:
-                if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier), current_pos.col + (col_modifier))) {
-                    this.highlight_target(SquareGrid.square_by_grid_point({
-                        row: current_pos.row + (row_modifier),
-                        col: current_pos.col + (col_modifier)
-                    }))
-                }
+                this.highlight_target({
+                    row: current_pos.row + (row_modifier),
+                    col: current_pos.col + (col_modifier)
+                })
                 break
 
             default:
-                if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier * distance), current_pos.col + (col_modifier * distance))) {
-                    this.highlight_target(SquareGrid.square_by_grid_point({
-                        row: current_pos.row + (row_modifier * distance),
-                        col: current_pos.col + (col_modifier * distance)
-                    }))
-                }
+                this.highlight_target({
+                    row: current_pos.row + (row_modifier * distance),
+                    col: current_pos.col + (col_modifier * distance)
+                })
                 break
         }
     }
 
-    public check_for_checks(): void {
-        
+    public check_for_check(): void {
     }
 
     public check_if_attacking_squares_around_king(): void {

@@ -15,8 +15,6 @@ export default class King extends Piece implements Piece_Interface {
     directions: PieceDirections[]
     has_moved: boolean = false
     is_in_check: boolean = false
-    squares_surrounding_king: Square[] = []
-    blacklisted_squares: Square[] = []
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
@@ -85,6 +83,19 @@ export default class King extends Piece implements Piece_Interface {
             this.add_borders_to_castleable_rooks(rooks)
     }
 
+    private add_borders_to_castleable_rooks(rooks: Piece[]) {
+        rooks.forEach(piece => {
+            let rook = piece as Rook
+            if (
+                this.squares_between_king_and_rook_empty(rook) &&
+                !this.has_moved && !rook.has_moved
+            ) {
+                SquareGrid.square_by_grid_point({ row: rook.grid_point!.row, col: rook.grid_point!.col })
+                    .add_border()
+            }
+        })
+    }
+
     public squares_between_king_and_rook_empty(rook: Rook): boolean {
         if(this.has_moved) return false
         
@@ -135,19 +146,6 @@ export default class King extends Piece implements Piece_Interface {
                     }
             }
         }
-    }
-
-    private add_borders_to_castleable_rooks(rooks: Piece[]) {
-        rooks.forEach(piece => {
-            let rook = piece as Rook
-            if (
-                this.squares_between_king_and_rook_empty(rook) &&
-                !this.has_moved && !rook.has_moved
-            ) {
-                SquareGrid.square_by_grid_point({ row: rook.grid_point!.row, col: rook.grid_point!.col })
-                    .add_border()
-            }
-        })
     }
 }
 

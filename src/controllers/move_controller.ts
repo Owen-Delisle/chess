@@ -9,10 +9,11 @@ import type Rook from "../components/piece/pieces/rook"
 import type { CastleVars } from "../components/piece/pieces/king"
 import SquareID from "../components/square/square_id"
 import { GameController } from "./game_controller"
+import PieceList from "../components/piece/piece_list"
+import { not_color } from "../components/piece/color"
 
 export default class MoveController {
     private static focused_square: Square | undefined
-    private static paths_to_king: string[][]
 
     public static on_square_click(clicked_square: Square): void {
         if (this.conditions_for_standard_move(clicked_square)) {
@@ -166,9 +167,6 @@ export default class MoveController {
 
         await piece.move_to(selected_square)
 
-        //Check if piece that just moved put king in check
-        
-
         this.redraw()
     }
 
@@ -181,12 +179,7 @@ export default class MoveController {
         }
         return should_remove_piece
     }
-
-    private static check_if_new_position_checks_king(piece: Piece): boolean {
-        this.load_possible_moves_list_for(piece)
-        return true
-    }
-
+    
     private static async move_castle_pieces(new_king_square: Square, king_piece: Piece, new_rook_square: Square, rook_piece: Piece): Promise<void> {
         await king_piece.move_to(new_king_square)
         await rook_piece.move_to(new_rook_square)
