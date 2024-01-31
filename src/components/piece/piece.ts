@@ -164,4 +164,12 @@ export default class Piece {
                 break
         }
     }
+
+    public check_for_checks(): void {
+        
+    }
+
+    public check_if_attacking_squares_around_king(): void {
+
+    }
 }

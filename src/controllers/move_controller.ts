@@ -12,6 +12,7 @@ import { GameController } from "./game_controller"
 
 export default class MoveController {
     private static focused_square: Square | undefined
+    private static paths_to_king: string[][]
 
     public static on_square_click(clicked_square: Square): void {
         if (this.conditions_for_standard_move(clicked_square)) {
@@ -110,7 +111,8 @@ export default class MoveController {
             this.clear_focused_square_visuals()
             this.focused_square = clicked_square
             this.focused_square.add_border()
-            this.load_possible_moves_list(this.focused_square)
+            this.load_possible_moves_list_for(this.focused_square.piece_attached_to_square())
+            this.add_dots_to_possible_moves_for(this.focused_square.piece_attached_to_square())
         }
     }
 
@@ -127,26 +129,24 @@ export default class MoveController {
         }
     }
 
-    private static load_possible_moves_list(square: Square): void {
-        let piece_attached_to_square: Piece | undefined
-        piece_attached_to_square = square.piece_attached_to_square()
-
-        if (piece_attached_to_square != undefined) {
-            const typed_piece = Piece.piece_factory(piece_attached_to_square)
+    private static load_possible_moves_list_for(piece: Piece | undefined): void {
+        if (piece != undefined) {
+            const typed_piece = Piece.piece_factory(piece)
             typed_piece.calculate_possible_moves()
-            this.add_dots_to_possible_moves(typed_piece)
         }
     }
 
-    private static add_dots_to_possible_moves(piece: Piece): void {
-        piece.possible_moves.forEach(possible_move => {
-            let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
-            if (square != undefined) {
-                if (square.piece_attached_to_square() == undefined) {
-                    square.add_dot()
+    private static add_dots_to_possible_moves_for(piece: Piece | undefined): void {
+        if(piece != undefined) {
+            piece.possible_moves.forEach(possible_move => {
+                let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
+                if (square != undefined) {
+                    if (square.piece_attached_to_square() == undefined) {
+                        square.add_dot()
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     private static remove_visuals_from_possible_moves(piece: Piece): void {
@@ -166,6 +166,9 @@ export default class MoveController {
 
         await piece.move_to(selected_square)
 
+        //Check if piece that just moved put king in check
+        
+
         this.redraw()
     }
 
@@ -177,6 +180,11 @@ export default class MoveController {
             }
         }
         return should_remove_piece
+    }
+
+    private static check_if_new_position_checks_king(piece: Piece): boolean {
+        this.load_possible_moves_list_for(piece)
+        return true
     }
 
     private static async move_castle_pieces(new_king_square: Square, king_piece: Piece, new_rook_square: Square, rook_piece: Piece): Promise<void> {
