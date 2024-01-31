@@ -167,9 +167,26 @@ export default class King extends Piece implements Piece_Interface {
         If a piece the same color as the king moves onto a square in the path attacking the king, remove that path from the list and remove the square from the kings move blacklist.
         If every square that thing can move to is blacklisted, and no pieces of the same color can intercept the path of the attacking piece, and the king is currently in check, checkmate occurs and the game is over.
         If the same case above happens, but the king is not in check, the games ends in stalemate and the game is over.
+
+        Steps for option 2
+        Add an is_in_check variable property to King
+        Add a squares_surrounding_king array property to King
+        Add check_for_squares_around_king function that runs for each piece after it moves looking for squares in the squares_surrounding_king array
+        Add check_for_checks function that runs for each piece after it moves looking for the king of the oppsite color
+
+        Add a paths_to_squares_surrounding_king array property to Move_Controller that stores a list of paths that are currently attacking squares in square_surrounding_king.
+        Add a blacklisted_squares array property to King that stores any squares_surrounding_king squares being attacked
+        Add a paths_to_king array property to Move_Controller that stores a list of paths that put the king in check
+
+        Add a check in piece movement that removes an item in paths_to_squares_surrounding_king if a piece of the oposite color moves into the path
+        Add a check in piece removal that removes an item in paths_to_squares_surrounding_king if the piece at the start of that path is taken
+            If either of the above occur, remove the squares at the end of those paths from the kings blacklist
+
+        If the king is in check, and all the pieces surrounding the king are blacklisted, then check mate occurs and the game is over
+
 */
 
-        
+
 
     }
 }
