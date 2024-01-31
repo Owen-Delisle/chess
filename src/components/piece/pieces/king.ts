@@ -148,6 +148,30 @@ export default class King extends Piece implements Piece_Interface {
             }
         })
     }
+
+    private check_for_checks(): void {
+/*
+
+        Option 1:
+        For the kings current square and every square touching that square
+        Coduct a search in every direction away from that square that every type of piece on the board would do
+        If while doing a search starting from the kings position a piece of the opposite color that would conduct that type of search is found then the king is in check
+        If any of the squares one away from the king find a piece of that type of the opposite color, then the king cannot move there because it would be in check if it did
+        If the search from any of the surronding squares finds a piece of the same color as the king that can block the attack, its possible moves list should be updated with that possible move
+
+
+
+        Option 2:
+        When a Piece moves, immediately run its existing possible moves generator looking for the king. If it finds the king then the king is in check
+        If it finds a square surrounding the king, add the path from the attacking piece to the king to a list, blacklist that square from the kings possible movements. 
+        If a piece the same color as the king moves onto a square in the path attacking the king, remove that path from the list and remove the square from the kings move blacklist.
+        If every square that thing can move to is blacklisted, and no pieces of the same color can intercept the path of the attacking piece, and the king is currently in check, checkmate occurs and the game is over.
+        If the same case above happens, but the king is not in check, the games ends in stalemate and the game is over.
+*/
+
+        
+
+    }
 }
 
 export type CastleVars = {
