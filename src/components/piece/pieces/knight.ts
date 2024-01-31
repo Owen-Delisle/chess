@@ -27,8 +27,7 @@ export default class Knight extends Piece implements Piece_Interface {
         ]
     }
 
-    public calculate_possible_moves(): GridPoint[] {
-        let possible_moves: GridPoint[] = []
+    public calculate_possible_moves(): void {
         this.grid_point = SquareGrid.point_by_piece(this)
 
         this.directions.forEach(direction => {
@@ -61,7 +60,6 @@ export default class Knight extends Piece implements Piece_Interface {
                     console.log("Direction Not Found")
             }
         })
-        return possible_moves
     }
 
     private add_possible_move_point(

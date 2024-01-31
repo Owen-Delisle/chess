@@ -25,8 +25,7 @@ export default class Rook extends Piece implements Piece_Interface {
         this.rook_type = rook_type
     }
 
-    public calculate_possible_moves(): GridPoint[] {
-        let possible_moves: GridPoint[] = []
+    public calculate_possible_moves(): void {
         this.grid_point = SquareGrid.point_by_piece(this)
 
         this.directions.forEach(direction => {
@@ -47,7 +46,6 @@ export default class Rook extends Piece implements Piece_Interface {
                     console.log("Direction Not Found")
             }
         })
-        return possible_moves
     }
 
     public move_to(new_square: Square): Promise<void> {
