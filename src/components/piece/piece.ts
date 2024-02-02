@@ -77,8 +77,7 @@ export default class Piece {
         col_modifier: number,
         restrictions: string[][]
         ): void {
-        let index: number = this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves, restrictions)
-        this.check_piece_that_stopped_loop(current_pos, row_modifier, col_modifier, index)
+        this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves, restrictions)
     }
 
     public add_positions_to_list_in_direction_for_distance(
@@ -86,25 +85,29 @@ export default class Piece {
         distance: number,
         row_modifier: number,
         col_modifier: number,
-        positions_list: string[],
+        possible_moves: string[],
         restrictions: string[][]
-    ): number {
+    ): void {
         let index: number = 1
+        let moves_in_direction: string[] = []
+
+        let king_in_check: boolean = false
+
         console.log(restrictions)
-        while (this.conditions_to_continue_adding_positions(
-            current_pos,
-            distance,
-            row_modifier,
-            col_modifier,
-            restrictions,
-            index)
-        ) {
+
+        while (this.conditions_to_continue_adding_positions(current_pos,distance,row_modifier,col_modifier,index) && !king_in_check)
+        {
             let next_row: number = current_pos.row + (row_modifier * index)
             let next_col: number = current_pos.col + (col_modifier * index)
-            this.add_position_to_possible_moves(next_row, next_col , positions_list)
+            let pos_at_point: string = SquareID.pos_at_point({row: next_row, col: next_col})
+            moves_in_direction.push(pos_at_point)
             index++
+
+            king_in_check = this.needs_to_protect_king(next_row, next_col, restrictions)
         }
-        return index
+        
+        this.add_direction_to_possible_moves(moves_in_direction, possible_moves, restrictions)
+        this.check_piece_that_stopped_loop(current_pos, row_modifier, col_modifier, index)
     }
 
     public conditions_to_continue_adding_positions(
@@ -112,7 +115,6 @@ export default class Piece {
         move_distance: number,
         row_modifier: number,
         col_modifier: number,
-        restrictions: string[][],
         distance: number): boolean {
         let new_row: number = current_pos.row + (row_modifier * distance)
         let new_col: number = current_pos.col + (col_modifier * distance)
@@ -127,26 +129,33 @@ export default class Piece {
                 new_col
             ) 
         &&
-        this.needs_to_protect_king(new_row, new_col, restrictions)
-        &&
         distance < move_distance
     }
 
     private needs_to_protect_king(new_row: number, new_col: number, restrictions: string[][]): boolean {
-        let can_move_to_square: boolean = true
-        if(restrictions != undefined && restrictions.length > 0) {
+        let stop: boolean = false
+        if(restrictions.length > 0) {
             restrictions.forEach(restriction => {
-                if(!restriction.includes(SquareID.pos_at_point({row: new_row, col: new_col}))) {
-                    can_move_to_square = false
+                if(restriction.includes(SquareID.pos_at_point({row: new_row, col: new_col}))) {
+                    stop = true
                 }
             })
         }
-        return can_move_to_square
+        return stop
     }
 
-    public add_position_to_possible_moves(row: number, col: number, positions_list: string[]): void {
-        let square_id: string = SquareID.pos_at_point({ row: row, col: col })
-        positions_list.push(square_id)
+    public add_direction_to_possible_moves(moves_in_direction: string[], possible_moves: string[], restrictions: string[][]): void {
+        if(restrictions.length > 0) {
+            restrictions.forEach(restriction => {
+                restriction.forEach(r => {
+                    if(moves_in_direction.includes(r)) {
+                        possible_moves.push(moves_in_direction[moves_in_direction.length-1])
+                    }
+                })
+            })
+        } else {
+            possible_moves.push(...moves_in_direction)
+        }
     }
 
     public correct_conditions_of_piece_at_square(row: number, col: number): boolean {
@@ -174,7 +183,7 @@ export default class Piece {
     public piece_specific_highlight_steps(): void {
     }
 
-    public check_piece_that_stopped_loop(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number) {
+    public check_piece_that_stopped_loop(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number): void {
         switch (this.type) {
             case PieceType.pawn:
                 this.highlight_target({

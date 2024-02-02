@@ -22,13 +22,13 @@ export default class Pawn extends Piece implements Piece_Interface {
         ]
     }
 
-    public calculate_possible_moves(): void {
+    public calculate_possible_moves(restrictions: string[][]): void {
         this.grid_point = SquareGrid.point_by_piece(this)
 
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0, restrictions)
                     break;
                 case PieceDirections.north_east:
                     break;
