@@ -12,6 +12,7 @@ import type { Color } from "./color"
 import Board from "../board/board"
 import type Square from "../square/square"
 import SquareID from "../square/square_id"
+import type { PieceDirections } from "./piece_directions"
 
 export default class Piece {
     title: string
@@ -22,6 +23,7 @@ export default class Piece {
     color: Color
     grid_point: GridPoint | undefined
     possible_moves: string[] = []
+    directions: PieceDirections[] = []
 
     constructor(title: string, pos: string, svg: string, color: Color) {
         this.title = title
@@ -70,42 +72,60 @@ export default class Piece {
 
     public build_possible_moves_list(
         current_pos: GridPoint,
-        move_distance: number,
+        distance: number,
+        row_modifier: number,
+        col_modifier: number): void {
+        let index: number = this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves)
+        this.check_piece_that_stopped_loop(current_pos, row_modifier, col_modifier, index)
+    }
+
+    public add_positions_to_list_in_direction_for_distance(
+        current_pos: GridPoint,
+        distance: number,
         row_modifier: number,
         col_modifier: number,
-    ): void {
+        positions_list: string[]
+    ): number {
         let index: number = 1
-        while (this.conditions_to_continue_adding_moves(
+        while (this.conditions_to_continue_adding_positions(
             current_pos,
-            move_distance,
+            distance,
             row_modifier,
             col_modifier,
             index)
         ) {
-            let square_id: string = SquareID.pos_at_point({ row: current_pos.row + (row_modifier * index), col: current_pos.col + (col_modifier * index) })
-            this.possible_moves.push(square_id)
+            let next_row: number = current_pos.row + (row_modifier * index)
+            let next_col: number = current_pos.col + (col_modifier * index)
+            this.add_position_to_possible_moves(next_row, next_col , positions_list)
             index++
         }
-        this.setup_action_piece(current_pos, row_modifier, col_modifier, index)
+        return index
     }
 
-    public conditions_to_continue_adding_moves(
+    public conditions_to_continue_adding_positions(
         current_pos: GridPoint,
         move_distance: number,
         row_modifier: number,
         col_modifier: number,
         distance: number): boolean {
+        let new_row: number = current_pos.row + (row_modifier * distance)
+        let new_col: number = current_pos.col + (col_modifier * distance)
         return Board.are_coors_within_board_bounds(
-            current_pos.row + (row_modifier * distance),
-            current_pos.col + (col_modifier * distance)
-        ) &&
-            this.correct_conditions_of_piece_at_square
-                (
-                    current_pos.row + (row_modifier * distance),
-                    current_pos.col + (col_modifier * distance)
-                )
-            &&
-            distance < move_distance
+            new_row,
+            new_col
+        )
+        &&
+        this.correct_conditions_of_piece_at_square
+            (
+                new_row,
+                new_col
+            ) &&
+        distance < move_distance
+    }
+
+    public add_position_to_possible_moves(row: number, col: number, positions_list: string[]): void {
+        let square_id: string = SquareID.pos_at_point({ row: row, col: col })
+        positions_list.push(square_id)
     }
 
     public correct_conditions_of_piece_at_square(row: number, col: number): boolean {
@@ -133,7 +153,7 @@ export default class Piece {
     public piece_specific_highlight_steps(): void {
     }
 
-    private setup_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number) {
+    public check_piece_that_stopped_loop(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number) {
         switch (this.type) {
             case PieceType.pawn:
                 this.highlight_target({
@@ -160,12 +180,5 @@ export default class Piece {
                 })
                 break
         }
-    }
-
-    public check_for_check(): void {
-    }
-
-    public check_if_attacking_squares_around_king(): void {
-
     }
 }

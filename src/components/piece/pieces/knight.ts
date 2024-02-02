@@ -10,12 +10,12 @@ import SquareID from "../../../components/square/square_id"
 
 export default class Knight extends Piece implements Piece_Interface {
     move_distance: number = 3
-    directions: KnightDirections[]
+    knight_directions: KnightDirections[]
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
         this.type = type
-        this.directions = [
+        this.knight_directions = [
             KnightDirections.up_right,
             KnightDirections.right_up,
             KnightDirections.right_down,
@@ -30,7 +30,7 @@ export default class Knight extends Piece implements Piece_Interface {
     public calculate_possible_moves(): void {
         this.grid_point = SquareGrid.point_by_piece(this)
 
-        this.directions.forEach(direction => {
+        this.knight_directions.forEach(direction => {
             switch (direction) {
                 case KnightDirections.up_right:
                     this.add_possible_move_point(this.grid_point!, -2, 1)

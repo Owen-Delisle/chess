@@ -33,6 +33,7 @@ export default class MoveController {
 
     private static conditions_for_standard_move(clicked_square: Square): boolean {
         let conditions_met: boolean = false
+
         if (this.focused_square_is_defined()) {
             if (!this.focused_square?.is_empty()) {
                 if (this.focused_square?.piece_attached_to_square()?.possible_moves.includes(clicked_square.square_id)) {
