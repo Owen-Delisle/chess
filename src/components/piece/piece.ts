@@ -24,6 +24,7 @@ export default class Piece {
     grid_point: GridPoint | undefined
     possible_moves: string[] = []
     directions: PieceDirections[] = []
+    move_distance: number = 8
 
     constructor(title: string, pos: string, svg: string, color: Color) {
         this.title = title

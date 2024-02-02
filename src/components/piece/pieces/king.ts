@@ -77,21 +77,22 @@ export default class King extends Piece implements Piece_Interface {
             const initial_row: number = this.grid_point!.row + row_modifier
             const initial_col: number = this.grid_point!.col + col_modifier
 
-            this.find_check_path_to_king(initial_row, initial_col, row_modifier, col_modifier, direction, paths_to_king, [])
+            this.find_check_path_to_king(initial_row, initial_col, row_modifier, col_modifier, direction, 1, paths_to_king, [])
 
         })
         return paths_to_king
     }
 
     private find_check_path_to_king(
-        row: number, 
-        col: number, 
-        row_modifier: number, 
-        col_modifier: number, 
+        row: number,
+        col: number,
+        row_modifier: number,
+        col_modifier: number,
         direction: PieceDirections,
-        list_of_paths: string[][], 
+        distance: number,
+        list_of_paths: string[][],
         path_to_king: string[]
-        ): void {
+    ): void {
 
         if (row < 0 || row >= Board.row_size || col < 0 || col >= Board.row_size) {
             return
@@ -99,29 +100,28 @@ export default class King extends Piece implements Piece_Interface {
 
         const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row, col })
 
-        if(piece !== undefined) {
+        if (piece !== undefined) {
             if (piece.color === this.color) {
                 return
             } else {
-                if (piece.directions.includes(direction)) {
-                    if(path_to_king.length > 0) {
-                        path_to_king.push(SquareID.pos_at_point({row: row,col: col}))
-                        list_of_paths.push(path_to_king)
-                    }
+                if (piece.directions.includes(direction) && piece.move_distance >= distance) {
+                    path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
+                    list_of_paths.push(path_to_king)
                     return
                 }
             }
         } else {
-            path_to_king.push(SquareID.pos_at_point({row,col}))
+            path_to_king.push(SquareID.pos_at_point({ row, col }))
             return this.find_check_path_to_king(
-                row + row_modifier, 
-                col + col_modifier, 
-                row_modifier, 
-                col_modifier, 
+                row + row_modifier,
+                col + col_modifier,
+                row_modifier,
+                col_modifier,
                 direction,
-                list_of_paths, 
+                ++distance,
+                list_of_paths,
                 path_to_king
-                )
+            )
         }
     }
 

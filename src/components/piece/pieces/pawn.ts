@@ -10,7 +10,7 @@ import type Square from "../../square/square"
 export default class Pawn extends Piece implements Piece_Interface {
     move_distance: number = 3
     directions: PieceDirections[]
-    minimum_move_distance = 2
+    minimum_move_distance: number = 2
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
