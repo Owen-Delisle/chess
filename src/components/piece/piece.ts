@@ -74,8 +74,10 @@ export default class Piece {
         current_pos: GridPoint,
         distance: number,
         row_modifier: number,
-        col_modifier: number): void {
-        let index: number = this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves)
+        col_modifier: number,
+        restrictions: string[][]
+        ): void {
+        let index: number = this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves, restrictions)
         this.check_piece_that_stopped_loop(current_pos, row_modifier, col_modifier, index)
     }
 
@@ -84,14 +86,17 @@ export default class Piece {
         distance: number,
         row_modifier: number,
         col_modifier: number,
-        positions_list: string[]
+        positions_list: string[],
+        restrictions: string[][]
     ): number {
         let index: number = 1
+        console.log(restrictions)
         while (this.conditions_to_continue_adding_positions(
             current_pos,
             distance,
             row_modifier,
             col_modifier,
+            restrictions,
             index)
         ) {
             let next_row: number = current_pos.row + (row_modifier * index)
@@ -107,6 +112,7 @@ export default class Piece {
         move_distance: number,
         row_modifier: number,
         col_modifier: number,
+        restrictions: string[][],
         distance: number): boolean {
         let new_row: number = current_pos.row + (row_modifier * distance)
         let new_col: number = current_pos.col + (col_modifier * distance)
@@ -119,8 +125,23 @@ export default class Piece {
             (
                 new_row,
                 new_col
-            ) &&
+            ) 
+        &&
+        this.needs_to_protect_king(new_row, new_col, restrictions)
+        &&
         distance < move_distance
+    }
+
+    private needs_to_protect_king(new_row: number, new_col: number, restrictions: string[][]): boolean {
+        let can_move_to_square: boolean = true
+        if(restrictions != undefined && restrictions.length > 0) {
+            restrictions.forEach(restriction => {
+                if(!restriction.includes(SquareID.pos_at_point({row: new_row, col: new_col}))) {
+                    can_move_to_square = false
+                }
+            })
+        }
+        return can_move_to_square
     }
 
     public add_position_to_possible_moves(row: number, col: number, positions_list: string[]): void {

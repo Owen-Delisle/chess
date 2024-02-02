@@ -76,11 +76,9 @@ export default class King extends Piece implements Piece_Interface {
             const col_modifier: number = piece_direction_modifier(direction).col
             const initial_row: number = this.grid_point!.row + row_modifier
             const initial_col: number = this.grid_point!.col + col_modifier
-            const path_to_king: string[] = this.find_check_path_to_king(initial_row, initial_col, row_modifier, col_modifier, direction, [])
-            
-            if(path_to_king.length > 0) {
-                paths_to_king.push()
-            }
+
+            this.find_check_path_to_king(initial_row, initial_col, row_modifier, col_modifier, direction, paths_to_king, [])
+
         })
         return paths_to_king
     }
@@ -90,23 +88,26 @@ export default class King extends Piece implements Piece_Interface {
         col: number, 
         row_modifier: number, 
         col_modifier: number, 
-        direction: PieceDirections, 
+        direction: PieceDirections,
+        list_of_paths: string[][], 
         path_to_king: string[]
-        ): string[] {
+        ): void {
 
         if (row < 0 || row >= Board.row_size || col < 0 || col >= Board.row_size) {
-            return []
+            return
         }
 
         const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row, col })
 
         if(piece !== undefined) {
             if (piece.color === this.color) {
-                return []
+                return
             } else {
                 if (piece.directions.includes(direction)) {
-                    console.log(piece, piece.pos, path_to_king)
-                    return path_to_king
+                    if(path_to_king.length > 0) {
+                        list_of_paths.push(path_to_king)
+                    }
+                    return
                 }
             }
         } else {
@@ -116,7 +117,8 @@ export default class King extends Piece implements Piece_Interface {
                 col + col_modifier, 
                 row_modifier, 
                 col_modifier, 
-                direction, 
+                direction,
+                list_of_paths, 
                 path_to_king
                 )
         }

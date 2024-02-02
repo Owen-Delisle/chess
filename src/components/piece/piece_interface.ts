@@ -3,5 +3,5 @@ import type { GridPoint } from "../../global_types/grid_point"
 export default interface Piece_Interface {
     move_distance: number
     
-    calculate_possible_moves(): void
+    calculate_possible_moves(restrictions: string[][]): void
 }

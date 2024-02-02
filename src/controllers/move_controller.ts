@@ -133,8 +133,9 @@ export default class MoveController {
 
     private static load_possible_moves_list_for(piece: Piece | undefined): void {
         if (piece != undefined) {
+            const paths_to_checked_king: string[][] = PieceList.king_by_color(piece.color).paths_to_checked_king()
             const typed_piece = Piece.piece_factory(piece)
-            typed_piece.calculate_possible_moves()
+            typed_piece.calculate_possible_moves(paths_to_checked_king)
         }
     }
 
