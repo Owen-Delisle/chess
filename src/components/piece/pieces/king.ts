@@ -103,6 +103,9 @@ export default class King extends Piece implements Piece_Interface {
         blocking_pieces: Piece[]
     ): void {
 
+        const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row, col })
+
+        // If all squares in direction have been searched and no piece of other color that can attack king in this direction have been found
         if (row < 0 || row >= Board.row_size || col < 0 || col >= Board.row_size) {
             while (blocking_pieces.length > 0) {
                 blocking_pieces.pop();
@@ -110,9 +113,9 @@ export default class King extends Piece implements Piece_Interface {
             return
         }
 
-        const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row, col })
-
+        // If Square has Piece
         if (piece !== undefined) {
+            // if Piece is same color as king
             if (piece.color === this.color) {
                 if (!blocking_pieces.includes(piece)) {
                     blocking_pieces.push(piece)
@@ -128,8 +131,11 @@ export default class King extends Piece implements Piece_Interface {
                         blocking_pieces
                     )
                 }
+            // If Piece is not the color of this king
             } else {
+                // If Piece can attack king
                 if (piece.directions.includes(direction) && piece.move_distance >= distance) {
+                    // If there are no pieces blocking the attacking path to the king
                     if (blocking_pieces.length < 1) {
                         path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
                         list_of_paths.push(path_to_king)
@@ -137,8 +143,12 @@ export default class King extends Piece implements Piece_Interface {
                     return
                 }
             }
+            // If square does not have piece
         } else {
-            // path_to_king.push(SquareID.pos_at_point({ row, col }))
+            //If no pieces are blocking attacking path to king
+            if (blocking_pieces.length < 1) { 
+                path_to_king.push(SquareID.pos_at_point({ row, col }))
+            }
             return this.find_check_path_to_king(
                 row + row_modifier,
                 col + col_modifier,
