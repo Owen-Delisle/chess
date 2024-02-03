@@ -76,9 +76,13 @@ export default class King extends Piece implements Piece_Interface {
             const col_modifier: number = piece_direction_modifier(direction).col
             const initial_row: number = this.grid_point!.row + row_modifier
             const initial_col: number = this.grid_point!.col + col_modifier
+            let blocking_pieces: Piece[] = []
 
-            this.find_check_path_to_king(initial_row, initial_col, row_modifier, col_modifier, direction, 1, paths_to_king, [])
-
+            this.find_check_path_to_king(initial_row, initial_col, row_modifier, col_modifier, direction, 1, paths_to_king, [], blocking_pieces)
+            console.log(direction, blocking_pieces)
+            if(blocking_pieces.length === 1) {
+                blocking_pieces[0]!.is_blocking_check = true
+            }
         })
         return paths_to_king
     }
@@ -91,10 +95,12 @@ export default class King extends Piece implements Piece_Interface {
         direction: PieceDirections,
         distance: number,
         list_of_paths: string[][],
-        path_to_king: string[]
+        path_to_king: string[],
+        blocking_pieces: Piece[]
     ): void {
 
         if (row < 0 || row >= Board.row_size || col < 0 || col >= Board.row_size) {
+            blocking_pieces = []
             return
         }
 
@@ -102,16 +108,34 @@ export default class King extends Piece implements Piece_Interface {
 
         if (piece !== undefined) {
             if (piece.color === this.color) {
-                return
+                if(!blocking_pieces.includes(piece)) {
+                    blocking_pieces.push(piece)
+                    return this.find_check_path_to_king(
+                        row + row_modifier,
+                        col + col_modifier,
+                        row_modifier,
+                        col_modifier,
+                        direction,
+                        ++distance,
+                        list_of_paths,
+                        path_to_king,
+                        blocking_pieces
+                    )
+                }
             } else {
                 if (piece.directions.includes(direction) && piece.move_distance >= distance) {
-                    path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
+                    if(blocking_pieces.length > 0) {
+                        path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
+                    }
                     list_of_paths.push(path_to_king)
                     return
                 }
             }
         } else {
-            path_to_king.push(SquareID.pos_at_point({ row, col }))
+            if(blocking_pieces.length > 0) {
+                path_to_king.push(SquareID.pos_at_point({ row, col }))
+            }
+            console.log(SquareID.pos_at_point({ row, col }))
             return this.find_check_path_to_king(
                 row + row_modifier,
                 col + col_modifier,
@@ -120,7 +144,8 @@ export default class King extends Piece implements Piece_Interface {
                 direction,
                 ++distance,
                 list_of_paths,
-                path_to_king
+                path_to_king,
+                blocking_pieces
             )
         }
     }

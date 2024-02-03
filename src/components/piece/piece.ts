@@ -25,6 +25,7 @@ export default class Piece {
     possible_moves: string[] = []
     directions: PieceDirections[] = []
     move_distance: number = 8
+    is_blocking_check: boolean = false
 
     constructor(title: string, pos: string, svg: string, color: Color) {
         this.title = title
@@ -92,11 +93,9 @@ export default class Piece {
         let index: number = 1
         let moves_in_direction: string[] = []
 
-        let king_in_check: boolean = false
+        let must_block_check: boolean = false
 
-        console.log(restrictions)
-
-        while (this.conditions_to_continue_adding_positions(current_pos,distance,row_modifier,col_modifier,index) && !king_in_check)
+        while (this.conditions_to_continue_adding_positions(current_pos,distance,row_modifier,col_modifier,index) && !must_block_check)
         {
             let next_row: number = current_pos.row + (row_modifier * index)
             let next_col: number = current_pos.col + (col_modifier * index)
@@ -104,7 +103,7 @@ export default class Piece {
             moves_in_direction.push(pos_at_point)
             index++
 
-            king_in_check = this.needs_to_protect_king(next_row, next_col, restrictions)
+            must_block_check = this.must_move_to_block_check(next_row, next_col, restrictions)
         }
         
         this.add_direction_to_possible_moves(moves_in_direction, possible_moves, restrictions)
@@ -131,9 +130,11 @@ export default class Piece {
             ) 
         &&
         distance < move_distance
+        &&
+        this.is_blocking_check === false
     }
 
-    private needs_to_protect_king(new_row: number, new_col: number, restrictions: string[][]): boolean {
+    private must_move_to_block_check(new_row: number, new_col: number, restrictions: string[][]): boolean {
         let stop: boolean = false
         if(restrictions.length > 0) {
             restrictions.forEach(restriction => {
@@ -212,4 +213,8 @@ export default class Piece {
                 break
         }
     }
+
+    // public set_blocking_check() {
+    //     this.
+    // }
 }

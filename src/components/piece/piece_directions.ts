@@ -22,12 +22,12 @@ export function piece_direction_modifier(direction: PieceDirections): GridPoint 
         case PieceDirections.south_east:
             return {row: 1, col: 1}
         case PieceDirections.south:
-            return {row: -1, col: 0}
+            return {row: 1, col: 0}
         case PieceDirections.south_west:
-            return {row: -1, col: -1}
+            return {row: 1, col: -1}
         case PieceDirections.west:
             return {row: 0, col: -1}
         case PieceDirections.north_west:
-            return {row: 0, col: -1}
+            return {row: -1, col: -1}
     }
 }
