@@ -213,8 +213,4 @@ export default class Piece {
                 break
         }
     }
-
-    // public set_blocking_check() {
-    //     this.
-    // }
 }
