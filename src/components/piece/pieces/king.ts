@@ -102,9 +102,6 @@ export default class King extends Piece implements Piece_Interface {
         path_to_king: string[],
         blocking_pieces: Piece[]
     ): void {
-
-        const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row, col })
-
         // If all squares in direction have been searched and no piece of other color that can attack king in this direction have been found
         if (row < 0 || row >= Board.row_size || col < 0 || col >= Board.row_size) {
             while (blocking_pieces.length > 0) {
@@ -113,53 +110,41 @@ export default class King extends Piece implements Piece_Interface {
             return
         }
 
-        // If Square has Piece
-        if (piece !== undefined) {
-            // if Piece is same color as king
-            if (piece.color === this.color) {
-                if (!blocking_pieces.includes(piece)) {
-                    blocking_pieces.push(piece)
-                    return this.find_check_path_to_king(
-                        row + row_modifier,
-                        col + col_modifier,
-                        row_modifier,
-                        col_modifier,
-                        direction,
-                        ++distance,
-                        list_of_paths,
-                        path_to_king,
-                        blocking_pieces
-                    )
-                }
-            // If Piece is not the color of this king
-            } else {
-                // If Piece can attack king
-                if (piece.directions.includes(direction) && piece.move_distance >= distance) {
-                    // If there are no pieces blocking the attacking path to the king
-                    if (blocking_pieces.length < 1) {
-                        path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
-                        list_of_paths.push(path_to_king)
-                    }
-                    return
-                }
+        //If square is in bound
+        const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row, col })
+        console.log("Checking Square:", SquareID.pos_at_point({row,col}))
+
+        // If Square has piece and piece is the same color as the king
+        if(piece !== undefined && piece.color === this.color) {
+            if(!blocking_pieces.includes(piece)) {
+                blocking_pieces.push(piece)
+                return this.find_check_path_to_king(row + row_modifier,col + col_modifier,row_modifier,col_modifier,direction,++distance,list_of_paths,path_to_king,blocking_pieces)
             }
-            // If square does not have piece
-        } else {
-            //If no pieces are blocking attacking path to king
+        }
+
+        // If Square has piece and piece is NOT the same color as the king
+        if(piece !== undefined && piece.color !== this.color) {
+            //If piece could attack king
+            if(piece.directions.includes(direction)) {
+                //If there are no pieces blocking path
+                if(blocking_pieces.length < 1) {
+                    path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
+                    list_of_paths.push(path_to_king)
+                }
+                // If there is only one piece blocking king
+                if(blocking_pieces.length === 1) {
+                    blocking_pieces[0].is_blocking_check = true
+                }
+                return
+            }
+        }
+
+        // If square is empty
+        if(piece === undefined) {
             if (blocking_pieces.length < 1) { 
                 path_to_king.push(SquareID.pos_at_point({ row, col }))
             }
-            return this.find_check_path_to_king(
-                row + row_modifier,
-                col + col_modifier,
-                row_modifier,
-                col_modifier,
-                direction,
-                ++distance,
-                list_of_paths,
-                path_to_king,
-                blocking_pieces
-            )
+            return this.find_check_path_to_king(row + row_modifier,col + col_modifier,row_modifier,col_modifier,direction,++distance,list_of_paths,path_to_king,blocking_pieces)
         }
     }
 
