@@ -27,8 +27,8 @@ export default class PieceList {
     public static piece_list: Piece[] = [
         //TODO -- WRONG PIECES, DELETE LATER
         new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
-        new Queen("queen_b", "C7", Queen_B_SVG, PieceType.queen, Color.black),
-        new Rook("rook_b1", "A4", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
+        new Queen("queen_b", "D7", Queen_B_SVG, PieceType.queen, Color.black),
+        // new Rook("rook_b1", "A4", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
         new King("king_w", "D3", King_W_SVG, PieceType.king, Color.white)
         //END TODO
 
