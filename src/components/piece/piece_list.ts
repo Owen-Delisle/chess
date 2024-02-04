@@ -32,7 +32,7 @@ export default class PieceList {
         // new Rook("rook_b1", "A6", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
         new Bishop("bishop_b1", "A6", Bishop_B_SVG, PieceType.bishop, Color.black),
 
-        new Queen("queen_w", "C5", Queen_W_SVG, PieceType.queen, Color.white),
+        new Queen("queen_w", "A4", Queen_W_SVG, PieceType.queen, Color.white),
         new Rook("rook_w2", "E6", Rook_W_SVG, PieceType.rook, Color.white, RookType.short_rook),
         new Pawn("pawn_w1", "B6", Pawn_W_SVG, PieceType.pawn, Color.white),
         //END TODO

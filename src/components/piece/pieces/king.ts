@@ -82,7 +82,7 @@ export default class King extends Piece implements Piece_Interface {
         return list
     }
 
-    public paths_to_checked_king(): string[][] {
+    public paths_to_checked_king(): string[] {
         let paths_to_king: string[][] = []
         this.directions.forEach(direction => {
             const row_modifier: number = piece_direction_modifier(direction).row
@@ -101,7 +101,7 @@ export default class King extends Piece implements Piece_Interface {
                 })
             }
         })
-        return paths_to_king
+        return paths_to_king.flat()
     }
 
     private find_check_path_to_king(

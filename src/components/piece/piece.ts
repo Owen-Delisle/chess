@@ -77,7 +77,7 @@ export default class Piece {
         distance: number,
         row_modifier: number,
         col_modifier: number,
-        restrictions: string[][]
+        restrictions: string[]
         ): void {
         this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves, restrictions)
     }
@@ -88,7 +88,7 @@ export default class Piece {
         row_modifier: number,
         col_modifier: number,
         possible_moves: string[],
-        restrictions: string[][]
+        restrictions: string[]
     ): void {
         let index: number = 1
         let moves_in_direction: string[] = []
@@ -134,26 +134,22 @@ export default class Piece {
         this.is_blocking_check === false
     }
 
-    private must_move_to_block_check(new_row: number, new_col: number, restrictions: string[][]): boolean {
+    private must_move_to_block_check(new_row: number, new_col: number, restrictions: string[]): boolean {
         let stop: boolean = false
         if(restrictions.length > 0) {
-            restrictions.forEach(restriction => {
-                if(restriction.includes(SquareID.pos_at_point({row: new_row, col: new_col}))) {
-                    stop = true
-                }
-            })
+            if(restrictions.includes(SquareID.pos_at_point({row: new_row, col: new_col}))) {
+                stop = true
+            }
         }
         return stop
     }
 
-    public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[], restrictions: string[][]): void {
+    public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[], restrictions: string[]): void {
         if(restrictions.length > 0) {
             restrictions.forEach(restriction => {
-                restriction.forEach(r => {
-                    if(moves_in_direction.includes(r)) {
-                        possible_moves.push(moves_in_direction[moves_in_direction.length-1])
-                    }
-                })
+                if(moves_in_direction.includes(restriction)) {
+                    possible_moves.push(moves_in_direction[moves_in_direction.length-1])
+                }
             })
         } else {
             possible_moves.push(...moves_in_direction)

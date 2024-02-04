@@ -22,7 +22,7 @@ export default class Pawn extends Piece implements Piece_Interface {
         ]
     }
 
-    public calculate_possible_moves(restrictions: string[][]): void {
+    public calculate_possible_moves(restrictions: string[]): void {
         this.grid_point = SquareGrid.point_by_piece(this)
 
         this.directions.forEach(direction => {
