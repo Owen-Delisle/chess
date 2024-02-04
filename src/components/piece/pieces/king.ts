@@ -17,6 +17,7 @@ export default class King extends Piece implements Piece_Interface {
     move_distance: number = 2
     directions: PieceDirections[]
     has_moved: boolean = false
+    black_listed_squares: string[] = []
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
@@ -39,28 +40,28 @@ export default class King extends Piece implements Piece_Interface {
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0, [])
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0, this.legal_squares_surrounding_king())
                     break;
                 case PieceDirections.north_east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 1, [])
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 1, this.legal_squares_surrounding_king())
                     break;
                 case PieceDirections.east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, 1, [])
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, 1, this.legal_squares_surrounding_king())
                     break;
                 case PieceDirections.south_east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 1, [])
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 1, this.legal_squares_surrounding_king())
                     break;
                 case PieceDirections.south:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 0, [])
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 0, this.legal_squares_surrounding_king())
                     break;
                 case PieceDirections.south_west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, -1, [])
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, -1, this.legal_squares_surrounding_king())
                     break;
                 case PieceDirections.west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, -1, [])
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, -1, this.legal_squares_surrounding_king())
                     break;
                 case PieceDirections.north_west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, -1, [])
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, -1, this.legal_squares_surrounding_king())
                     break;
                 default:
                     console.log("Direction Not Found")
@@ -68,22 +69,25 @@ export default class King extends Piece implements Piece_Interface {
         })
     }
 
-    private squares_surrounding_king(): string[] {
+    private legal_squares_surrounding_king(): string[] {
         let list: string[] = []
         let gp: GridPoint | undefined = this.grid_point
         for (let i = -1; i <= 1; i++) {
             for (let k = -1; k <= 1; k++) {
                 if (i !== 0 || k !== 0) {
-                    list.push(SquareID.pos_at_point({ row: gp!.row + i, col: gp!.col + k }))
+                    if(!this.black_listed_squares.includes(SquareID.pos_at_point({ row: gp!.row + i, col: gp!.col + k }))) {
+                        list.push(SquareID.pos_at_point({ row: gp!.row + i, col: gp!.col + k }))
+                    }
                 }
             }
         }
-        console.log(list)
         return list
     }
 
     public paths_to_checked_king(): string[] {
         let paths_to_king: string[][] = []
+        this.black_listed_squares = []
+        
         this.directions.forEach(direction => {
             const row_modifier: number = piece_direction_modifier(direction).row
             const col_modifier: number = piece_direction_modifier(direction).col
@@ -93,7 +97,7 @@ export default class King extends Piece implements Piece_Interface {
 
             this.find_check_path_to_king(initial_row, initial_col, row_modifier, col_modifier, direction, 1, paths_to_king, [], blocking_pieces)
             if (blocking_pieces.length === 1) {
-                blocking_pieces[0]!.is_blocking_check = true
+                blocking_pieces[blocking_pieces.length-1]!.is_blocking_check = true
             }
             if (blocking_pieces.length > 1) {
                 blocking_pieces.forEach(piece => {
@@ -127,7 +131,7 @@ export default class King extends Piece implements Piece_Interface {
         const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row, col })
         const new_row: number = row + row_modifier
         const new_col: number = col + col_modifier
-        console.log("Checking Square:", SquareID.pos_at_point({ row, col }))
+        // console.log("Checking Square:", SquareID.pos_at_point({ row, col }))
 
         // If Square has piece and piece is the same color as the king
         if (piece !== undefined && piece.color === this.color) {
@@ -143,8 +147,11 @@ export default class King extends Piece implements Piece_Interface {
             if (piece.directions.includes(direction)) {
                 //If there are no pieces blocking path
                 if (blocking_pieces.length < 1) {
-                    path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
-                    list_of_paths.push(path_to_king)
+                    if(piece.move_distance >= distance) {
+                        path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
+                        list_of_paths.push(path_to_king)
+                        this.continue_check_path_of_king(direction)
+                    }
                 }
                 // If there is only one piece blocking king
                 if (blocking_pieces.length === 1) {
@@ -163,12 +170,18 @@ export default class King extends Piece implements Piece_Interface {
         }
     }
 
-    // TODO - FUCKING FIGURE IT
     private continue_check_path_of_king(direction: PieceDirections) {
-        const initial_row: number = this.grid_point!.row + inverse(piece_direction_modifier(direction).row)
-        const initial_col: number = this.grid_point!.col + inverse(piece_direction_modifier(direction).col)
+        if(Board.are_coors_within_board_bounds(this.grid_point!.row + piece_direction_modifier(direction).row, this.grid_point!.col + piece_direction_modifier(direction).col)) {
+            const posetive_row: number = this.grid_point!.row + piece_direction_modifier(direction).row
+            const posetive_col: number = this.grid_point!.col + piece_direction_modifier(direction).col
+            this.black_listed_squares.push(SquareID.pos_at_point({row: posetive_row, col: posetive_col}))
+        }
 
-
+        if(Board.are_coors_within_board_bounds(this.grid_point!.row + piece_direction_modifier(direction).row, this.grid_point!.col + piece_direction_modifier(direction).col)) {
+            const negative_row: number = this.grid_point!.row - inverse(piece_direction_modifier(direction).row)
+            const negative_col: number = this.grid_point!.col - inverse(piece_direction_modifier(direction).col)
+            this.black_listed_squares.push(SquareID.pos_at_point({row: negative_row, col: negative_col}))
+        }
     }
 
     public move_to(new_square: Square): Promise<void> {

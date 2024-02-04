@@ -26,15 +26,9 @@ import Rook_W_SVG from "./assets/rook-w.svg"
 export default class PieceList {
     public static piece_list: Piece[] = [
         //TODO -- WRONG PIECES, DELETE LATER
-        new King("king_b", "A8", King_B_SVG, PieceType.king, Color.black),
-        new King("king_w", "D3", King_W_SVG, PieceType.king, Color.white),
-
-        // new Rook("rook_b1", "A6", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
-        new Bishop("bishop_b1", "A6", Bishop_B_SVG, PieceType.bishop, Color.black),
-
-        new Queen("queen_w", "A4", Queen_W_SVG, PieceType.queen, Color.white),
-        new Rook("rook_w2", "E6", Rook_W_SVG, PieceType.rook, Color.white, RookType.short_rook),
-        new Pawn("pawn_w1", "B6", Pawn_W_SVG, PieceType.pawn, Color.white),
+        new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
+        new Queen("queen_b", "D8", Queen_B_SVG, PieceType.queen, Color.black),
+        new King("king_w", "D3", King_W_SVG, PieceType.king, Color.white)
         //END TODO
 
         // new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
