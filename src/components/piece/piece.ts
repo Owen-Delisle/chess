@@ -106,7 +106,7 @@ export default class Piece {
             must_block_check = this.must_move_to_block_check(next_row, next_col, restrictions)
         }
         
-        this.add_direction_to_possible_moves(moves_in_direction, possible_moves, restrictions)
+        this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves, restrictions)
         this.check_piece_that_stopped_loop(current_pos, row_modifier, col_modifier, index)
     }
 
@@ -146,7 +146,7 @@ export default class Piece {
         return stop
     }
 
-    public add_direction_to_possible_moves(moves_in_direction: string[], possible_moves: string[], restrictions: string[][]): void {
+    public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[], restrictions: string[][]): void {
         if(restrictions.length > 0) {
             restrictions.forEach(restriction => {
                 restriction.forEach(r => {
