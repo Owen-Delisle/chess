@@ -31,3 +31,22 @@ export function piece_direction_modifier(direction: PieceDirections): GridPoint 
             return {row: -1, col: -1}
     }
 }
+
+export function direction_by_modifier(modifier: {row: number, col: number}): PieceDirections | undefined {
+        if(modifier.row === -1 && modifier.col === 0)
+            return PieceDirections.north 
+        if(modifier.row === -1 && modifier.col === 1)
+            return PieceDirections.north_east
+        if (modifier.row === 0 && modifier.col === 1)
+            return PieceDirections.east
+        if (modifier.row === 1 && modifier.col === 1)
+            return PieceDirections.south_east
+        if (modifier.row === 1 && modifier.col === 0)
+            return PieceDirections.south
+        if (modifier.row === 1 && modifier.col === -1)
+            return PieceDirections.south_west
+        if (modifier.row === 0 && modifier.col === -1)
+            return PieceDirections.west
+        if (modifier.row === -1 && modifier.col === -1)
+            return PieceDirections.north_west
+}
