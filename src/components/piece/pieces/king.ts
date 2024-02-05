@@ -93,91 +93,13 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     private legal_squares_surrounding_king(): string[] {
-        const psk = this.positions_surrounding_king()
-        const apak = this.attacked_points_around_king()
-        return psk.filter(position => !apak.includes(position)); 
-    }
-
-
-    public render_check_paths_list(): string[][] {
-        let paths: string[][] = []
-        const check_paths_list: {direction: PieceDirections, ordered_pieces_list: Piece[]}[] = this.check_path_lists_from_all_directions()
-        check_paths_list.forEach(path => {
-            paths.push(this.render_path(path))
-        });
-        return paths
-    }
-
-    private render_path(path: {direction: PieceDirections, ordered_pieces_list: Piece[]}): string[] {
-        let blocking_pieces: Piece[] = []
-        let first_attacking_piece: Piece | undefined
-
-        path.ordered_pieces_list.forEach(piece => {
-            if(piece.color === this.color) {
-                if(first_attacking_piece === undefined) {
-                    blocking_pieces.push(piece)
-                }
-            }
-
-            if(piece.color !== this.color && first_attacking_piece === undefined) {
-                if(piece.directions.includes(path.direction) && piece.move_distance >= distance_between_points(piece.grid_point!, this.grid_point!)) {
-                    first_attacking_piece = piece
-                }
-            }
-        });
-
-        if(blocking_pieces.length === 1 && first_attacking_piece !== undefined) {
-            return SquareID.pos_between_points(blocking_pieces[0].grid_point!, first_attacking_piece.grid_point!)
-        }
-
-        if(blocking_pieces.length === 0 && first_attacking_piece !== undefined) {
-            console.log(SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!))
-            return SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!)
-        }
+        // const psk = this.positions_surrounding_king()
+        // const apak = this.attacked_points_around_king()
+        // return psk.filter(position => !apak.includes(position));
         return []
     }
 
-    private check_path_lists_from_all_directions(): {direction: PieceDirections, ordered_pieces_list: Piece[]}[]{
-        let check_path_lists: {direction: PieceDirections, ordered_pieces_list: Piece[]}[] = []
-        this.directions.forEach(direction => {
-            check_path_lists.push({direction: direction, ordered_pieces_list: this.list_of_pieces_in_direction(direction)})
-        })
-        return check_path_lists
-    }
-
-    private list_of_pieces_in_direction(direction: PieceDirections): Piece[] {
-        const starting_point: GridPoint = this.grid_point!
-        let current_row: number = starting_point.row
-        let current_col: number = starting_point.col
-        let pieces_in_path: Piece[] = []
-        let modifier: {row: number, col: number} = piece_direction_modifier(direction)
-
-        while(!this.stopping_conditions(current_row, current_col, modifier)) {
-            current_row = current_row + modifier.row
-            current_col = current_col + modifier.col
-            let piece_at_position = SquareGrid.piece_by_grid_point({row: current_row, col: current_col})
-            if(piece_at_position != undefined) {
-                pieces_in_path.push(piece_at_position)
-            }
-        }
-
-        return pieces_in_path
-    } 
-
-    private stopping_conditions(current_row: number, current_col: number, modifier: {row: number, col: number}): boolean {
-        let should_stop: boolean = false
-
-        let next_row: number = current_row + modifier.row
-        let next_col: number = current_col + modifier.col
-
-        if (next_row < 0 || next_row >= Board.row_size || next_col < 0 || next_col >= Board.row_size) {
-            should_stop = true
-        }
-
-        return should_stop
-    }
-
-    public attacked_points_around_king(): string[] {
+        public attacked_points_around_king(): string[] {
         let attacked_positions: string[] = []
         let index: number
 
@@ -250,6 +172,86 @@ export default class King extends Piece implements Piece_Interface {
         }
 
         return false
+    }
+
+
+    public render_check_paths_list(): string[][] {
+        let paths: string[][] = []
+        const check_paths_list: {direction: PieceDirections, ordered_pieces_list: Piece[]}[] = this.check_path_lists_from_all_directions()
+        check_paths_list.forEach(path => {
+            paths.push(this.render_path(path))
+        });
+        return paths
+    }
+
+    private render_path(path: {direction: PieceDirections, ordered_pieces_list: Piece[]}): string[] {
+        let blocking_pieces: Piece[] = []
+        let first_attacking_piece: Piece | undefined
+
+        path.ordered_pieces_list.forEach(piece => {
+            if(piece.color === this.color) {
+                if(first_attacking_piece === undefined) {
+                    blocking_pieces.push(piece)
+                }
+            }
+
+            if(piece.color !== this.color && first_attacking_piece === undefined) {
+                let distance_between_attacker_and_king: number = distance_between_points(piece.grid_point!, this.grid_point!)-1
+                if(piece.directions.includes(path.direction) && piece.move_distance >= distance_between_attacker_and_king) {
+                    first_attacking_piece = piece
+                }
+            }
+        });
+
+        if(blocking_pieces.length === 1 && first_attacking_piece !== undefined) {
+            const points_between_attacker_and_king: string[] = SquareID.pos_between_points(first_attacking_piece.grid_point!, this.grid_point!)
+            return points_between_attacker_and_king
+        }
+
+        if(blocking_pieces.length === 0 && first_attacking_piece !== undefined) {
+            return SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!)
+        }
+        return []
+    }
+
+    private check_path_lists_from_all_directions(): {direction: PieceDirections, ordered_pieces_list: Piece[]}[]{
+        let check_path_lists: {direction: PieceDirections, ordered_pieces_list: Piece[]}[] = []
+        this.directions.forEach(direction => {
+            check_path_lists.push({direction: direction, ordered_pieces_list: this.list_of_pieces_in_direction(direction)})
+        })
+        return check_path_lists
+    }
+
+    private list_of_pieces_in_direction(direction: PieceDirections): Piece[] {
+        const starting_point: GridPoint = this.grid_point!
+        let current_row: number = starting_point.row
+        let current_col: number = starting_point.col
+        let pieces_in_path: Piece[] = []
+        let modifier: {row: number, col: number} = piece_direction_modifier(direction)
+
+        while(!this.stopping_conditions(current_row, current_col, modifier)) {
+            current_row = current_row + modifier.row
+            current_col = current_col + modifier.col
+            let piece_at_position = SquareGrid.piece_by_grid_point({row: current_row, col: current_col})
+            if(piece_at_position != undefined) {
+                pieces_in_path.push(piece_at_position)
+            }
+        }
+
+        return pieces_in_path
+    } 
+
+    private stopping_conditions(current_row: number, current_col: number, modifier: {row: number, col: number}): boolean {
+        let should_stop: boolean = false
+
+        let next_row: number = current_row + modifier.row
+        let next_col: number = current_col + modifier.col
+
+        if (next_row < 0 || next_row >= Board.row_size || next_col < 0 || next_col >= Board.row_size) {
+            should_stop = true
+        }
+
+        return should_stop
     }
 
     public move_to(new_square: Square): Promise<void> {

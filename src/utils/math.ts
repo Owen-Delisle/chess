@@ -9,9 +9,9 @@ export function inverse(number: number): number {
 }
 
 export function distance_between_points(point_one: GridPoint, point_two: GridPoint) {
-	const deltaX = point_two.row - point_one.row;
-	const deltaY = point_two.col - point_one.col;
+	const delta_x = point_two.row - point_one.row - 1;
+	const delta_y = point_two.col - point_one.col - 1;
 
-	const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+	const distance = Math.floor(Math.sqrt(delta_x ** 2 + delta_y ** 2))
 	return distance;
 }

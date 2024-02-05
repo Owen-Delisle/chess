@@ -93,16 +93,12 @@ export default class Piece {
         let index: number = 1
         let moves_in_direction: string[] = []
 
-        let must_block_check: boolean = false
-
-        while (this.conditions_to_continue_adding_positions(current_pos, distance, row_modifier, col_modifier, index) && !must_block_check) {
+        while (this.conditions_to_continue_adding_positions(current_pos, distance, row_modifier, col_modifier, index) ){
             let next_row: number = current_pos.row + (row_modifier * index)
             let next_col: number = current_pos.col + (col_modifier * index)
             let pos_at_point: string = SquareID.pos_at_point({ row: next_row, col: next_col })
             moves_in_direction.push(pos_at_point)
             index++
-
-            must_block_check = this.must_move_to_block_check(next_row, next_col, restrictions)
         }
 
         this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves, restrictions)
@@ -133,23 +129,9 @@ export default class Piece {
         return true
     }
 
-    private must_move_to_block_check(new_row: number, new_col: number, restrictions: string[]): boolean {
-        let stop: boolean = false
-        if (restrictions.length > 0) {
-            if (restrictions.includes(SquareID.pos_at_point({ row: new_row, col: new_col }))) {
-                stop = true
-            }
-        }
-        return stop
-    }
-
     public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[], restrictions: string[]): void {
         if (restrictions.length > 0) {
-            restrictions.forEach(restriction => {
-                if (moves_in_direction.includes(restriction)) {
-                    possible_moves.push(moves_in_direction[moves_in_direction.length - 1])
-                }
-            })
+            possible_moves.push(...moves_in_direction.filter(move => restrictions.includes(move)))
         } else {
             possible_moves.push(...moves_in_direction)
         }
