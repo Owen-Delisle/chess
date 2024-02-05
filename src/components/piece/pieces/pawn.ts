@@ -8,8 +8,8 @@ import type Square from "../../square/square"
 
 export default class Pawn extends Piece implements Piece_Interface {
     
-    current_move_distance: number = 3
-    minimum_move_distance: number = 2
+    current_move_distance: number = 2
+    minimum_move_distance: number = 1
 
     // Attacking distance
     move_distance: number = 1

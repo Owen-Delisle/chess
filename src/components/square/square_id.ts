@@ -51,4 +51,33 @@ export default class SquareID {
         let position: number = (point.row*8)+point.col
         return SquareID.positions[position]
     }
+
+    public static pos_between_points(point_one: GridPoint, point_two: GridPoint): string[] {
+        const positions: string[] = [];
+
+        // Calculate the differences in x and y coordinates
+        const delta_row = point_two.row - point_one.row;
+        const delta_col = point_two.col - point_one.col;
+
+        // Determine the number of points to interpolate
+        const number_of_points = Math.max(Math.abs(delta_row), Math.abs(delta_col));
+
+        // Calculate the step sizes for x and y coordinates
+        const row_step = delta_row / number_of_points;
+        const col_step = delta_col / number_of_points;
+
+        // Generate the interpolated points
+        for (let i = 0; i <= number_of_points; i++) {
+            const interpolated_point: GridPoint = {
+            row: point_one.row + i * row_step,
+            col: point_one.col + i * col_step,
+            };
+
+            const interpolated_position: string = this.pos_at_point(interpolated_point)
+
+            positions.push(interpolated_position);
+        }
+
+        return positions;
+    }
 }

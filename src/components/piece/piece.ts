@@ -25,7 +25,7 @@ export default class Piece {
     possible_moves: string[] = []
     directions: PieceDirections[] = []
     move_distance: number = 8
-    is_blocking_check: boolean = false
+    position_restrictions: string[] = []
 
     constructor(title: string, pos: string, svg: string, color: Color) {
         this.title = title
@@ -77,8 +77,8 @@ export default class Piece {
         distance: number,
         row_modifier: number,
         col_modifier: number,
-        restrictions: string[]
-        ): void {
+        restrictions: string[],
+    ): void {
         this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves, restrictions)
     }
 
@@ -95,17 +95,16 @@ export default class Piece {
 
         let must_block_check: boolean = false
 
-        while (this.conditions_to_continue_adding_positions(current_pos,distance,row_modifier,col_modifier,index) && !must_block_check)
-        {
+        while (this.conditions_to_continue_adding_positions(current_pos, distance, row_modifier, col_modifier, index) && !must_block_check) {
             let next_row: number = current_pos.row + (row_modifier * index)
             let next_col: number = current_pos.col + (col_modifier * index)
-            let pos_at_point: string = SquareID.pos_at_point({row: next_row, col: next_col})
+            let pos_at_point: string = SquareID.pos_at_point({ row: next_row, col: next_col })
             moves_in_direction.push(pos_at_point)
             index++
 
             must_block_check = this.must_move_to_block_check(next_row, next_col, restrictions)
         }
-        
+
         this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves, restrictions)
         this.check_piece_that_stopped_loop(current_pos, row_modifier, col_modifier, index)
     }
@@ -118,26 +117,26 @@ export default class Piece {
         distance: number): boolean {
         let new_row: number = current_pos.row + (row_modifier * distance)
         let new_col: number = current_pos.col + (col_modifier * distance)
-        return Board.are_coors_within_board_bounds(
-            new_row,
-            new_col
-        )
-        &&
-        this.correct_conditions_of_piece_at_square
-            (
-                new_row,
-                new_col
-            ) 
-        &&
-        distance < move_distance
-        &&
-        this.is_blocking_check === false
+
+        if (!Board.are_coors_within_board_bounds(new_row, new_col)) {
+            return false
+        }
+
+        if (!this.new_square_is_empty({row: new_row, col: new_col})) {
+            return false
+        }
+
+        if (distance > move_distance) {
+            return false
+        }
+
+        return true
     }
 
     private must_move_to_block_check(new_row: number, new_col: number, restrictions: string[]): boolean {
         let stop: boolean = false
-        if(restrictions.length > 0) {
-            if(restrictions.includes(SquareID.pos_at_point({row: new_row, col: new_col}))) {
+        if (restrictions.length > 0) {
+            if (restrictions.includes(SquareID.pos_at_point({ row: new_row, col: new_col }))) {
                 stop = true
             }
         }
@@ -145,10 +144,10 @@ export default class Piece {
     }
 
     public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[], restrictions: string[]): void {
-        if(restrictions.length > 0) {
+        if (restrictions.length > 0) {
             restrictions.forEach(restriction => {
-                if(moves_in_direction.includes(restriction)) {
-                    possible_moves.push(moves_in_direction[moves_in_direction.length-1])
+                if (moves_in_direction.includes(restriction)) {
+                    possible_moves.push(moves_in_direction[moves_in_direction.length - 1])
                 }
             })
         } else {
@@ -156,9 +155,8 @@ export default class Piece {
         }
     }
 
-    public correct_conditions_of_piece_at_square(row: number, col: number): boolean {
-        const grid_point: GridPoint = { row, col }
-        return SquareGrid.piece_by_grid_point(grid_point)! === undefined
+    public new_square_is_empty(point: GridPoint): boolean {
+        return SquareGrid.piece_by_grid_point(point)! === undefined
     }
 
     public highlight_target(grid_point: GridPoint): void {

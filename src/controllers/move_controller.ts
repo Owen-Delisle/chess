@@ -10,7 +10,6 @@ import type { CastleVars } from "../components/piece/pieces/king"
 import SquareID from "../components/square/square_id"
 import { GameController } from "./game_controller"
 import PieceList from "../components/piece/piece_list"
-import { not_color } from "../components/piece/color"
 
 export default class MoveController {
     private static focused_square: Square | undefined
@@ -133,8 +132,9 @@ export default class MoveController {
 
     private static load_possible_moves_list_for(piece: Piece | undefined): void {
         if (piece != undefined) {
-            const paths_to_checked_king: string[] = PieceList.king_by_color(piece.color).paths_to_checked_king()
             const typed_piece = Piece.piece_factory(piece)
+            const king_piece: King = PieceList.king_by_color(piece.color)
+            const paths_to_checked_king: string[] = king_piece.render_check_paths_list().flat()
             typed_piece.calculate_possible_moves(paths_to_checked_king)
         }
     }

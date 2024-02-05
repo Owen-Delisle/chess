@@ -7,7 +7,7 @@ import type { GridPoint } from "../../../global_types/grid_point"
 import SquareGrid from "../../../models/square_grid"
 
 export default class Queen extends Piece implements Piece_Interface {
-    move_distance: number = 8
+    move_distance: number = 7
     directions: PieceDirections[]
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {

@@ -11,13 +11,12 @@ import { RookType } from "./rook"
 import PieceList from "../piece_list"
 import SquareID from "../../../components/square/square_id"
 import Board from "../../../components/board/board"
-import { inverse } from "../../../utils/math"
+import { distance_between_points } from "../../../utils/math"
 
 export default class King extends Piece implements Piece_Interface {
     move_distance: number = 1
     directions: PieceDirections[]
     has_moved: boolean = false
-    // black_listed_squares: string[] = []
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
@@ -67,7 +66,6 @@ export default class King extends Piece implements Piece_Interface {
                     console.log("Direction Not Found")
             }
         })
-        console.log(this.attacked_points_around_king())
     }
 
     private points_surrounding_king(): GridPoint[] {
@@ -100,100 +98,87 @@ export default class King extends Piece implements Piece_Interface {
         return psk.filter(position => !apak.includes(position)); 
     }
 
-    public paths_to_checked_king(): string[] {
-        let paths_to_king: string[][] = []
-        // this.black_listed_squares = []
-        
-        this.directions.forEach(direction => {
-            const row_modifier: number = piece_direction_modifier(direction).row
-            const col_modifier: number = piece_direction_modifier(direction).col
-            const initial_row: number = this.grid_point!.row + row_modifier
-            const initial_col: number = this.grid_point!.col + col_modifier
-            let blocking_pieces: Piece[] = []
 
-            this.find_check_path_to_king(initial_row, initial_col, row_modifier, col_modifier, direction, 1, paths_to_king, [], blocking_pieces)
-            if (blocking_pieces.length === 1) {
-                blocking_pieces[blocking_pieces.length-1]!.is_blocking_check = true
-            }
-            if (blocking_pieces.length > 1) {
-                blocking_pieces.forEach(piece => {
-                    piece.is_blocking_check = false
-                })
-            }
-        })
-        return paths_to_king.flat()
+    public render_check_paths_list(): string[][] {
+        let paths: string[][] = []
+        const check_paths_list: {direction: PieceDirections, ordered_pieces_list: Piece[]}[] = this.check_path_lists_from_all_directions()
+        check_paths_list.forEach(path => {
+            paths.push(this.render_path(path))
+        });
+        return paths
     }
 
-    private find_check_path_to_king(
-        row: number,
-        col: number,
-        row_modifier: number,
-        col_modifier: number,
-        direction: PieceDirections,
-        distance: number,
-        list_of_paths: string[][],
-        path_to_king: string[],
-        blocking_pieces: Piece[]
-    ): void {
-        // If all squares in direction have been searched and no piece of other color that can attack king in this direction have been found
-        if (row < 0 || row >= Board.row_size || col < 0 || col >= Board.row_size) {
-            while (blocking_pieces.length > 0) {
-                blocking_pieces.pop();
-            }
-            return
-        }
+    private render_path(path: {direction: PieceDirections, ordered_pieces_list: Piece[]}): string[] {
+        let blocking_pieces: Piece[] = []
+        let first_attacking_piece: Piece | undefined
 
-        // if(list_of_paths.length === 0) {
-        //     while (blocking_pieces.length > 0) {
-        //         blocking_pieces.pop();
-        //     }
-        // }
-
-        //If square is in bound
-        const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row, col })
-        const new_row: number = row + row_modifier
-        const new_col: number = col + col_modifier
-        // console.log("Checking Square:", SquareID.pos_at_point({ row, col }))
-
-        // If Square has piece and piece is the same color as the king
-        if (piece !== undefined && piece.color === this.color) {
-            if (!blocking_pieces.includes(piece) && list_of_paths.length > 0) {
-                blocking_pieces.push(piece)
-                return this.find_check_path_to_king(new_row, new_col, row_modifier, col_modifier, direction, ++distance, list_of_paths, path_to_king, blocking_pieces)
-            }
-        }
-
-        // If Square has piece and piece is NOT the same color as the king
-        if (piece !== undefined && piece.color !== this.color) {
-            //If piece could attack king
-            if (piece.directions.includes(direction)) {
-                //If there are no pieces blocking path
-                if (blocking_pieces.length < 1) {
-                    if(piece.move_distance >= distance) {
-                        path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
-                        list_of_paths.push(path_to_king)
-                    }
+        path.ordered_pieces_list.forEach(piece => {
+            if(piece.color === this.color) {
+                if(first_attacking_piece === undefined) {
+                    blocking_pieces.push(piece)
                 }
-                // If there is only one piece blocking king
-                if (blocking_pieces.length === 1) {
-                    blocking_pieces[0].is_blocking_check = true
+            }
+
+            if(piece.color !== this.color && first_attacking_piece === undefined) {
+                if(piece.directions.includes(path.direction) && piece.move_distance >= distance_between_points(piece.grid_point!, this.grid_point!)) {
+                    first_attacking_piece = piece
                 }
-                return
+            }
+        });
+
+        if(blocking_pieces.length === 1 && first_attacking_piece !== undefined) {
+            return SquareID.pos_between_points(blocking_pieces[0].grid_point!, first_attacking_piece.grid_point!)
+        }
+
+        if(blocking_pieces.length === 0 && first_attacking_piece !== undefined) {
+            console.log(SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!))
+            return SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!)
+        }
+        return []
+    }
+
+    private check_path_lists_from_all_directions(): {direction: PieceDirections, ordered_pieces_list: Piece[]}[]{
+        let check_path_lists: {direction: PieceDirections, ordered_pieces_list: Piece[]}[] = []
+        this.directions.forEach(direction => {
+            check_path_lists.push({direction: direction, ordered_pieces_list: this.list_of_pieces_in_direction(direction)})
+        })
+        return check_path_lists
+    }
+
+    private list_of_pieces_in_direction(direction: PieceDirections): Piece[] {
+        const starting_point: GridPoint = this.grid_point!
+        let current_row: number = starting_point.row
+        let current_col: number = starting_point.col
+        let pieces_in_path: Piece[] = []
+        let modifier: {row: number, col: number} = piece_direction_modifier(direction)
+
+        while(!this.stopping_conditions(current_row, current_col, modifier)) {
+            current_row = current_row + modifier.row
+            current_col = current_col + modifier.col
+            let piece_at_position = SquareGrid.piece_by_grid_point({row: current_row, col: current_col})
+            if(piece_at_position != undefined) {
+                pieces_in_path.push(piece_at_position)
             }
         }
 
-        // If square is empty
-        if (piece === undefined) {
-            if (blocking_pieces.length < 1) {
-                path_to_king.push(SquareID.pos_at_point({ row, col }))
-            }
-            return this.find_check_path_to_king(new_row, new_col, row_modifier, col_modifier, direction, ++distance, list_of_paths, path_to_king, blocking_pieces)
+        return pieces_in_path
+    } 
+
+    private stopping_conditions(current_row: number, current_col: number, modifier: {row: number, col: number}): boolean {
+        let should_stop: boolean = false
+
+        let next_row: number = current_row + modifier.row
+        let next_col: number = current_col + modifier.col
+
+        if (next_row < 0 || next_row >= Board.row_size || next_col < 0 || next_col >= Board.row_size) {
+            should_stop = true
         }
+
+        return should_stop
     }
 
     public attacked_points_around_king(): string[] {
         let attacked_positions: string[] = []
-        let has_found_attacker: boolean = false
         let index: number
 
         this.points_surrounding_king().forEach(point => {
@@ -210,7 +195,6 @@ export default class King extends Piece implements Piece_Interface {
                 const next_col = initial_col + col_modifier
 
                 if(this.check_if_point_around_king_is_attacked(initial_row, initial_col, next_row, next_col, row_modifier, col_modifier, direction, 1)) {
-                    // console.log("FOUND AN ATTACKER AT:", SquareID.pos_at_point({row: initial_row, col: initial_col}))
                     attacked_positions.push(SquareID.pos_at_point({row: initial_row, col: initial_col}))
                 }
                 index++
@@ -237,7 +221,6 @@ export default class King extends Piece implements Piece_Interface {
 
         //If square is in bound
         const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row: next_row, col: next_col })
-        console.log("Square:", SquareID.pos_at_point({row: starting_row, col: starting_col}), "Checking Square:", SquareID.pos_at_point({ row: next_row, col: next_col }))
 
         // If Square has piece and piece is the same color as the king
         if (piece !== undefined && piece.color === this.color && piece !== this) {
@@ -268,20 +251,6 @@ export default class King extends Piece implements Piece_Interface {
 
         return false
     }
-
-    // private continue_check_path_of_king(direction: PieceDirections) {
-    //     if(Board.are_coors_within_board_bounds(this.grid_point!.row + piece_direction_modifier(direction).row, this.grid_point!.col + piece_direction_modifier(direction).col)) {
-    //         const posetive_row: number = this.grid_point!.row + piece_direction_modifier(direction).row
-    //         const posetive_col: number = this.grid_point!.col + piece_direction_modifier(direction).col
-    //         this.black_listed_squares.push(SquareID.pos_at_point({row: posetive_row, col: posetive_col}))
-    //     }
-
-    //     if(Board.are_coors_within_board_bounds(this.grid_point!.row + piece_direction_modifier(direction).row, this.grid_point!.col + piece_direction_modifier(direction).col)) {
-    //         const negative_row: number = this.grid_point!.row - inverse(piece_direction_modifier(direction).row)
-    //         const negative_col: number = this.grid_point!.col - inverse(piece_direction_modifier(direction).col)
-    //         this.black_listed_squares.push(SquareID.pos_at_point({row: negative_row, col: negative_col}))
-    //     }
-    // }
 
     public move_to(new_square: Square): Promise<void> {
         return new Promise(async resolve => {
