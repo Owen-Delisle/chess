@@ -14,7 +14,7 @@ import Board from "../../../components/board/board"
 import { inverse } from "../../../utils/math"
 
 export default class King extends Piece implements Piece_Interface {
-    move_distance: number = 2
+    move_distance: number = 1
     directions: PieceDirections[]
     has_moved: boolean = false
     // black_listed_squares: string[] = []
@@ -143,6 +143,12 @@ export default class King extends Piece implements Piece_Interface {
             return
         }
 
+        // if(list_of_paths.length === 0) {
+        //     while (blocking_pieces.length > 0) {
+        //         blocking_pieces.pop();
+        //     }
+        // }
+
         //If square is in bound
         const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row, col })
         const new_row: number = row + row_modifier
@@ -151,7 +157,7 @@ export default class King extends Piece implements Piece_Interface {
 
         // If Square has piece and piece is the same color as the king
         if (piece !== undefined && piece.color === this.color) {
-            if (!blocking_pieces.includes(piece)) {
+            if (!blocking_pieces.includes(piece) && list_of_paths.length > 0) {
                 blocking_pieces.push(piece)
                 return this.find_check_path_to_king(new_row, new_col, row_modifier, col_modifier, direction, ++distance, list_of_paths, path_to_king, blocking_pieces)
             }
@@ -166,7 +172,6 @@ export default class King extends Piece implements Piece_Interface {
                     if(piece.move_distance >= distance) {
                         path_to_king.push(SquareID.pos_at_point({ row: row, col: col }))
                         list_of_paths.push(path_to_king)
-                        // this.continue_check_path_of_king(direction)
                     }
                 }
                 // If there is only one piece blocking king
