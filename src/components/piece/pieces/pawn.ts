@@ -28,13 +28,13 @@ export default class Pawn extends Piece implements Piece_Interface {
 
     }
 
-    public calculate_possible_moves(restrictions: string[]): void {
+    public calculate_possible_moves(): void {
         this.grid_point = SquareGrid.point_by_piece(this)
 
         this.movement_directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.build_possible_moves_list(this.grid_point!, this.current_move_distance, -1, 0, restrictions)
+                    this.build_possible_moves_list(this.grid_point!, this.current_move_distance, -1, 0)
                     break;
                 default:
                     console.log("Direction Not Found")

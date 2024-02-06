@@ -34,33 +34,35 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public calculate_possible_moves(): void {
+        this.render_legal_squares_surrounding_king()
+        
         this.grid_point = SquareGrid.point_by_piece(this)
 
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0, this.legal_squares_surrounding_king())
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0)
                     break;
                 case PieceDirections.north_east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 1, this.legal_squares_surrounding_king())
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 1)
                     break;
                 case PieceDirections.east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, 1, this.legal_squares_surrounding_king())
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, 1)
                     break;
                 case PieceDirections.south_east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 1, this.legal_squares_surrounding_king())
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 1)
                     break;
                 case PieceDirections.south:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 0, this.legal_squares_surrounding_king())
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 0)
                     break;
                 case PieceDirections.south_west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, -1, this.legal_squares_surrounding_king())
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, -1)
                     break;
                 case PieceDirections.west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, -1, this.legal_squares_surrounding_king())
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, -1)
                     break;
                 case PieceDirections.north_west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, -1, this.legal_squares_surrounding_king())
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, -1)
                     break;
                 default:
                     console.log("Direction Not Found")
@@ -92,11 +94,10 @@ export default class King extends Piece implements Piece_Interface {
         return list
     }
 
-    private legal_squares_surrounding_king(): string[] {
-        // const psk = this.positions_surrounding_king()
-        // const apak = this.attacked_points_around_king()
-        // return psk.filter(position => !apak.includes(position));
-        return []
+    public render_legal_squares_surrounding_king(): void {
+        const psk = this.positions_surrounding_king()
+        const apak = this.attacked_points_around_king()
+        this.position_restrictions = psk.filter(position => !apak.includes(position));
     }
 
         public attacked_points_around_king(): string[] {
@@ -175,16 +176,14 @@ export default class King extends Piece implements Piece_Interface {
     }
 
 
-    public render_check_paths_list(): string[][] {
-        let paths: string[][] = []
+    public render_check_paths_list(): void {
         const check_paths_list: {direction: PieceDirections, ordered_pieces_list: Piece[]}[] = this.check_path_lists_from_all_directions()
         check_paths_list.forEach(path => {
-            paths.push(this.render_path(path))
+            this.render_path(path)
         });
-        return paths
     }
 
-    private render_path(path: {direction: PieceDirections, ordered_pieces_list: Piece[]}): string[] {
+    private render_path(path: {direction: PieceDirections, ordered_pieces_list: Piece[]}): void {
         let blocking_pieces: Piece[] = []
         let first_attacking_piece: Piece | undefined
 
@@ -205,13 +204,13 @@ export default class King extends Piece implements Piece_Interface {
 
         if(blocking_pieces.length === 1 && first_attacking_piece !== undefined) {
             const points_between_attacker_and_king: string[] = SquareID.pos_between_points(first_attacking_piece.grid_point!, this.grid_point!)
-            return points_between_attacker_and_king
+            blocking_pieces[0].position_restrictions = points_between_attacker_and_king
         }
 
         if(blocking_pieces.length === 0 && first_attacking_piece !== undefined) {
-            return SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!)
+            const points_between_attacker_and_king: string[] = SquareID.pos_between_points(first_attacking_piece.grid_point!, this.grid_point!)
+            Piece.position_restrictions = points_between_attacker_and_king
         }
-        return []
     }
 
     private check_path_lists_from_all_directions(): {direction: PieceDirections, ordered_pieces_list: Piece[]}[]{

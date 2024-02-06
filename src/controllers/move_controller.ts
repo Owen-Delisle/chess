@@ -134,8 +134,9 @@ export default class MoveController {
         if (piece != undefined) {
             const typed_piece = Piece.piece_factory(piece)
             const king_piece: King = PieceList.king_by_color(piece.color)
-            const paths_to_checked_king: string[] = king_piece.render_check_paths_list().flat()
-            typed_piece.calculate_possible_moves(paths_to_checked_king)
+            PieceList.clear_position_restrictions_property()
+            king_piece.render_check_paths_list()
+            typed_piece.calculate_possible_moves()
         }
     }
 

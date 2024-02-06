@@ -27,6 +27,8 @@ export default class Piece {
     move_distance: number = 8
     position_restrictions: string[] = []
 
+    static position_restrictions: string[] = []
+
     constructor(title: string, pos: string, svg: string, color: Color) {
         this.title = title
         this.pos = pos
@@ -77,9 +79,8 @@ export default class Piece {
         distance: number,
         row_modifier: number,
         col_modifier: number,
-        restrictions: string[],
     ): void {
-        this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves, restrictions)
+        this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves)
     }
 
     public add_positions_to_list_in_direction_for_distance(
@@ -88,7 +89,6 @@ export default class Piece {
         row_modifier: number,
         col_modifier: number,
         possible_moves: string[],
-        restrictions: string[]
     ): void {
         let index: number = 1
         let moves_in_direction: string[] = []
@@ -101,7 +101,7 @@ export default class Piece {
             index++
         }
 
-        this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves, restrictions)
+        this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves)
         this.check_piece_that_stopped_loop(current_pos, row_modifier, col_modifier, index)
     }
 
@@ -129,9 +129,11 @@ export default class Piece {
         return true
     }
 
-    public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[], restrictions: string[]): void {
-        if (restrictions.length > 0) {
-            possible_moves.push(...moves_in_direction.filter(move => restrictions.includes(move)))
+    public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[]): void {
+        if (this.position_restrictions.length > 0) {
+            possible_moves.push(...moves_in_direction.filter(move => this.position_restrictions.includes(move)))
+        } else if(Piece.position_restrictions.length > 0) {
+            possible_moves.push(...moves_in_direction.filter(move => Piece.position_restrictions.includes(move)))
         } else {
             possible_moves.push(...moves_in_direction)
         }

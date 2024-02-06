@@ -25,22 +25,22 @@ export default class Rook extends Piece implements Piece_Interface {
         this.rook_type = rook_type
     }
 
-    public calculate_possible_moves(restrictions: string[]): void {
+    public calculate_possible_moves(): void {
         this.grid_point = SquareGrid.point_by_piece(this)
 
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0, restrictions)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0)
                     break;
                 case PieceDirections.east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, 1, restrictions)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, 1)
                     break;
                 case PieceDirections.south:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 0, restrictions)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 0)
                     break;
                 case PieceDirections.west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, -1, restrictions)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, -1)
                     break;
                 default:
                     console.log("Direction Not Found")
