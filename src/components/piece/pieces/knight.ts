@@ -7,55 +7,55 @@ import type { PieceType } from "../piece_types"
 import Board from "../../board/board"
 import type Square from "../../../components/square/square"
 import SquareID from "../../../components/square/square_id"
-import { KnightDirections, knight_direction_modifier } from "../piece_directions"
+import { PieceDirections, piece_direction_modifier } from "../piece_directions"
 
 export default class Knight extends Piece implements Piece_Interface {
     move_distance: number = 3
-    knight_directions: KnightDirections[]
+    directions: PieceDirections[]
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
         this.type = type
-        this.knight_directions = [
-            KnightDirections.up_right,
-            KnightDirections.right_up,
-            KnightDirections.right_down,
-            KnightDirections.down_right,
-            KnightDirections.down_left,
-            KnightDirections.left_down,
-            KnightDirections.left_up,
-            KnightDirections.up_left,
+        this.directions = [
+            PieceDirections.up_right,
+            PieceDirections.right_up,
+            PieceDirections.right_down,
+            PieceDirections.down_right,
+            PieceDirections.down_left,
+            PieceDirections.left_down,
+            PieceDirections.left_up,
+            PieceDirections.up_left,
         ]
     }
 
     public calculate_possible_moves(): void {
         this.grid_point = SquareGrid.point_by_piece(this)
 
-        this.knight_directions.forEach(direction => {
+        this.directions.forEach(direction => {
             switch (direction) {
-                case KnightDirections.up_right:
-                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.up_right))
+                case PieceDirections.up_right:
+                    this.add_possible_move_point(this.grid_point!, piece_direction_modifier(PieceDirections.up_right))
                     break;
-                case KnightDirections.right_up:
-                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.right_up))
+                case PieceDirections.right_up:
+                    this.add_possible_move_point(this.grid_point!, piece_direction_modifier(PieceDirections.right_up))
                     break;
-                case KnightDirections.right_down:
-                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.right_down))
+                case PieceDirections.right_down:
+                    this.add_possible_move_point(this.grid_point!, piece_direction_modifier(PieceDirections.right_down))
                     break;
-                case KnightDirections.down_right:
-                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.down_right))
+                case PieceDirections.down_right:
+                    this.add_possible_move_point(this.grid_point!, piece_direction_modifier(PieceDirections.down_right))
                     break;
-                case KnightDirections.down_left:
-                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.down_left))
+                case PieceDirections.down_left:
+                    this.add_possible_move_point(this.grid_point!, piece_direction_modifier(PieceDirections.down_left))
                     break;
-                case KnightDirections.left_down:
-                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.left_down))
+                case PieceDirections.left_down:
+                    this.add_possible_move_point(this.grid_point!, piece_direction_modifier(PieceDirections.left_down))
                     break;
-                case KnightDirections.left_up:
-                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.left_up))
+                case PieceDirections.left_up:
+                    this.add_possible_move_point(this.grid_point!, piece_direction_modifier(PieceDirections.left_up))
                     break;
-                case KnightDirections.up_left:
-                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.up_left))
+                case PieceDirections.up_left:
+                    this.add_possible_move_point(this.grid_point!, piece_direction_modifier(PieceDirections.up_left))
                     break;
                 default:
                     console.log("Direction Not Found")

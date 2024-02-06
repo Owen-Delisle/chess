@@ -1,7 +1,7 @@
 import type { GridPoint } from "../../../global_types/grid_point"
 import { Color } from "../color"
 import Piece from "../piece"
-import { PieceDirections, piece_direction_modifier, direction_by_modifier } from "../piece_directions"
+import { PieceDirections, KnightDirections, piece_direction_modifier, direction_by_modifier } from "../piece_directions"
 import type Piece_Interface from "../piece_interface"
 import { PieceType } from "../piece_types"
 import SquareGrid from "../../../models/square_grid"
@@ -17,6 +17,8 @@ export default class King extends Piece implements Piece_Interface {
     move_distance: number = 1
     directions: PieceDirections[]
     has_moved: boolean = false
+    check_directions: number[] = Object.keys(PieceDirections).filter(key => !isNaN(parseInt(key, 10))).map(key => parseInt(key, 10))
+
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
@@ -95,19 +97,16 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public render_legal_squares_surrounding_king(): void {
-        const psk = this.positions_surrounding_king()
-        const apak = this.attacked_points_around_king()
-        this.position_restrictions = psk.filter(position => !apak.includes(position));
+        const positions_surrounding_king = this.positions_surrounding_king()
+        const attacked_points_around_king = this.attacked_points_around_king()
+        this.position_restrictions = positions_surrounding_king.filter(position => !attacked_points_around_king.includes(position));
     }
 
     public attacked_points_around_king(): string[] {
         let attacked_positions: string[] = []
-        let index: number
 
         this.points_surrounding_king().forEach(point => {
-            index = 0
-            while (index < this.directions.length) {
-                const direction = this.directions[index]
+            this.check_directions.forEach(direction => {
                 const row_modifier: number = piece_direction_modifier(direction).row
                 const col_modifier: number = piece_direction_modifier(direction).col
 
@@ -120,8 +119,7 @@ export default class King extends Piece implements Piece_Interface {
                 if (this.check_if_point_around_king_is_attacked(initial_row, initial_col, next_row, next_col, row_modifier, col_modifier, direction, 1)) {
                     attacked_positions.push(SquareID.pos_at_point({ row: initial_row, col: initial_col }))
                 }
-                index++
-            }
+            })
         })
         return attacked_positions
     }
@@ -190,7 +188,9 @@ export default class King extends Piece implements Piece_Interface {
         path.ordered_pieces_list.forEach(piece => {
             if (piece.color === this.color) {
                 if (first_attacking_piece === undefined) {
-                    blocking_pieces.push(piece)
+                    if(path.direction < 8) {
+                        blocking_pieces.push(piece)
+                    }
                 }
             }
 
@@ -209,13 +209,17 @@ export default class King extends Piece implements Piece_Interface {
 
         if (blocking_pieces.length === 0 && first_attacking_piece !== undefined) {
             const points_between_attacker_and_king: string[] = SquareID.pos_between_points(first_attacking_piece.grid_point!, this.grid_point!)
-            Piece.position_restrictions = points_between_attacker_and_king
+            if(path.direction < 8) {
+                Piece.position_restrictions = points_between_attacker_and_king
+            } else {
+                Piece.position_restrictions = [SquareID.pos_at_point(first_attacking_piece.grid_point!)]
+            }
         }
     }
 
     private check_path_lists_from_all_directions(): { direction: PieceDirections, ordered_pieces_list: Piece[] }[] {
         let check_path_lists: { direction: PieceDirections, ordered_pieces_list: Piece[] }[] = []
-        this.directions.forEach(direction => {
+        this.check_directions.forEach(direction => {
             check_path_lists.push({ direction: direction, ordered_pieces_list: this.list_of_pieces_in_direction(direction) })
         })
         return check_path_lists

@@ -9,6 +9,14 @@ export enum PieceDirections {
     south_west,
     west,
     north_west,
+    up_right,
+    right_up,
+    right_down,
+    down_right,
+    down_left,
+    left_down,
+    left_up,
+    up_left
 }
 
 export function piece_direction_modifier(direction: PieceDirections): GridPoint {
@@ -29,6 +37,22 @@ export function piece_direction_modifier(direction: PieceDirections): GridPoint 
             return {row: 0, col: -1}
         case PieceDirections.north_west:
             return {row: -1, col: -1}
+        case PieceDirections.up_right:
+            return {row: -2, col: 1}
+        case PieceDirections.right_up:
+            return {row: -1, col: 2}
+        case PieceDirections.right_down:
+            return {row: 1, col: 2}
+        case PieceDirections.down_right:
+            return {row: 2, col: 1}
+        case PieceDirections.down_left:
+            return {row: 2, col: -1}
+        case PieceDirections.left_down:
+            return {row: 1, col: -2}
+        case PieceDirections.left_up:
+            return {row: -1, col: -2}
+        case PieceDirections.up_left:
+            return {row: -2, col: -1}
     }
 }
 
@@ -49,6 +73,22 @@ export function direction_by_modifier(modifier: {row: number, col: number}): Pie
             return PieceDirections.west
         if (modifier.row === -1 && modifier.col === -1)
             return PieceDirections.north_west
+        if(modifier.row === -2 && modifier.col === 1)
+            return PieceDirections.up_right 
+        if(modifier.row === -1 && modifier.col === 2)
+            return PieceDirections.right_up
+        if (modifier.row === 1 && modifier.col === 2)
+            return PieceDirections.right_down
+        if (modifier.row === 2 && modifier.col === 1)
+            return PieceDirections.down_right
+        if (modifier.row === 2 && modifier.col === -1)
+            return PieceDirections.down_left
+        if (modifier.row === 1 && modifier.col === -2)
+            return PieceDirections.left_down
+        if (modifier.row === -1 && modifier.col === -2)
+            return PieceDirections.left_up
+        if (modifier.row === -2 && modifier.col === -1)
+            return PieceDirections.up_left
 }
 
 export enum KnightDirections {
