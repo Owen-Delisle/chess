@@ -7,6 +7,7 @@ import type { PieceType } from "../piece_types"
 import Board from "../../board/board"
 import type Square from "../../../components/square/square"
 import SquareID from "../../../components/square/square_id"
+import { KnightDirections, knight_direction_modifier } from "../piece_directions"
 
 export default class Knight extends Piece implements Piece_Interface {
     move_distance: number = 3
@@ -33,28 +34,28 @@ export default class Knight extends Piece implements Piece_Interface {
         this.knight_directions.forEach(direction => {
             switch (direction) {
                 case KnightDirections.up_right:
-                    this.add_possible_move_point(this.grid_point!, -2, 1)
+                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.up_right))
                     break;
                 case KnightDirections.right_up:
-                    this.add_possible_move_point(this.grid_point!, -1, 2)
+                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.right_up))
                     break;
                 case KnightDirections.right_down:
-                    this.add_possible_move_point(this.grid_point!, 1, 2)
+                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.right_down))
                     break;
                 case KnightDirections.down_right:
-                    this.add_possible_move_point(this.grid_point!, 2, 1)
+                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.down_right))
                     break;
                 case KnightDirections.down_left:
-                    this.add_possible_move_point(this.grid_point!, 2, -1)
+                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.down_left))
                     break;
                 case KnightDirections.left_down:
-                    this.add_possible_move_point(this.grid_point!, 1, -2)
+                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.left_down))
                     break;
                 case KnightDirections.left_up:
-                    this.add_possible_move_point(this.grid_point!, -1, -2)
+                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.left_up))
                     break;
                 case KnightDirections.up_left:
-                    this.add_possible_move_point(this.grid_point!, -2, -1)
+                    this.add_possible_move_point(this.grid_point!, knight_direction_modifier(KnightDirections.up_left))
                     break;
                 default:
                     console.log("Direction Not Found")
@@ -64,8 +65,9 @@ export default class Knight extends Piece implements Piece_Interface {
 
     private add_possible_move_point(
         current_pos: GridPoint,
-        row_mod: number,
-        col_mod: number
+        modifier: GridPoint,
+        row_mod: number = modifier.row,
+        col_mod: number = modifier.col
     ): void {
         if (Board.are_coors_within_board_bounds(current_pos.row + row_mod, current_pos.col + col_mod)) {
             let point_of_square: GridPoint = {row: current_pos.row + row_mod,col: current_pos.col + col_mod}
@@ -80,15 +82,4 @@ export default class Knight extends Piece implements Piece_Interface {
             }
         }
     }
-}
-
-enum KnightDirections {
-    up_right,
-    right_up,
-    right_down,
-    down_right,
-    down_left,
-    left_down,
-    left_up,
-    up_left
 }

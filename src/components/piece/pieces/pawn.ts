@@ -2,7 +2,7 @@ import Piece from "../piece"
 import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
 import SquareGrid from "../../../models/square_grid"
-import { PieceDirections } from "../piece_directions"
+import { PieceDirections, piece_direction_modifier } from "../piece_directions"
 import type { Color } from "../color"
 import type Square from "../../square/square"
 
@@ -34,7 +34,7 @@ export default class Pawn extends Piece implements Piece_Interface {
         this.movement_directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.build_possible_moves_list(this.grid_point!, this.current_move_distance, -1, 0)
+                    this.build_possible_moves_list(this.grid_point!, this.current_move_distance, piece_direction_modifier(PieceDirections.north))
                     break;
                 default:
                     console.log("Direction Not Found")

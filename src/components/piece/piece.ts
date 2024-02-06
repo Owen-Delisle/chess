@@ -77,9 +77,10 @@ export default class Piece {
     public build_possible_moves_list(
         current_pos: GridPoint,
         distance: number,
-        row_modifier: number,
-        col_modifier: number,
+        modifier: GridPoint
     ): void {
+        const row_modifier = modifier.row
+        const col_modifier = modifier.col
         this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves)
     }
 

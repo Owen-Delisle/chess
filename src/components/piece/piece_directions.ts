@@ -50,3 +50,35 @@ export function direction_by_modifier(modifier: {row: number, col: number}): Pie
         if (modifier.row === -1 && modifier.col === -1)
             return PieceDirections.north_west
 }
+
+export enum KnightDirections {
+    up_right,
+    right_up,
+    right_down,
+    down_right,
+    down_left,
+    left_down,
+    left_up,
+    up_left
+}
+
+export function knight_direction_modifier(direction: KnightDirections): GridPoint {
+    switch(direction) {
+        case KnightDirections.up_right:
+            return {row: -2, col: 1}
+        case KnightDirections.right_up:
+            return {row: -1, col: 2}
+        case KnightDirections.right_down:
+            return {row: 1, col: 2}
+        case KnightDirections.down_right:
+            return {row: 2, col: 1}
+        case KnightDirections.down_left:
+            return {row: 2, col: -1}
+        case KnightDirections.left_down:
+            return {row: 1, col: -2}
+        case KnightDirections.left_up:
+            return {row: -1, col: -2}
+        case KnightDirections.up_left:
+            return {row: -2, col: -1}
+    }
+}
