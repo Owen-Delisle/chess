@@ -108,7 +108,7 @@ export default class Piece {
         }
 
         this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves)
-        this.check_piece_that_stopped_loop(current_pos, row_modifier, col_modifier, index)
+        // this.check_piece_that_stopped_loop(current_pos, row_modifier, col_modifier, index)
     }
 
     public conditions_to_continue_adding_positions(
@@ -125,6 +125,10 @@ export default class Piece {
         }
 
         if (!this.new_square_is_empty({row: new_row, col: new_col})) {
+            const piece_at_square: Piece = SquareGrid.piece_by_grid_point({row: new_row, col: new_col})!
+            if(piece_at_square.color !== this.color) {
+                this.possible_moves.push(SquareID.pos_at_point({row: new_row, col: new_col}))
+            }
             return false
         }
 
@@ -151,52 +155,52 @@ export default class Piece {
         return SquareGrid.piece_by_grid_point(point)! === undefined
     }
 
-    public highlight_target(grid_point: GridPoint): void {
-        let square: Square | undefined
-        let piece: Piece | undefined
-        if (Board.are_coors_within_board_bounds(grid_point.row, grid_point.col)) {
-            square = SquareGrid.square_by_grid_point(grid_point)
-            piece = square.piece_attached_to_square()
-        }
-        if (square != undefined && piece != undefined) {
-            if (piece.color != this.color) {
-                this.possible_moves.push(square.square_id)
-                square.add_border()
-            }
-        }
-        this.piece_specific_highlight_steps()
-    }
+    // public highlight_target(grid_point: GridPoint): void {
+    //     let square: Square | undefined
+    //     let piece: Piece | undefined
+    //     if (Board.are_coors_within_board_bounds(grid_point.row, grid_point.col)) {
+    //         square = SquareGrid.square_by_grid_point(grid_point)
+    //         piece = square.piece_attached_to_square()
+    //     }
+    //     if (square != undefined && piece != undefined) {
+    //         if (piece.color != this.color) {
+    //             this.possible_moves.push(square.square_id)
+    //             square.add_border()
+    //         }
+    //     }
+    //     this.piece_specific_highlight_steps()
+    // }
 
     //Function definition to be used by subclasses
     public piece_specific_highlight_steps(): void {
     }
 
-    public check_piece_that_stopped_loop(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number): void {
-        switch (this.type) {
-            case PieceType.pawn:
-                this.highlight_target({
-                    row: current_pos.row - 1,
-                    col: current_pos.col - 1
-                })
-                this.highlight_target({
-                    row: current_pos.row - 1,
-                    col: current_pos.col + 1
-                })
-                break
+    // public check_piece_that_stopped_loop(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number): void {
+    //     switch (this.type) {
+    //         case PieceType.pawn:
+    //             this.highlight_target({
+    //                 row: current_pos.row - 1,
+    //                 col: current_pos.col - 1
+    //             })
+    //             this.highlight_target({
+    //                 row: current_pos.row - 1,
+    //                 col: current_pos.col + 1
+    //             })
+    //             break
 
-            case PieceType.king:
-                this.highlight_target({
-                    row: current_pos.row + (row_modifier),
-                    col: current_pos.col + (col_modifier)
-                })
-                break
+    //         case PieceType.king:
+    //             this.highlight_target({
+    //                 row: current_pos.row + (row_modifier),
+    //                 col: current_pos.col + (col_modifier)
+    //             })
+    //             break
 
-            default:
-                this.highlight_target({
-                    row: current_pos.row + (row_modifier * distance),
-                    col: current_pos.col + (col_modifier * distance)
-                })
-                break
-        }
-    }
+    //         default:
+    //             this.highlight_target({
+    //                 row: current_pos.row + (row_modifier * distance),
+    //                 col: current_pos.col + (col_modifier * distance)
+    //             })
+    //             break
+    //     }
+    // }
 }

@@ -91,7 +91,6 @@ export default class King extends Piece implements Piece_Interface {
                 checkmate = true
             }
         }
-        console.log("Checkmate:", checkmate)
     }
 
     public render_legal_squares_surrounding_king(): void {
@@ -103,7 +102,6 @@ export default class King extends Piece implements Piece_Interface {
             this.move_distance = 1
             this.position_restrictions = positions_surrounding_king.filter(position => !attacked_points_around_king.includes(position));
         }
-        console.log(this.position_restrictions)
     }
 
     public attacked_points_around_king(): string[] {
