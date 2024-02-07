@@ -134,9 +134,14 @@ export default class MoveController {
         if (piece != undefined) {
             const typed_piece = Piece.piece_factory(piece)
             const king_piece: King = PieceList.king_by_color(piece.color)
+
+            king_piece.in_check = false
+
             PieceList.clear_position_restrictions_property()
             king_piece.render_check_paths_list()
             typed_piece.calculate_possible_moves()
+
+            king_piece.check_for_checkmate()
         }
     }
 

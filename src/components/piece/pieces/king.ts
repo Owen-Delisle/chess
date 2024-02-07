@@ -12,12 +12,15 @@ import PieceList from "../piece_list"
 import SquareID from "../../../components/square/square_id"
 import Board from "../../../components/board/board"
 import { distance_between_points } from "../../../utils/math"
+import { arrays_are_equal } from "../../../utils/arrays"
+import { surrounding_points } from "../../../utils/grid"
 
 export default class King extends Piece implements Piece_Interface {
     move_distance: number = 1
     directions: PieceDirections[]
     has_moved: boolean = false
     check_directions: number[] = Object.keys(PieceDirections).filter(key => !isNaN(parseInt(key, 10))).map(key => parseInt(key, 10))
+    in_check: boolean = false
 
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
@@ -73,33 +76,34 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     private points_surrounding_king(): GridPoint[] {
-        let list: GridPoint[] = []
-        for (let row = -1; row <= 1; row++) {
-            for (let col = -1; col <= 1; col++) {
-                if (row !== 0 || col !== 0) {
-                    list.push({ row, col })
-                }
-            }
-        }
-        return list
+        return surrounding_points(this.grid_point!)
     }
 
     private positions_surrounding_king(): string[] {
-        let list: string[] = []
-        for (let row = -1; row <= 1; row++) {
-            for (let col = -1; col <= 1; col++) {
-                if (row !== 0 || col !== 0) {
-                    list.push(SquareID.pos_at_point({ row: this.grid_point!.row + row, col: this.grid_point!.col + col }))
-                }
+        const list: string[] = surrounding_points(this.grid_point!).map((point) => SquareID.pos_at_point(point));
+        return list
+    }
+
+    public check_for_checkmate() {
+        let checkmate: boolean = false
+        if(this.in_check) {
+            if(arrays_are_equal(this.attacked_points_around_king(), this.positions_surrounding_king())) {
+                checkmate = true
             }
         }
-        return list
+        console.log("Checkmate:", checkmate)
     }
 
     public render_legal_squares_surrounding_king(): void {
         const positions_surrounding_king = this.positions_surrounding_king()
         const attacked_points_around_king = this.attacked_points_around_king()
-        this.position_restrictions = positions_surrounding_king.filter(position => !attacked_points_around_king.includes(position));
+        if(arrays_are_equal(positions_surrounding_king, attacked_points_around_king)) {
+            this.move_distance = 0
+        } else {
+            this.move_distance = 1
+            this.position_restrictions = positions_surrounding_king.filter(position => !attacked_points_around_king.includes(position));
+        }
+        console.log(this.position_restrictions)
     }
 
     public attacked_points_around_king(): string[] {
@@ -110,8 +114,8 @@ export default class King extends Piece implements Piece_Interface {
                 const row_modifier: number = piece_direction_modifier(direction).row
                 const col_modifier: number = piece_direction_modifier(direction).col
 
-                const initial_row = this.grid_point!.row + point.row
-                const initial_col = this.grid_point!.col + point.col
+                const initial_row = point.row
+                const initial_col = point.col
 
                 const next_row = initial_row + row_modifier
                 const next_col = initial_col + col_modifier
@@ -136,6 +140,7 @@ export default class King extends Piece implements Piece_Interface {
     ): boolean {
 
         // If all squares in direction have been searched and no piece of other color that can attack king in this direction have been found
+        // TODO -- USE BOARDS BOUNDS CHECKER
         if (next_row < 0 || next_row >= Board.row_size || next_col < 0 || next_col >= Board.row_size) {
             return false
         }
@@ -174,7 +179,7 @@ export default class King extends Piece implements Piece_Interface {
     }
 
 
-    public render_check_paths_list(): void {
+    public render_check_paths_list(): void{
         const check_paths_list: { direction: PieceDirections, ordered_pieces_list: Piece[] }[] = this.check_path_lists_from_all_directions()
         check_paths_list.forEach(path => {
             this.render_path(path)
@@ -214,6 +219,8 @@ export default class King extends Piece implements Piece_Interface {
             } else {
                 Piece.position_restrictions = [SquareID.pos_at_point(first_attacking_piece.grid_point!)]
             }
+
+            this.in_check = true
         }
     }
 

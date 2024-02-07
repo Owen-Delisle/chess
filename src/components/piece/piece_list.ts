@@ -27,10 +27,12 @@ export default class PieceList {
     public static piece_list: Piece[] = [
         //TODO -- WRONG PIECES, DELETE LATER
         new King("king_b", "G8", King_B_SVG, PieceType.king, Color.black),
-        new Knight("knight_b1", "D6", Knight_B_SVG, PieceType.knight, Color.black),
-        new Queen("queen_w", "B5", Queen_W_SVG, PieceType.queen, Color.white),
-        new Bishop("bishop_w2", "B4", Bishop_W_SVG, PieceType.bishop, Color.white),
-        new King("king_w", "E4", King_W_SVG, PieceType.king, Color.white)
+        // new Pawn("pawn_b1", "G4", Pawn_B_SVG, PieceType.pawn, Color.black),
+        new Queen("queen_w", "D3", Queen_W_SVG, PieceType.queen, Color.white),
+        // new Rook("rook_w2", "C4", Rook_W_SVG, PieceType.rook, Color.white, RookType.short_rook),
+        new Rook("rook_b1", "E1", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
+        new Queen("queen_b", "F2", Queen_B_SVG, PieceType.queen, Color.black),
+        new King("king_w", "A1", King_W_SVG, PieceType.king, Color.white)
         //END TODO
 
         // new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),

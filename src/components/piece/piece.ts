@@ -26,6 +26,7 @@ export default class Piece {
     directions: PieceDirections[] = []
     move_distance: number = 8
     position_restrictions: string[] = []
+    can_block_check: boolean = false
 
     static position_restrictions: string[] = []
 
@@ -72,6 +73,10 @@ export default class Piece {
             this.possible_moves = []
             resolve()
         })
+    }
+
+    public check_if_piece_can_block_check() {
+
     }
 
     public build_possible_moves_list(
@@ -133,8 +138,10 @@ export default class Piece {
     public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[]): void {
         if (this.position_restrictions.length > 0) {
             possible_moves.push(...moves_in_direction.filter(move => this.position_restrictions.includes(move)))
-        } else if(Piece.position_restrictions.length > 0) {
+            this.can_block_check = true
+        } else if(Piece.position_restrictions.length > 0 && this.type != PieceType.king) {
             possible_moves.push(...moves_in_direction.filter(move => Piece.position_restrictions.includes(move)))
+            this.can_block_check = true
         } else {
             possible_moves.push(...moves_in_direction)
         }

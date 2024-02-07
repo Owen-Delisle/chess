@@ -105,6 +105,10 @@ export default class Board extends HTMLElement {
 		SquareGrid.square_grid = []
 		document.querySelectorAll(".row").forEach(e => e.remove())
 		this.add_squares_to_board()
+		
+		PieceList.piece_list.forEach(piece => {
+			console.log(piece)
+		})
 	}
 
 	public static are_coors_within_board_bounds(row: number, col: number): boolean {
