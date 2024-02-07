@@ -1,7 +1,7 @@
 import type { GridPoint } from "../../../global_types/grid_point"
 import { Color } from "../color"
 import Piece from "../piece"
-import { PieceDirections, KnightDirections, piece_direction_modifier, direction_by_modifier } from "../piece_directions"
+import { PieceDirections, piece_direction_modifier, direction_by_modifier } from "../piece_directions"
 import type Piece_Interface from "../piece_interface"
 import { PieceType } from "../piece_types"
 import SquareGrid from "../../../models/square_grid"
@@ -213,8 +213,10 @@ export default class King extends Piece implements Piece_Interface {
         if (blocking_pieces.length === 0 && first_attacking_piece !== undefined) {
             const points_between_attacker_and_king: string[] = SquareID.pos_between_points(first_attacking_piece.grid_point!, this.grid_point!)
             if(path.direction < 8) {
+                // TODO -- CHANGE FOR GOD SAKES MAN
                 Piece.position_restrictions = points_between_attacker_and_king
             } else {
+                // TODO -- CHANGE FOR GOD SAKES MAN
                 Piece.position_restrictions = [SquareID.pos_at_point(first_attacking_piece.grid_point!)]
             }
 
@@ -271,20 +273,21 @@ export default class King extends Piece implements Piece_Interface {
         })
     }
 
-    //Overloaded from Piece
-    public piece_specific_highlight_steps(): void {
-        const rooks = PieceList.piece_list.filter(rook =>
+    public rooks_for_king(): Rook[] {
+        const pieces = PieceList.piece_list.filter(rook =>
             rook.type === PieceType.rook && rook.color === this.color)
+        
+        const rooks: Rook[] = pieces as Rook[]
 
-        this.add_borders_to_castleable_rooks(rooks)
+        return rooks
     }
 
-    private add_borders_to_castleable_rooks(rooks: Piece[]) {
+    public add_borders_to_castleable_rooks(rooks: Piece[]) {
         rooks.forEach(piece => {
             let rook = piece as Rook
             if (
-                this.squares_between_king_and_rook_empty(rook) &&
-                !this.has_moved && !rook.has_moved
+                this.squares_between_king_and_rook_empty(rook)
+                 &&!this.has_moved && !rook.has_moved
             ) {
                 SquareGrid.square_by_grid_point({ row: rook.grid_point!.row, col: rook.grid_point!.col })
                     .add_border()
@@ -293,17 +296,14 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public squares_between_king_and_rook_empty(rook: Rook): boolean {
-        if (this.has_moved) return false
+        const castle_vars = this.castle_vars_for_rook_type(rook.rook_type)
 
-        let castle_vars: CastleVars = this.castle_vars_for_rook_type(rook.rook_type)
+        const square_beside_king: GridPoint = {row: this.grid_point!.row, col: this.grid_point!.col + castle_vars.index_modifier}
+        const square_beside_rook: GridPoint = {row: rook.grid_point!.row, col: rook.grid_point!.col - castle_vars.index_modifier}
 
-        for (let index = 1; index <= castle_vars.number_of_squares_between_king_and_rook; index++) {
-            let point: GridPoint = { row: this.grid_point!.row, col: this.grid_point!.col + (index * castle_vars.index_modifier) }
-            if (SquareGrid.piece_by_grid_point(point) != undefined) {
-                return false
-            }
-        }
-        return true
+        let positions_between_king_and_rook = SquareID.pos_between_points(square_beside_king, square_beside_rook)
+        const any_pieces = positions_between_king_and_rook.some(position => PieceList.piece_by_position(position) !== undefined)
+        return !any_pieces
     }
 
     public castle_vars_for_rook_type(rook_type: RookType): CastleVars {

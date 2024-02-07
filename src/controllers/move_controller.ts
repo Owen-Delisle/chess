@@ -153,11 +153,14 @@ export default class MoveController {
         if (piece !== undefined) {
             this.add_dots_to_possible_moves_for(piece)
             this.add_border_to_attacked_piece_for(piece)
+            if(piece.type === PieceType.king) {
+                const king: King = piece as King
+                king.add_borders_to_castleable_rooks(king.rooks_for_king())
+            }
         }
     }
 
     private static add_dots_to_possible_moves_for(piece: Piece | undefined): void {
-        console.log("MOOVES:", piece!.possible_moves)
         piece!.possible_moves.forEach(possible_move => {
             let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
             if (square != undefined) {
