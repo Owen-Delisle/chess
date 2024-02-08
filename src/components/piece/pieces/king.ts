@@ -19,9 +19,10 @@ export default class King extends Piece implements Piece_Interface {
     move_distance: number = 1
     directions: PieceDirections[]
     has_moved: boolean = false
+    //TODO -- Make every direction function
     check_directions: number[] = Object.keys(PieceDirections).filter(key => !isNaN(parseInt(key, 10))).map(key => parseInt(key, 10))
     in_check: boolean = false
-
+    positions_to_be_blocked: string[] = []
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
@@ -73,29 +74,45 @@ export default class King extends Piece implements Piece_Interface {
                     console.log("Direction Not Found")
             }
         })
+        this.check_for_checkmate()
     }
 
     private points_surrounding_king(): GridPoint[] {
         return surrounding_points(this.grid_point!)
     }
 
-    private positions_surrounding_king(): string[] {
-        const list: string[] = surrounding_points(this.grid_point!).map((point) => SquareID.pos_at_point(point));
+    private empty_positions_surrounding_king(): string[] {
+        const list: string[] = surrounding_points(this.grid_point!).filter(point => SquareGrid.piece_by_grid_point(point) === undefined).map((point) => SquareID.pos_at_point(point));
         return list
     }
 
     public check_for_checkmate() {
         let checkmate: boolean = false
         if(this.in_check) {
-            if(arrays_are_equal(this.attacked_points_around_king(), this.positions_surrounding_king())) {
-                checkmate = true
+            console.log(this.attacked_points_around_king())
+            console.log(this.empty_positions_surrounding_king())
+            if(arrays_are_equal(this.attacked_points_around_king(), this.empty_positions_surrounding_king())) {
+                if(!this.check_if_any_piece_can_block_check()) {
+                    console.log("checkmate")
+                }
             }
         }
     }
 
+    public check_if_any_piece_can_block_check(): boolean {
+        const piece_of_color: Piece[] = PieceList.piece_list.filter(piece => piece.color === this.color && piece !== this)
+
+        const any_piece_has_move = piece_of_color.some(piece =>
+            piece.possible_moves.some(move => Piece.position_restrictions.includes(move))
+          );
+
+        return any_piece_has_move
+    }
+
     public render_legal_squares_surrounding_king(): void {
-        const positions_surrounding_king = this.positions_surrounding_king()
+        const positions_surrounding_king = this.empty_positions_surrounding_king()
         const attacked_points_around_king = this.attacked_points_around_king()
+
         if(arrays_are_equal(positions_surrounding_king, attacked_points_around_king)) {
             this.move_distance = 0
         } else {
@@ -119,7 +136,10 @@ export default class King extends Piece implements Piece_Interface {
                 const next_col = initial_col + col_modifier
 
                 if (this.check_if_point_around_king_is_attacked(initial_row, initial_col, next_row, next_col, row_modifier, col_modifier, direction, 1)) {
-                    attacked_positions.push(SquareID.pos_at_point({ row: initial_row, col: initial_col }))
+                    const next_pos: string = SquareID.pos_at_point({ row: initial_row, col: initial_col })
+                    if(!attacked_positions.includes(next_pos)) {
+                        attacked_positions.push(next_pos)
+                    }
                 }
             })
         })
@@ -177,7 +197,7 @@ export default class King extends Piece implements Piece_Interface {
     }
 
 
-    public render_check_paths_list(): void{
+    public render_check_paths_list(): void {
         const check_paths_list: { direction: PieceDirections, ordered_pieces_list: Piece[] }[] = this.check_path_lists_from_all_directions()
         check_paths_list.forEach(path => {
             this.render_path(path)
@@ -191,9 +211,8 @@ export default class King extends Piece implements Piece_Interface {
         path.ordered_pieces_list.forEach(piece => {
             if (piece.color === this.color) {
                 if (first_attacking_piece === undefined) {
-                    if(path.direction < 8) {
-                        blocking_pieces.push(piece)
-                    }
+                    this.in_check = false
+                    blocking_pieces.push(piece)
                 }
             }
 
@@ -206,21 +225,25 @@ export default class King extends Piece implements Piece_Interface {
         });
 
         if (blocking_pieces.length === 1 && first_attacking_piece !== undefined) {
-            const points_between_attacker_and_king: string[] = SquareID.pos_between_points(first_attacking_piece.grid_point!, this.grid_point!)
-            blocking_pieces[0].position_restrictions = points_between_attacker_and_king
+            //TODO -- Not Dry -- Refactor
+            const positions_between_attacker_and_king: string[] = SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!)
+            blocking_pieces[0].position_restrictions = positions_between_attacker_and_king
         }
 
         if (blocking_pieces.length === 0 && first_attacking_piece !== undefined) {
-            const points_between_attacker_and_king: string[] = SquareID.pos_between_points(first_attacking_piece.grid_point!, this.grid_point!)
+            //TODO -- Not Dry -- Refactor
+            const positions_between_attacker_and_king: string[] = SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!)
+            //TODO -- Take oot the ate
             if(path.direction < 8) {
-                // TODO -- CHANGE FOR GOD SAKES MAN
-                Piece.position_restrictions = points_between_attacker_and_king
+                // All pieces are restricted to the check path
+                Piece.position_restrictions = positions_between_attacker_and_king
             } else {
-                // TODO -- CHANGE FOR GOD SAKES MAN
                 Piece.position_restrictions = [SquareID.pos_at_point(first_attacking_piece.grid_point!)]
             }
 
+            // this.positions_to_be_blocked = positions_between_attacker_and_king
             this.in_check = true
+            this.check_if_any_piece_can_block_check()
         }
     }
 
@@ -239,9 +262,10 @@ export default class King extends Piece implements Piece_Interface {
         let pieces_in_path: Piece[] = []
         let modifier: { row: number, col: number } = piece_direction_modifier(direction)
 
-        while (!this.stopping_conditions(current_row, current_col, modifier)) {
+        while (!this.stopping_conditions(current_row, current_col, modifier, direction)) {
             current_row = current_row + modifier.row
             current_col = current_col + modifier.col
+            
             let piece_at_position = SquareGrid.piece_by_grid_point({ row: current_row, col: current_col })
             if (piece_at_position != undefined) {
                 pieces_in_path.push(piece_at_position)
@@ -251,13 +275,18 @@ export default class King extends Piece implements Piece_Interface {
         return pieces_in_path
     }
 
-    private stopping_conditions(current_row: number, current_col: number, modifier: { row: number, col: number }): boolean {
+    private stopping_conditions(current_row: number, current_col: number, modifier: { row: number, col: number }, direction: PieceDirections): boolean {
         let should_stop: boolean = false
 
         let next_row: number = current_row + modifier.row
         let next_col: number = current_col + modifier.col
 
         if (next_row < 0 || next_row >= Board.row_size || next_col < 0 || next_col >= Board.row_size) {
+            should_stop = true
+        }
+
+        // TODO -- Take oot the ate
+        if(direction >= 8) {
             should_stop = true
         }
 
