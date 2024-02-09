@@ -28,8 +28,6 @@ export default class Piece {
     move_distance: number = 8
     position_restrictions: string[] = []
     can_block_check: boolean = false
-    is_covered: boolean = false
-    covering_pieces: Piece[] = []
 
     //Global Property
     static position_restrictions: string[] = []
@@ -137,12 +135,6 @@ export default class Piece {
                 if(this.type !== PieceType.king) {
                     this.possible_moves.push(SquareID.pos_at_point({row: new_row, col: new_col}))
                 }
-                if(this.type === PieceType.king && !piece_at_square.is_covered) {
-                    this.possible_moves.push(SquareID.pos_at_point({row: new_row, col: new_col}))
-                }
-            }
-            if(piece_at_square.color === this.color && piece_at_square.title !== this.title && this.type !== PieceType.pawn) {
-                this.covering_pieces.push(piece_at_square)
             }
             return false
         }

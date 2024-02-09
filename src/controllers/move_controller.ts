@@ -16,11 +16,6 @@ export default class MoveController {
     private static focused_square: Square | undefined
 
     public static on_square_click(clicked_square: Square): void {
-
-        if(clicked_square.piece_attached_to_square() !== undefined) {
-            console.log(clicked_square.piece_attached_to_square()?.is_covered)
-        }
-
         if (this.conditions_for_standard_move(clicked_square)) {
             this.clear_prev_focused_square()
             this.make_standard_move(clicked_square)
@@ -149,7 +144,6 @@ export default class MoveController {
                 typed_piece.calculate_possible_moves()
             }
         })
-        PieceList.cover_all_pieces()
         white_king.check_for_checkmate()
         black_king.check_for_checkmate()
     }
@@ -158,14 +152,6 @@ export default class MoveController {
         PieceList.piece_list.forEach(piece => {
             if (piece != undefined) {
                 piece.possible_moves = []
-            }
-        })
-    }
-
-    public static clear_covered_pieces_lists(): void {
-        PieceList.piece_list.forEach(piece => {
-            if (piece != undefined) {
-                piece.covering_pieces = []
             }
         })
     }

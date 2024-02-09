@@ -21,7 +21,7 @@ export default class King extends Piece implements Piece_Interface {
     directions: PieceDirections[]
     has_moved: boolean = false
     //TODO -- Make every direction function
-    check_directions: number[] = Object.keys(PieceDirections).filter(key => !isNaN(parseInt(key, 10))).map(key => parseInt(key, 10))
+    all_directions: number[] = Object.keys(PieceDirections).filter(key => !isNaN(parseInt(key, 10))).map(key => parseInt(key, 10))
     in_check: boolean = false
     positions_to_be_blocked: string[] = []
 
@@ -84,7 +84,13 @@ export default class King extends Piece implements Piece_Interface {
     private moveable_positions_surrounding_king(): string[] {
         const list: string[] = surrounding_points(this.grid_point!).filter(point => {
             const piece: Piece | undefined = SquareGrid.piece_by_grid_point(point)
-            return piece === undefined || piece.color !== this.color
+            if(piece === undefined) {
+                return true
+            }
+            if(!this.check_if_piece_is_covered_in_any_direction(piece)) {
+                this.possible_moves.push(piece.pos)
+                return true
+            }
         }).map((point) => SquareID.pos_at_point(point));
         return list
     }
@@ -125,7 +131,7 @@ export default class King extends Piece implements Piece_Interface {
         let attacked_positions: string[] = []
 
         this.points_surrounding_king().forEach(point => {
-            this.check_directions.forEach(direction => {
+            this.all_directions.forEach(direction => {
                 const row_modifier: number = piece_direction_modifier(direction).row
                 const col_modifier: number = piece_direction_modifier(direction).col
 
@@ -191,6 +197,70 @@ export default class King extends Piece implements Piece_Interface {
             next_row = next_row + row_modifier
             next_col = next_col + col_modifier
             return this.check_if_point_around_king_is_attacked(starting_row, starting_col, next_row, next_col, row_modifier, col_modifier, direction, ++distance)
+        }
+
+        return false
+    }
+
+    private check_if_piece_is_covered_in_any_direction(piece: Piece): boolean {
+        return this.all_directions.some(direction => {
+            const starting_row: number = piece.grid_point!.row
+            const starting_col: number = piece.grid_point!.col
+            const next_row: number = piece.grid_point!.row + piece_direction_modifier(direction).row
+            const next_col: number = piece.grid_point!.col + piece_direction_modifier(direction).col
+            const row_modifier: number = piece_direction_modifier(direction).row
+            const col_modifier: number = piece_direction_modifier(direction).col
+            const distance: number = piece.move_distance
+
+            return this.check_if_piece_is_covered_in_direction(starting_row, starting_col, next_row, next_col, row_modifier, col_modifier, piece.color, direction, 1)
+        });
+    }
+
+    private check_if_piece_is_covered_in_direction(
+        starting_row: number,
+        starting_col: number,
+        next_row: number,
+        next_col: number,
+        row_modifier: number,
+        col_modifier: number,
+        color: Color,
+        direction: PieceDirections,
+        distance: number,
+    ): boolean {
+
+        // If all squares in direction have been searched and no piece of other color that can attack king in this direction have been found
+        // TODO -- USE BOARDS BOUNDS CHECKER
+        if (next_row < 0 || next_row >= Board.row_size || next_col < 0 || next_col >= Board.row_size) {
+            return false
+        }
+
+        //If square is in bound
+        const piece: Piece | undefined = SquareGrid.piece_by_grid_point({ row: next_row, col: next_col })
+
+        // If Square has piece and piece is NOT the same color as the piece
+        if (piece !== undefined && piece.color !== color && piece !== this) {
+            return false
+        }
+
+        // If Square has piece and piece IS the same color as the piece
+        if (piece !== undefined && piece.color === color) {
+            //If piece could attack king
+            let direction: PieceDirections | undefined = direction_by_modifier({ row: row_modifier, col: col_modifier })
+            if (direction !== undefined) {
+                if (piece.directions.includes(direction) || this.pawn_attack_square(piece, direction, distance)) {
+                    if (piece.move_distance >= distance) {
+                        return true
+                    }
+                    return false
+                }
+            }
+        }
+
+        // If square is empty
+        if (piece === undefined || piece === this) {
+            next_row = next_row + row_modifier
+            next_col = next_col + col_modifier
+            return this.check_if_piece_is_covered_in_direction(starting_row, starting_col, next_row, next_col, row_modifier, col_modifier, color, direction, ++distance)
         }
 
         return false
@@ -262,7 +332,7 @@ export default class King extends Piece implements Piece_Interface {
 
     private check_path_lists_from_all_directions(): { direction: PieceDirections, ordered_pieces_list: Piece[] }[] {
         let check_path_lists: { direction: PieceDirections, ordered_pieces_list: Piece[] }[] = []
-        this.check_directions.forEach(direction => {
+        this.all_directions.forEach(direction => {
             check_path_lists.push({ direction: direction, ordered_pieces_list: this.list_of_pieces_in_direction(direction) })
         })
         return check_path_lists

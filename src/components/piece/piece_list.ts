@@ -28,14 +28,8 @@ export default class PieceList {
 
     public static piece_list: Piece[] = [
         //TODO -- WRONG PIECES, DELETE LATER
-        // new Bishop("bishop_b2", "E3", Bishop_B_SVG, PieceType.bishop, Color.black),
-        // new Queen("queen_b", "F2", Queen_B_SVG, PieceType.queen, Color.black),
-        // new Bishop("bishop_b1", "B4", Bishop_B_SVG, PieceType.bishop, Color.black),
-
-        // new Knight("knight_w1", "C3", Knight_W_SVG, PieceType.knight, Color.white),
-
-        // new Pawn("pawn_w1", "D2", Pawn_W_SVG, PieceType.pawn, Color.white),
-        // new Rook("rook_w1", "D2", Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
+        // new Bishop("bishop_b1", "F2", Bishop_B_SVG, PieceType.bishop, Color.black),
+        // new Rook("rook_b1", "F5", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
         //END TODO
 
         new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
@@ -144,30 +138,5 @@ export default class PieceList {
         const svg: string = color === Color.white ? Queen_W_SVG : Queen_B_SVG 
         this.remove_piece_by_id(piece_id)
         this.piece_list.push(new Queen(`queen_${++this.number_of_queens}`, position, svg, PieceType.queen, Color.black))
-    }
-
-    public static cover_all_pieces() {
-        PieceList.piece_list.forEach(piece => {
-            if(this.piece_is_covered(piece)) {
-                piece.is_covered = true
-            } else {
-                piece.is_covered = false
-            }
-        })
-    }
-
-    public static piece_is_covered(piece: Piece): boolean {
-        PieceList.pieces_by_color(piece.color).forEach(p => {
-            p.covering_pieces.forEach(p1 => {
-                if(p1.pos === "A8") {
-                    // console.log(piece)
-                    console.log(p)
-                    // console.log(p1)
-                }
-            })
-        })
-        return PieceList.pieces_by_color(piece.color).some(colored_piece =>
-            colored_piece.covering_pieces.some(covered_piece => covered_piece.pos === piece.pos)
-          );
     }
 }   
