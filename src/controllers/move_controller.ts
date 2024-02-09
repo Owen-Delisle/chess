@@ -10,11 +10,17 @@ import type { CastleVars } from "../components/piece/pieces/king"
 import SquareID from "../components/square/square_id"
 import { GameController } from "./game_controller"
 import PieceList from "../components/piece/piece_list"
+import { animatedCheckmateAlert } from "../alerts/checkmate"
 
 export default class MoveController {
     private static focused_square: Square | undefined
 
     public static on_square_click(clicked_square: Square): void {
+
+        if(clicked_square.piece_attached_to_square() !== undefined) {
+            console.log(clicked_square.piece_attached_to_square()?.is_covered)
+        }
+
         if (this.conditions_for_standard_move(clicked_square)) {
             this.clear_prev_focused_square()
             this.make_standard_move(clicked_square)
@@ -132,6 +138,8 @@ export default class MoveController {
     }
 
     public static load_possible_moves_lists(): void {
+        const white_king: King = PieceList.piece_by_id('king_w') as King
+        const black_king: King = PieceList.piece_by_id('king_b') as King
         PieceList.piece_list.forEach(piece => {
             if (piece != undefined) {
                 const typed_piece = Piece.piece_factory(piece)
@@ -141,12 +149,23 @@ export default class MoveController {
                 typed_piece.calculate_possible_moves()
             }
         })
+        PieceList.cover_all_pieces()
+        white_king.check_for_checkmate()
+        black_king.check_for_checkmate()
     }
 
     public static clear_possible_moves_lists(): void {
         PieceList.piece_list.forEach(piece => {
             if (piece != undefined) {
                 piece.possible_moves = []
+            }
+        })
+    }
+
+    public static clear_covered_pieces_lists(): void {
+        PieceList.piece_list.forEach(piece => {
+            if (piece != undefined) {
+                piece.covering_pieces = []
             }
         })
     }

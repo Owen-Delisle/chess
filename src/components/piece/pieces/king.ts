@@ -14,6 +14,7 @@ import Board from "../../../components/board/board"
 import { distance_between_points } from "../../../utils/math"
 import { arrays_are_equal } from "../../../utils/arrays"
 import { surrounding_points } from "../../../utils/grid"
+import { animatedCheckmateAlert } from "../../../alerts/checkmate"
 
 export default class King extends Piece implements Piece_Interface {
     move_distance: number = 1
@@ -74,23 +75,25 @@ export default class King extends Piece implements Piece_Interface {
                     console.log("Direction Not Found")
             }
         })
-        this.check_for_checkmate()
     }
 
     private points_surrounding_king(): GridPoint[] {
         return surrounding_points(this.grid_point!)
     }
 
-    private empty_positions_surrounding_king(): string[] {
-        const list: string[] = surrounding_points(this.grid_point!).filter(point => SquareGrid.piece_by_grid_point(point) === undefined).map((point) => SquareID.pos_at_point(point));
+    private moveable_positions_surrounding_king(): string[] {
+        const list: string[] = surrounding_points(this.grid_point!).filter(point => {
+            const piece: Piece | undefined = SquareGrid.piece_by_grid_point(point)
+            return piece === undefined || piece.color !== this.color
+        }).map((point) => SquareID.pos_at_point(point));
         return list
     }
 
     public check_for_checkmate() {
-        if(this.in_check) {
-            if(arrays_are_equal(this.attacked_points_around_king(), this.empty_positions_surrounding_king())) {
+        if(this.in_check) { 
+            if(arrays_are_equal(this.attacked_points_around_king(), this.moveable_positions_surrounding_king()) && this.possible_moves.length < 1) {
                 if(!this.any_piece_can_move()) {
-                    console.log("checkmate")
+                    animatedCheckmateAlert.showAlert();
                 }
             }
         }
@@ -107,7 +110,7 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public render_legal_squares_surrounding_king(): void {
-        const positions_surrounding_king = this.empty_positions_surrounding_king()
+        const positions_surrounding_king = this.moveable_positions_surrounding_king()
         const attacked_points_around_king = this.attacked_points_around_king()
 
         if(arrays_are_equal(positions_surrounding_king, attacked_points_around_king)) {
@@ -173,7 +176,7 @@ export default class King extends Piece implements Piece_Interface {
             //If piece could attack king
             let direction: PieceDirections | undefined = direction_by_modifier({ row: row_modifier, col: col_modifier })
             if (direction !== undefined) {
-                if (piece.directions.includes(direction) || this.pawn_attack_square(piece, direction)) {
+                if (piece.directions.includes(direction) || this.pawn_attack_square(piece, direction, distance)) {
                     //If there are no pieces blocking path
                     if (piece.move_distance >= distance) {
                         return true
@@ -193,13 +196,15 @@ export default class King extends Piece implements Piece_Interface {
         return false
     }
 
-    private pawn_attack_square(piece: Piece, direction: PieceDirections): boolean {
-        if(piece.type === PieceType.pawn) {
-            if(direction === PieceDirections.north_west) {
-                return true
-            }
-            if(direction === PieceDirections.north_east) {
-                return true
+    private pawn_attack_square(piece: Piece, direction: PieceDirections, distance: number): boolean {
+        if(distance <= piece.move_distance) {
+            if(piece.type === PieceType.pawn) {
+                if(direction === PieceDirections.north_west) {
+                    return true
+                }
+                if(direction === PieceDirections.north_east) {
+                    return true
+                }
             }
         }
         return false
@@ -220,7 +225,7 @@ export default class King extends Piece implements Piece_Interface {
         let first_attacking_piece: Piece | undefined
 
         path.ordered_pieces_list.forEach(piece => {
-            if (piece.color === this.color && piece.type !== PieceType.knight) {
+            if (piece.color === this.color) {
                 if (first_attacking_piece === undefined) {
                     blocking_pieces.push(piece)
                 }

@@ -28,8 +28,10 @@ export default class Piece {
     move_distance: number = 8
     position_restrictions: string[] = []
     can_block_check: boolean = false
+    is_covered: boolean = false
+    covering_pieces: Piece[] = []
 
-    // TODO -- REMOVE!!!
+    //Global Property
     static position_restrictions: string[] = []
 
     constructor(title: string, pos: string, svg: string, color: Color) {
@@ -132,7 +134,15 @@ export default class Piece {
         if (!square_is_empty({row: new_row, col: new_col})) {
             const piece_at_square: Piece = SquareGrid.piece_by_grid_point({row: new_row, col: new_col})!
             if(piece_at_square.color !== this.color && this.type !== PieceType.pawn) {
-                this.possible_moves.push(SquareID.pos_at_point({row: new_row, col: new_col}))
+                if(this.type !== PieceType.king) {
+                    this.possible_moves.push(SquareID.pos_at_point({row: new_row, col: new_col}))
+                }
+                if(this.type === PieceType.king && !piece_at_square.is_covered) {
+                    this.possible_moves.push(SquareID.pos_at_point({row: new_row, col: new_col}))
+                }
+            }
+            if(piece_at_square.color === this.color && piece_at_square.title !== this.title && this.type !== PieceType.pawn) {
+                this.covering_pieces.push(piece_at_square)
             }
             return false
         }
@@ -151,5 +161,4 @@ export default class Piece {
             possible_moves.push(...moves_in_direction)
         }
     }
-
 }

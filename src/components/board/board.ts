@@ -111,6 +111,7 @@ export default class Board extends HTMLElement {
 		document.querySelectorAll(".row").forEach(e => e.remove())
 		this.add_squares_to_board()
 		MoveController.clear_possible_moves_lists()
+		MoveController.clear_covered_pieces_lists()
 		MoveController.load_possible_moves_lists()
 	}
 
