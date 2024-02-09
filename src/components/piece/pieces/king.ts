@@ -87,23 +87,22 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public check_for_checkmate() {
-        let checkmate: boolean = false
         if(this.in_check) {
             console.log(this.attacked_points_around_king())
             console.log(this.empty_positions_surrounding_king())
             if(arrays_are_equal(this.attacked_points_around_king(), this.empty_positions_surrounding_king())) {
-                if(!this.check_if_any_piece_can_block_check()) {
+                if(!this.any_piece_can_move()) {
                     console.log("checkmate")
                 }
             }
         }
     }
 
-    public check_if_any_piece_can_block_check(): boolean {
+    public any_piece_can_move(): boolean {
         const piece_of_color: Piece[] = PieceList.piece_list.filter(piece => piece.color === this.color && piece !== this)
 
         const any_piece_has_move = piece_of_color.some(piece =>
-            piece.possible_moves.some(move => Piece.position_restrictions.includes(move))
+            piece.possible_moves.length > 0
           );
 
         return any_piece_has_move
@@ -198,6 +197,8 @@ export default class King extends Piece implements Piece_Interface {
 
 
     public render_check_paths_list(): void {
+        this.in_check = false
+
         const check_paths_list: { direction: PieceDirections, ordered_pieces_list: Piece[] }[] = this.check_path_lists_from_all_directions()
         check_paths_list.forEach(path => {
             this.render_path(path)
@@ -211,7 +212,6 @@ export default class King extends Piece implements Piece_Interface {
         path.ordered_pieces_list.forEach(piece => {
             if (piece.color === this.color) {
                 if (first_attacking_piece === undefined) {
-                    this.in_check = false
                     blocking_pieces.push(piece)
                 }
             }
@@ -241,9 +241,7 @@ export default class King extends Piece implements Piece_Interface {
                 Piece.position_restrictions = [SquareID.pos_at_point(first_attacking_piece.grid_point!)]
             }
 
-            // this.positions_to_be_blocked = positions_between_attacker_and_king
             this.in_check = true
-            this.check_if_any_piece_can_block_check()
         }
     }
 
@@ -314,10 +312,7 @@ export default class King extends Piece implements Piece_Interface {
     public add_borders_to_castleable_rooks(rooks: Piece[]) {
         rooks.forEach(piece => {
             let rook = piece as Rook
-            if (
-                this.squares_between_king_and_rook_empty(rook)
-                 &&!this.has_moved && !rook.has_moved
-            ) {
+            if (this.squares_between_king_and_rook_empty(rook) &&!this.has_moved && !rook.has_moved && !this.in_check && !this.kings_castle_squares_attacked(rook)) {
                 SquareGrid.square_by_grid_point({ row: rook.grid_point!.row, col: rook.grid_point!.col })
                     .add_border()
             }
@@ -333,6 +328,20 @@ export default class King extends Piece implements Piece_Interface {
         let positions_between_king_and_rook = SquareID.pos_between_points(square_beside_king, square_beside_rook)
         const any_pieces = positions_between_king_and_rook.some(position => PieceList.piece_by_position(position) !== undefined)
         return !any_pieces
+    }
+
+    public kings_castle_squares_attacked(rook: Rook): boolean {
+        const castle_vars = this.castle_vars_for_rook_type(rook.rook_type)
+
+        const first_point: GridPoint = {row: this.grid_point!.row, col: this.grid_point!.col + castle_vars.index_modifier}
+        const second_point: GridPoint = {row: first_point.row, col: first_point!.col + castle_vars.index_modifier}
+
+        const first_position = SquareID.pos_at_point(first_point)
+        const second_position = SquareID.pos_at_point(second_point)
+
+        const any_piece = PieceList.pieces_by_other_color(this.color).some(piece => piece.possible_moves.some(move => [first_position,second_position].includes(move)));
+
+        return any_piece
     }
 
     public castle_vars_for_rook_type(rook_type: RookType): CastleVars {

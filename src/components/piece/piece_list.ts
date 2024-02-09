@@ -29,11 +29,13 @@ export default class PieceList {
         // new King("king_b", "G8", King_B_SVG, PieceType.king, Color.black),
         // new King("king_w", "E1", King_W_SVG, PieceType.king, Color.white),
 
-        // new Knight("knight_b1", "B8", Knight_B_SVG, PieceType.knight, Color.black),
-        // new Knight("knight_w1", "D3", Knight_W_SVG, PieceType.knight, Color.white),
+        // // new Queen("queen_b", "H2", Queen_B_SVG, PieceType.queen, Color.black),
 
-        // new Rook("rook_b1", "H1", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
-        // new Rook("rook_w1", "A2", Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
+        // new Knight("knight_b1", "B8", Knight_B_SVG, PieceType.knight, Color.black),
+        // new Knight("knight_w1", "C8", Knight_W_SVG, PieceType.knight, Color.white),
+
+        // new Rook("rook_b1", "F3", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
+        // new Rook("rook_w1", "H1", Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
         //END TODO
 
         new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
@@ -74,6 +76,15 @@ export default class PieceList {
         new Pawn("pawn_b8", "H7", Pawn_B_SVG, PieceType.pawn, Color.black),
         new Pawn("pawn_w8", "H2", Pawn_W_SVG, PieceType.pawn, Color.white),
     ]
+
+    public static pieces_by_color(color: Color): Piece[] {
+        return this.piece_list.filter(piece => piece.color === color)
+    }
+
+    public static pieces_by_other_color(color: Color): Piece[] {
+        const other_color: Color = color === Color.white ? Color.black : Color.white
+        return this.piece_list.filter(piece => piece.color === other_color)
+    }
 
     public static piece_by_position(pos: string): Piece | undefined {
         let p: Piece | undefined

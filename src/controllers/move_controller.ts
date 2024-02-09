@@ -61,9 +61,13 @@ export default class MoveController {
             let king_piece: King = focused_piece as King
             let rook_piece: Rook = clicked_piece as Rook
 
+            console.log(king_piece.kings_castle_squares_attacked(rook_piece))
+
             if (king_piece.color == rook_piece.color) {
                 if (!king_piece.has_moved && !rook_piece.has_moved) {
-                    should_castle = true
+                    if(!king_piece.in_check && !king_piece.kings_castle_squares_attacked(rook_piece)) {
+                        should_castle = true
+                    }
                 }
             }
         }

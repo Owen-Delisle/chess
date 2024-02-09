@@ -1,12 +1,8 @@
-import type { GridPoint } from "../../../global_types/grid_point"
 import type { Color } from "../color"
 import Piece from "../piece"
 import SquareGrid from "../../../models/square_grid"
 import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
-import Board from "../../board/board"
-import type Square from "../../../components/square/square"
-import SquareID from "../../../components/square/square_id"
 import { PieceDirections, piece_direction_modifier } from "../piece_directions"
 
 export default class Knight extends Piece implements Piece_Interface {
