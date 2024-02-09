@@ -251,7 +251,7 @@ export default class King extends Piece implements Piece_Interface {
         }
 
         if (this.piece_in_path_conditions(first_piece, path.direction)) {
-            Piece.position_restrictions = SquareID.pos_between_points(this.grid_point!, first_piece.grid_point!)
+            Piece.position_restrictions = [SquareID.pos_at_point(first_piece.grid_point!)]
         }
     }
 
