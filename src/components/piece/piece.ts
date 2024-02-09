@@ -144,7 +144,12 @@ export default class Piece {
             possible_moves.push(...moves_in_direction.filter(move => this.position_restrictions.includes(move)))
             this.can_block_check = true
         } else if(Piece.position_restrictions.length > 0 && this.type != PieceType.king) {
-            possible_moves.push(...moves_in_direction.filter(move => Piece.position_restrictions.includes(move)))
+            if(Piece.position_restrictions.length === 1) {
+                possible_moves.push(...moves_in_direction.filter(move => Piece.position_restrictions.includes(move)))
+            }
+            if(Piece.position_restrictions.length > 1) {
+                possible_moves = []
+            }
             this.can_block_check = true
         } else {
             possible_moves.push(...moves_in_direction)
