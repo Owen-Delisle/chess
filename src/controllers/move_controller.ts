@@ -10,7 +10,6 @@ import type { CastleVars } from "../components/piece/pieces/king"
 import SquareID from "../components/square/square_id"
 import { GameController } from "./game_controller"
 import PieceList from "../components/piece/piece_list"
-import { animatedCheckmateAlert } from "../alerts/checkmate"
 
 export default class MoveController {
     private static focused_square: Square | undefined

@@ -122,3 +122,7 @@ export function knight_direction_modifier(direction: KnightDirections): GridPoin
             return {row: -2, col: -1}
     }
 }
+
+export function every_direction(): number[] {
+    return Object.keys(PieceDirections).filter(key => !isNaN(parseInt(key, 10))).map(key => parseInt(key, 10))
+}

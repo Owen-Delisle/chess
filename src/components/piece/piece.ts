@@ -77,10 +77,6 @@ export default class Piece {
         })
     }
 
-    public check_if_piece_can_block_check() {
-
-    }
-
     public build_possible_moves_list(
         current_pos: GridPoint,
         distance: number,
@@ -101,7 +97,7 @@ export default class Piece {
         let index: number = 1
         let moves_in_direction: string[] = []
 
-        while (this.conditions_to_continue_adding_positions(current_pos, distance, row_modifier, col_modifier, index) ){
+        while (this.conditions_to_continue_adding_positions(current_pos, distance, row_modifier, col_modifier, index, moves_in_direction) ){
             let next_row: number = current_pos.row + (row_modifier * index)
             let next_col: number = current_pos.col + (col_modifier * index)
             let pos_at_point: string = SquareID.pos_at_point({ row: next_row, col: next_col })
@@ -117,7 +113,8 @@ export default class Piece {
         move_distance: number,
         row_modifier: number,
         col_modifier: number,
-        distance: number): boolean {
+        distance: number,
+        moves_in_direction: string[]): boolean {
         let new_row: number = current_pos.row + (row_modifier * distance)
         let new_col: number = current_pos.col + (col_modifier * distance)
 
@@ -133,7 +130,7 @@ export default class Piece {
             const piece_at_square: Piece = SquareGrid.piece_by_grid_point({row: new_row, col: new_col})!
             if(piece_at_square.color !== this.color && this.type !== PieceType.pawn) {
                 if(this.type !== PieceType.king) {
-                    this.possible_moves.push(SquareID.pos_at_point({row: new_row, col: new_col}))
+                    moves_in_direction.push(SquareID.pos_at_point({row: new_row, col: new_col}))
                 }
             }
             return false
