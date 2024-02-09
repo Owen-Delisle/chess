@@ -147,6 +147,6 @@ export default class PieceList {
     public static swap_with_queen(piece_id: string, position: string, color: Color) {
         const svg: string = color === Color.white ? Queen_W_SVG : Queen_B_SVG 
         this.remove_piece_by_id(piece_id)
-        this.piece_list.push(new Queen(`queen_${++this.number_of_queens}`, position, svg, PieceType.queen, Color.black))
+        this.piece_list.push(new Queen(`queen_${++this.number_of_queens}`, position, svg, PieceType.queen, color))
     }
 }   
