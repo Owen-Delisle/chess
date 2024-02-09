@@ -88,8 +88,6 @@ export default class King extends Piece implements Piece_Interface {
 
     public check_for_checkmate() {
         if(this.in_check) {
-            console.log(this.attacked_points_around_king())
-            console.log(this.empty_positions_surrounding_king())
             if(arrays_are_equal(this.attacked_points_around_king(), this.empty_positions_surrounding_king())) {
                 if(!this.any_piece_can_move()) {
                     console.log("checkmate")
@@ -175,7 +173,7 @@ export default class King extends Piece implements Piece_Interface {
             //If piece could attack king
             let direction: PieceDirections | undefined = direction_by_modifier({ row: row_modifier, col: col_modifier })
             if (direction !== undefined) {
-                if (piece.directions.includes(direction)) {
+                if (piece.directions.includes(direction) || this.pawn_attack_square(piece, direction)) {
                     //If there are no pieces blocking path
                     if (piece.move_distance >= distance) {
                         return true
@@ -195,6 +193,18 @@ export default class King extends Piece implements Piece_Interface {
         return false
     }
 
+    private pawn_attack_square(piece: Piece, direction: PieceDirections): boolean {
+        if(piece.type === PieceType.pawn) {
+            if(direction === PieceDirections.north_west) {
+                return true
+            }
+            if(direction === PieceDirections.north_east) {
+                return true
+            }
+        }
+        return false
+    }
+
 
     public render_check_paths_list(): void {
         this.in_check = false
@@ -210,7 +220,7 @@ export default class King extends Piece implements Piece_Interface {
         let first_attacking_piece: Piece | undefined
 
         path.ordered_pieces_list.forEach(piece => {
-            if (piece.color === this.color) {
+            if (piece.color === this.color && piece.type !== PieceType.knight) {
                 if (first_attacking_piece === undefined) {
                     blocking_pieces.push(piece)
                 }
@@ -280,11 +290,6 @@ export default class King extends Piece implements Piece_Interface {
         let next_col: number = current_col + modifier.col
 
         if (next_row < 0 || next_row >= Board.row_size || next_col < 0 || next_col >= Board.row_size) {
-            should_stop = true
-        }
-
-        // TODO -- Take oot the ate
-        if(direction >= 8) {
             should_stop = true
         }
 

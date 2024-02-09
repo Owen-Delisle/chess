@@ -6,14 +6,16 @@ import { PieceDirections, piece_direction_modifier } from "../piece_directions"
 import type { Color } from "../color"
 import type Square from "../../square/square"
 import SquareID from "../../../components/square/square_id"
+import PieceList from "../piece_list"
 
 export default class Pawn extends Piece implements Piece_Interface {
-
-    current_move_distance: number = 2
-    minimum_move_distance: number = 1
-    movement_directions: PieceDirections[] = [PieceDirections.north]
+    private current_move_distance: number = 2
+    private minimum_move_distance: number = 1
 
     attack_directions: PieceDirections[] = [PieceDirections.north_east, PieceDirections.north_west]
+
+    //Global Property
+    public move_distance: number = 1
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, pos, svg, color)
@@ -48,7 +50,16 @@ export default class Pawn extends Piece implements Piece_Interface {
             this.pos = new_square.square_id as string
             this.current_move_distance = this.minimum_move_distance
             this.possible_moves = []
+
+            if(new_square.grid_point.row === 7 || new_square.grid_point.row === 0) {
+                this.make_queen()
+            }
+            
             resolve()
         })
+    }
+
+    public make_queen() {
+        PieceList.swap_with_queen(this.title, this.pos, this.color)
     }
 }
