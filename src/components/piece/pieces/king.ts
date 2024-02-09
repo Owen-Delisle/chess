@@ -84,10 +84,10 @@ export default class King extends Piece implements Piece_Interface {
     private moveable_positions_surrounding_king(): string[] {
         const list: string[] = surrounding_points(this.grid_point!).filter(point => {
             const piece: Piece | undefined = SquareGrid.piece_by_grid_point(point)
-            if(piece === undefined) {
+            if (piece === undefined) {
                 return true
             }
-            if(!this.check_if_piece_is_covered_in_any_direction(piece)) {
+            if (!this.check_if_piece_is_covered_in_any_direction(piece)) {
                 this.possible_moves.push(piece.pos)
                 return true
             }
@@ -96,9 +96,9 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public check_for_checkmate() {
-        if(this.in_check) { 
-            if(arrays_are_equal(this.attacked_points_around_king(), this.moveable_positions_surrounding_king()) && this.possible_moves.length < 1) {
-                if(!this.any_piece_can_move()) {
+        if (this.in_check) {
+            if (arrays_are_equal(this.attacked_points_around_king(), this.moveable_positions_surrounding_king()) && this.possible_moves.length < 1) {
+                if (!this.any_piece_can_move()) {
                     animatedCheckmateAlert.showAlert();
                 }
             }
@@ -110,7 +110,7 @@ export default class King extends Piece implements Piece_Interface {
 
         const any_piece_has_move = piece_of_color.some(piece =>
             piece.possible_moves.length > 0
-          );
+        );
 
         return any_piece_has_move
     }
@@ -119,7 +119,7 @@ export default class King extends Piece implements Piece_Interface {
         const positions_surrounding_king = this.moveable_positions_surrounding_king()
         const attacked_points_around_king = this.attacked_points_around_king()
 
-        if(arrays_are_equal(positions_surrounding_king, attacked_points_around_king)) {
+        if (arrays_are_equal(positions_surrounding_king, attacked_points_around_king)) {
             this.move_distance = 0
         } else {
             this.move_distance = 1
@@ -143,7 +143,7 @@ export default class King extends Piece implements Piece_Interface {
 
                 if (this.check_if_square_is_covered_by_piece_of_color(initial_row, initial_col, next_row, next_col, row_modifier, col_modifier, direction, 1, not_color(this.color))) {
                     const next_pos: string = SquareID.pos_at_point({ row: initial_row, col: initial_col })
-                    if(!attacked_positions.includes(next_pos)) {
+                    if (!attacked_positions.includes(next_pos)) {
                         attacked_positions.push(next_pos)
                     }
                 }
@@ -216,12 +216,12 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     private pawn_attack_square(piece: Piece, direction: PieceDirections, distance: number): boolean {
-        if(distance <= piece.move_distance) {
-            if(piece.type === PieceType.pawn) {
-                if(direction === PieceDirections.north_west) {
+        if (distance <= piece.move_distance) {
+            if (piece.type === PieceType.pawn) {
+                if (direction === PieceDirections.north_west) {
                     return true
                 }
-                if(direction === PieceDirections.north_east) {
+                if (direction === PieceDirections.north_east) {
                     return true
                 }
             }
@@ -240,49 +240,37 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     private render_path(path: { direction: PieceDirections, ordered_pieces_list: Piece[] }): void {
-        let blocking_pieces: Piece[] = []
-        let first_attacking_piece: Piece | undefined
+        const pieces: Piece[] = path.ordered_pieces_list
 
-        //TODO -- DELETE
-        if(this.color === Color.white) {
-            console.log(path.ordered_pieces_list)
-        
-        
-        path.ordered_pieces_list.forEach(piece => {
-            if (piece.color === this.color) {
-                if (first_attacking_piece === undefined) {
-                    blocking_pieces.push(piece)
+        if (pieces.length < 1) {
+            this.in_check = false
+            return
+        }
+
+        const first_piece = pieces[0]
+
+        if (first_piece.color === this.color) {
+            if (pieces.length > 1) {
+                if (this.piece_in_path_conditions(pieces[1], path.direction)) {
+                    first_piece.position_restrictions = SquareID.pos_between_points(this.grid_point!, pieces[1].grid_point!)
                 }
             }
+        }
 
-            if (piece.color !== this.color && first_attacking_piece === undefined) {
-                let distance_between_attacker_and_king: number = distance_between_points(piece.grid_point!, this.grid_point!) - 1
-                if (piece.directions.includes(path.direction) && piece.move_distance >= distance_between_attacker_and_king) {
-                    first_attacking_piece = piece
+        if (this.piece_in_path_conditions(first_piece, path.direction)) {
+            Piece.position_restrictions = SquareID.pos_between_points(this.grid_point!, first_piece.grid_point!)
+        }
+    }
+
+    private piece_in_path_conditions(piece: Piece, direction: PieceDirections): boolean {
+        if (piece.color === not_color(this.color)) {
+            if (piece.directions.includes(direction)) {
+                if (piece.move_distance >= distance_between_points(piece.grid_point!, this.grid_point!) - 1) {
+                    return true
                 }
             }
-        });
-
-        if (blocking_pieces.length === 1 && first_attacking_piece !== undefined) {
-            //TODO -- Not Dry -- Refactor
-            const positions_between_attacker_and_king: string[] = SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!)
-            blocking_pieces[0].position_restrictions = positions_between_attacker_and_king
         }
-
-        if (blocking_pieces.length === 0 && first_attacking_piece !== undefined) {
-            //TODO -- Not Dry -- Refactor
-            const positions_between_attacker_and_king: string[] = SquareID.pos_between_points(this.grid_point!, first_attacking_piece.grid_point!)
-            //TODO -- Take oot the ate
-            if(path.direction < 8) {
-                // All pieces are restricted to the check path
-                Piece.position_restrictions = positions_between_attacker_and_king
-            } else {
-                Piece.position_restrictions = [SquareID.pos_at_point(first_attacking_piece.grid_point!)]
-            }
-
-            this.in_check = true
-        }
-        }
+        return false
     }
 
     private check_path_lists_from_every_direction(): { direction: PieceDirections, ordered_pieces_list: Piece[] }[] {
@@ -303,7 +291,7 @@ export default class King extends Piece implements Piece_Interface {
         while (!this.stopping_conditions(current_row, current_col, modifier, direction)) {
             current_row = current_row + modifier.row
             current_col = current_col + modifier.col
-            
+
             let piece_at_position = SquareGrid.piece_by_grid_point({ row: current_row, col: current_col })
             if (piece_at_position != undefined) {
                 pieces_in_path.push(piece_at_position)
@@ -338,7 +326,7 @@ export default class King extends Piece implements Piece_Interface {
     public rooks_for_king(): Rook[] {
         const pieces = PieceList.piece_list.filter(rook =>
             rook.type === PieceType.rook && rook.color === this.color)
-        
+
         const rooks: Rook[] = pieces as Rook[]
 
         return rooks
@@ -347,7 +335,7 @@ export default class King extends Piece implements Piece_Interface {
     public add_borders_to_castleable_rooks(rooks: Piece[]) {
         rooks.forEach(piece => {
             let rook = piece as Rook
-            if (this.squares_between_king_and_rook_empty(rook) &&!this.has_moved && !rook.has_moved && !this.in_check && !this.kings_castle_squares_attacked(rook)) {
+            if (this.squares_between_king_and_rook_empty(rook) && !this.has_moved && !rook.has_moved && !this.in_check && !this.kings_castle_squares_attacked(rook)) {
                 SquareGrid.square_by_grid_point({ row: rook.grid_point!.row, col: rook.grid_point!.col })
                     .add_border()
             }
@@ -357,8 +345,8 @@ export default class King extends Piece implements Piece_Interface {
     public squares_between_king_and_rook_empty(rook: Rook): boolean {
         const castle_vars = this.castle_vars_for_rook_type(rook.rook_type)
 
-        const square_beside_king: GridPoint = {row: this.grid_point!.row, col: this.grid_point!.col + castle_vars.index_modifier}
-        const square_beside_rook: GridPoint = {row: rook.grid_point!.row, col: rook.grid_point!.col - castle_vars.index_modifier}
+        const square_beside_king: GridPoint = { row: this.grid_point!.row, col: this.grid_point!.col + castle_vars.index_modifier }
+        const square_beside_rook: GridPoint = { row: rook.grid_point!.row, col: rook.grid_point!.col - castle_vars.index_modifier }
 
         let positions_between_king_and_rook = SquareID.pos_between_points(square_beside_king, square_beside_rook)
         const any_pieces = positions_between_king_and_rook.some(position => PieceList.piece_by_position(position) !== undefined)
@@ -368,13 +356,13 @@ export default class King extends Piece implements Piece_Interface {
     public kings_castle_squares_attacked(rook: Rook): boolean {
         const castle_vars = this.castle_vars_for_rook_type(rook.rook_type)
 
-        const first_point: GridPoint = {row: this.grid_point!.row, col: this.grid_point!.col + castle_vars.index_modifier}
-        const second_point: GridPoint = {row: first_point.row, col: first_point!.col + castle_vars.index_modifier}
+        const first_point: GridPoint = { row: this.grid_point!.row, col: this.grid_point!.col + castle_vars.index_modifier }
+        const second_point: GridPoint = { row: first_point.row, col: first_point!.col + castle_vars.index_modifier }
 
         const first_position = SquareID.pos_at_point(first_point)
         const second_position = SquareID.pos_at_point(second_point)
 
-        const any_piece = PieceList.pieces_by_other_color(this.color).some(piece => piece.possible_moves.some(move => [first_position,second_position].includes(move)));
+        const any_piece = PieceList.pieces_by_other_color(this.color).some(piece => piece.possible_moves.some(move => [first_position, second_position].includes(move)));
 
         return any_piece
     }
