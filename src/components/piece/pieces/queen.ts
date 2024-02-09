@@ -3,7 +3,6 @@ import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
 import { PieceDirections, piece_direction_modifier } from "../piece_directions"
 import type {Color} from "../color"
-import type { GridPoint } from "../../../global_types/grid_point"
 import SquareGrid from "../../../models/square_grid"
 
 export default class Queen extends Piece implements Piece_Interface {

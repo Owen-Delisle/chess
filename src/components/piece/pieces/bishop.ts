@@ -1,4 +1,3 @@
-import type { GridPoint } from "src/global_types/grid_point"
 import Piece from "../piece"
 import { PieceDirections, piece_direction_modifier } from "../piece_directions"
 import type Piece_Interface from "../piece_interface"

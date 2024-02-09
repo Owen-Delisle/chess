@@ -5,9 +5,6 @@ import PieceList from '../piece/piece_list';
 import SquareStyles from '../square/styles';
 import SquareGrid from '../../models/square_grid'
 import SquareID from '../square/square_id';
-import Piece from '../piece/piece';
-import type King from '../piece/pieces/king';
-import { GameController } from '../../controllers/game_controller';
 import MoveController from '../../controllers/move_controller';
 
 export default class Board extends HTMLElement {

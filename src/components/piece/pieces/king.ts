@@ -14,7 +14,6 @@ import Board from "../../../components/board/board"
 import { distance_between_points } from "../../../utils/math"
 import { arrays_are_equal } from "../../../utils/arrays"
 import { surrounding_points } from "../../../utils/grid"
-import { animatedCheckmateAlert } from "../../../alerts/checkmate"
 import { not_color } from "../color"
 import { every_direction } from "../piece_directions"
 
@@ -96,19 +95,13 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public check_for_checkmate() {
-        if (this.in_check) {
-            if (arrays_are_equal(this.attacked_points_around_king(), this.moveable_positions_surrounding_king()) && this.possible_moves.length < 1) {
-                if (!this.any_piece_can_move()) {
-                    animatedCheckmateAlert.showAlert();
-                }
-            }
+        if (!this.any_piece_can_move()) {
+            console.log("Checkmate")
         }
     }
 
     public any_piece_can_move(): boolean {
-        const piece_of_color: Piece[] = PieceList.piece_list.filter(piece => piece.color === this.color && piece !== this)
-
-        const any_piece_has_move = piece_of_color.some(piece =>
+        const any_piece_has_move = PieceList.pieces_by_color(this.color).some(piece =>
             piece.possible_moves.length > 0
         );
 
