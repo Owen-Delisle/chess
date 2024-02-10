@@ -12,6 +12,8 @@ import type { Color } from "./color"
 import Board from "../board/board"
 import type Square from "../square/square"
 import SquareID from "../square/square_id"
+import type { PieceDirections } from "./piece_directions"
+import { square_is_empty } from "../../utils/grid"
 
 export default class Piece {
     title: string
@@ -22,6 +24,12 @@ export default class Piece {
     color: Color
     grid_point: GridPoint | undefined
     possible_moves: string[] = []
+    directions: PieceDirections[] = []
+    move_distance: number = 8
+    position_restrictions: string[] = []
+
+    //Global Property
+    static position_restrictions: string[] = []
 
     constructor(title: string, pos: string, svg: string, color: Color) {
         this.title = title
@@ -70,98 +78,75 @@ export default class Piece {
 
     public build_possible_moves_list(
         current_pos: GridPoint,
-        move_distance: number,
-        row_modifier: number,
-        col_modifier: number,
+        distance: number,
+        modifier: GridPoint
     ): void {
-        let index: number = 1
-        while (this.conditions_to_continue_adding_moves(
-            current_pos,
-            move_distance,
-            row_modifier,
-            col_modifier,
-            index)
-        ) {
-            let square_id: string = SquareID.pos_at_point({row: current_pos.row + (row_modifier * index),col: current_pos.col + (col_modifier * index)})
-            this.possible_moves.push(square_id)
-            index++
-        }
-        this.highlight_action_piece(current_pos, row_modifier, col_modifier, index)
+        const row_modifier = modifier.row
+        const col_modifier = modifier.col
+        this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves)
     }
 
-    public conditions_to_continue_adding_moves(
+    public add_positions_to_list_in_direction_for_distance(
+        current_pos: GridPoint,
+        distance: number,
+        row_modifier: number,
+        col_modifier: number,
+        possible_moves: string[],
+    ): void {
+        let index: number = 1
+        let moves_in_direction: string[] = []
+
+        while (this.conditions_to_continue_adding_positions(current_pos, distance, row_modifier, col_modifier, index, moves_in_direction) ){
+            let next_row: number = current_pos.row + (row_modifier * index)
+            let next_col: number = current_pos.col + (col_modifier * index)
+            let pos_at_point: string = SquareID.pos_at_point({ row: next_row, col: next_col })
+            moves_in_direction.push(pos_at_point)
+            index++
+        }
+
+        this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves)
+    }
+
+    public conditions_to_continue_adding_positions(
         current_pos: GridPoint,
         move_distance: number,
         row_modifier: number,
         col_modifier: number,
-        distance: number): boolean {
-        return Board.are_coors_within_board_bounds(
-            current_pos.row + (row_modifier * distance),
-            current_pos.col + (col_modifier * distance)
-        ) &&
-            this.correct_conditions_of_piece_at_square
-                (
-                    current_pos.row + (row_modifier * distance),
-                    current_pos.col + (col_modifier * distance)
-                )
-            &&
-            distance < move_distance
-    }
+        distance: number,
+        moves_in_direction: string[]): boolean {
+        let new_row: number = current_pos.row + (row_modifier * distance)
+        let new_col: number = current_pos.col + (col_modifier * distance)
 
-    public correct_conditions_of_piece_at_square(row: number, col: number): boolean {
-        const grid_point: GridPoint = { row, col }
-        return SquareGrid.piece_by_grid_point(grid_point)! === undefined
-    }
-
-    public highlight_target(square: Square): void {
-        let piece: Piece | undefined = square.piece_attached_to_square()
-        if(piece != undefined) {
-            if(piece.color != this.color){
-                this.possible_moves.push(square.square_id)
-                square.add_border()
-            }
+        if (!Board.are_coors_within_board_bounds(new_row, new_col)) {
+            return false
         }
-        this.piece_specific_highlight_steps()
+
+        if (distance > move_distance) {
+            return false
+        }
+
+        //If piece at square can be attacked
+        if (!square_is_empty({row: new_row, col: new_col})) {
+            const piece_at_square: Piece = SquareGrid.piece_by_grid_point({row: new_row, col: new_col})!
+            // Pawn has its own attacking logic
+            if(piece_at_square.color !== this.color && this.type !== PieceType.pawn) {
+                if(this.type !== PieceType.king) {
+                    moves_in_direction.push(SquareID.pos_at_point({row: new_row, col: new_col}))
+                }
+            }
+            return false
+        }
+
+        return true
     }
 
-    //Function definition to be used by subclasses
-    public piece_specific_highlight_steps(): void {
-    }
-
-    private highlight_action_piece(current_pos: GridPoint, row_modifier: number, col_modifier: number, distance: number) {
-        switch(this.type) {
-            case PieceType.pawn:
-                if(Board.are_coors_within_board_bounds(current_pos.row - 1, current_pos.col - 1)) {
-                    this.highlight_target(SquareGrid.square_by_grid_point({
-                        row: current_pos.row - 1,
-                        col: current_pos.col - 1
-                    }))
-                }
-                if(Board.are_coors_within_board_bounds(current_pos.row + 1, current_pos.col + 1)) {
-                    this.highlight_target(SquareGrid.square_by_grid_point({
-                        row: current_pos.row - 1,
-                        col: current_pos.col + 1
-                    }))
-                }
-                break
-            
-            case PieceType.king:
-                if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier), current_pos.col + (col_modifier))) {
-                    this.highlight_target(SquareGrid.square_by_grid_point({
-                        row: current_pos.row + (row_modifier),
-                        col: current_pos.col + (col_modifier)
-                    }))
-                }
-                break
-
-            default:
-                if(Board.are_coors_within_board_bounds(current_pos.row + (row_modifier * distance), current_pos.col + (col_modifier * distance))) {
-                    this.highlight_target(SquareGrid.square_by_grid_point({
-                        row: current_pos.row + (row_modifier * distance),
-                        col: current_pos.col + (col_modifier * distance)
-                    }))
-                }
-                break
+    public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[]): void {
+        if (this.position_restrictions.length > 0) {
+            possible_moves.push(...moves_in_direction.filter(move => this.position_restrictions.includes(move)))
+        } else if(Piece.position_restrictions.length > 0 && this.type != PieceType.king) {
+            possible_moves.push(...moves_in_direction.filter(move => Piece.position_restrictions.includes(move)))
+        } else {
+            possible_moves.push(...moves_in_direction)
         }
     }
 }

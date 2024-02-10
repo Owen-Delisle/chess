@@ -1,4 +1,4 @@
-import type Piece from "./piece"
+import Piece from "./piece"
 import {PieceType} from "./piece_types"
 import {Color} from "./color"
 import {RookType} from "./pieces/rook"
@@ -24,7 +24,21 @@ import Rook_B_SVG from "./assets/rook-b.svg"
 import Rook_W_SVG from "./assets/rook-w.svg"
 
 export default class PieceList {
+    private static number_of_queens: number = 2
+
     public static piece_list: Piece[] = [
+        //TODO -- WRONG PIECES, DELETE LATER
+        // new Rook("rook_b1", "B2", Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
+
+        // new Pawn("pawn_w1", "C2", Pawn_W_SVG, PieceType.pawn, Color.white),
+
+        // new Rook("rook_w1", "C2", Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
+        
+        // new Queen("queen_w", "D2", Queen_W_SVG, PieceType.queen, Color.white),
+
+        // new King("king_w", "E2", King_W_SVG, PieceType.king, Color.white),
+        //END TODO
+
         new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),
         new King("king_w", "E1", King_W_SVG, PieceType.king, Color.white),
 
@@ -64,6 +78,15 @@ export default class PieceList {
         new Pawn("pawn_w8", "H2", Pawn_W_SVG, PieceType.pawn, Color.white),
     ]
 
+    public static pieces_by_color(color: Color): Piece[] {
+        return this.piece_list.filter(piece => piece.color === color)
+    }
+
+    public static pieces_by_other_color(color: Color): Piece[] {
+        const other_color: Color = color === Color.white ? Color.black : Color.white
+        return this.piece_list.filter(piece => piece.color === other_color)
+    }
+
     public static piece_by_position(pos: string): Piece | undefined {
         let p: Piece | undefined
         this.piece_list.forEach(piece => {
@@ -101,4 +124,26 @@ export default class PieceList {
             this.piece_list.splice(index, 1)
         }
     }
-}
+
+    public static king_by_color(color: Color): King {
+        switch(color) {
+            case Color.black:
+                return this.piece_by_id("king_b") as King
+            case Color.white:
+                return this.piece_by_id("king_w") as King
+        }
+    }
+
+    public static clear_position_restrictions_property(): void {
+        Piece.position_restrictions = []
+        PieceList.piece_list.forEach(piece => {
+            piece.position_restrictions = []
+        });
+    }
+
+    public static swap_with_queen(piece_id: string, position: string, color: Color) {
+        const svg: string = color === Color.white ? Queen_W_SVG : Queen_B_SVG 
+        this.remove_piece_by_id(piece_id)
+        this.piece_list.push(new Queen(`queen_${++this.number_of_queens}`, position, svg, PieceType.queen, color))
+    }
+}   

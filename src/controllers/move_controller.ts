@@ -9,6 +9,7 @@ import type Rook from "../components/piece/pieces/rook"
 import type { CastleVars } from "../components/piece/pieces/king"
 import SquareID from "../components/square/square_id"
 import { GameController } from "./game_controller"
+import PieceList from "../components/piece/piece_list"
 
 export default class MoveController {
     private static focused_square: Square | undefined
@@ -31,6 +32,7 @@ export default class MoveController {
 
     private static conditions_for_standard_move(clicked_square: Square): boolean {
         let conditions_met: boolean = false
+
         if (this.focused_square_is_defined()) {
             if (!this.focused_square?.is_empty()) {
                 if (this.focused_square?.piece_attached_to_square()?.possible_moves.includes(clicked_square.square_id)) {
@@ -43,7 +45,7 @@ export default class MoveController {
 
     private static make_standard_move(clicked_square: Square): void {
         let piece_attached_to_focused_square: Piece | undefined = this.focused_square?.piece_attached_to_square()
-        if(piece_attached_to_focused_square != undefined) {
+        if (piece_attached_to_focused_square != undefined) {
             this.move_piece_to(clicked_square, piece_attached_to_focused_square)
         }
     }
@@ -61,7 +63,9 @@ export default class MoveController {
 
             if (king_piece.color == rook_piece.color) {
                 if (!king_piece.has_moved && !rook_piece.has_moved) {
-                    should_castle = true
+                    if(!king_piece.in_check && !king_piece.kings_castle_squares_attacked(rook_piece)) {
+                        should_castle = true
+                    }
                 }
             }
         }
@@ -110,7 +114,7 @@ export default class MoveController {
             this.clear_focused_square_visuals()
             this.focused_square = clicked_square
             this.focused_square.add_border()
-            this.load_possible_moves_list(this.focused_square)
+            this.add_visuals_to_possible_moves_for(this.focused_square.piece_attached_to_square())
         }
     }
 
@@ -127,23 +131,58 @@ export default class MoveController {
         }
     }
 
-    private static load_possible_moves_list(square: Square): void {
-        let piece_attached_to_square: Piece | undefined
-        piece_attached_to_square = square.piece_attached_to_square()
+    public static load_possible_moves_lists(): void {
+        const white_king: King = PieceList.piece_by_id('king_w') as King
+        const black_king: King = PieceList.piece_by_id('king_b') as King
+        PieceList.piece_list.forEach(piece => {
+            if (piece != undefined) {
+                const typed_piece = Piece.piece_factory(piece)
+                const king_piece: King = PieceList.king_by_color(piece.color)
+                PieceList.clear_position_restrictions_property()
+                king_piece.render_check_paths_list()
+                typed_piece.calculate_possible_moves()
+            }
+        })
+        white_king.check_for_checkmate()
+        black_king.check_for_checkmate()
+    }
 
-        if (piece_attached_to_square != undefined) {
-            const typed_piece = Piece.piece_factory(piece_attached_to_square)
-            typed_piece.calculate_possible_moves()
-            this.add_dots_to_possible_moves(typed_piece)
+    public static clear_possible_moves_lists(): void {
+        PieceList.piece_list.forEach(piece => {
+            if (piece != undefined) {
+                piece.possible_moves = []
+            }
+        })
+    }
+
+    private static add_visuals_to_possible_moves_for(piece: Piece | undefined): void {
+        if (piece !== undefined) {
+            this.add_dots_to_possible_moves_for(piece)
+            this.add_border_to_attacked_piece_for(piece)
+            if(piece.type === PieceType.king) {
+                const king: King = piece as King
+                king.add_borders_to_castleable_rooks(king.rooks_for_king())
+            }
         }
     }
 
-    private static add_dots_to_possible_moves(piece: Piece): void {
-        piece.possible_moves.forEach(possible_move => {
+    private static add_dots_to_possible_moves_for(piece: Piece | undefined): void {
+        piece!.possible_moves.forEach(possible_move => {
             let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
             if (square != undefined) {
                 if (square.piece_attached_to_square() == undefined) {
                     square.add_dot()
+                }
+            }
+        })
+    }
+
+    private static add_border_to_attacked_piece_for(piece: Piece | undefined): void {
+        piece!.possible_moves.forEach(position => {
+            const piece_at_position = PieceList.piece_by_position(position)
+            if(piece_at_position !== undefined) {
+                if(piece!.color !== piece_at_position.color) {
+                    SquareGrid.square_by_board_position(position)!.add_border()
                 }
             }
         })
@@ -171,8 +210,8 @@ export default class MoveController {
 
     private static remove_piece_conditions(selected_square: Square): boolean {
         let should_remove_piece: boolean = false
-        if(!selected_square.is_empty()) {
-            if(selected_square.piece_attached_to_square()!.color != GameController.turn) {
+        if (!selected_square.is_empty()) {
+            if (selected_square.piece_attached_to_square()!.color != GameController.turn) {
                 should_remove_piece = true
             }
         }

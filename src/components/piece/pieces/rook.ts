@@ -1,7 +1,6 @@
-import type { GridPoint } from "src/global_types/grid_point"
 import type { Color } from "../color"
 import Piece from "../piece"
-import { PieceDirections } from "../piece_directions"
+import { PieceDirections, piece_direction_modifier } from "../piece_directions"
 import SquareGrid from "../../../models/square_grid"
 import type Piece_Interface from "../piece_interface"
 import type { PieceType } from "../piece_types"
@@ -25,29 +24,27 @@ export default class Rook extends Piece implements Piece_Interface {
         this.rook_type = rook_type
     }
 
-    public calculate_possible_moves(): GridPoint[] {
-        let possible_moves: GridPoint[] = []
+    public calculate_possible_moves(): void {
         this.grid_point = SquareGrid.point_by_piece(this)
 
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, -1, 0)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.north))
                     break;
                 case PieceDirections.east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, 1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.east))
                     break;
                 case PieceDirections.south:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 1, 0)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.south))
                     break;
                 case PieceDirections.west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, 0, -1)
+                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.west))
                     break;
                 default:
                     console.log("Direction Not Found")
             }
         })
-        return possible_moves
     }
 
     public move_to(new_square: Square): Promise<void> {

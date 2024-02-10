@@ -51,4 +51,64 @@ export default class SquareID {
         let position: number = (point.row*8)+point.col
         return SquareID.positions[position]
     }
+
+    public static pos_between_points(point_one: GridPoint, point_two: GridPoint): string[] {
+        const positions: string[] = [];
+
+        // Calculate the differences in x and y coordinates
+        const delta_row = point_two.row - point_one.row;
+        const delta_col = point_two.col - point_one.col;
+
+        // Determine the number of points to interpolate
+        const number_of_points = Math.max(Math.abs(delta_row), Math.abs(delta_col));
+
+        // Calculate the step sizes for x and y coordinates
+        const row_step = delta_row / number_of_points;
+        const col_step = delta_col / number_of_points;
+
+        // Generate the interpolated points
+        for (let i = 0; i <= number_of_points; i++) {
+            const interpolated_point: GridPoint = {
+            row: point_one.row + i * row_step,
+            col: point_one.col + i * col_step,
+            };
+
+            const interpolated_position: string = this.pos_at_point(interpolated_point)
+
+            positions.push(interpolated_position);
+        }
+
+        return positions;
+    }
+
+    public static calculate_points_between(point1: GridPoint, point2: GridPoint): GridPoint[] {
+        const points: GridPoint[] = [];
+        const dx = Math.abs(point2.row - point1.row);
+        const dy = Math.abs(point2.col - point1.col);
+        const sx = (point1.row < point2.row) ? 1 : -1;
+        const sy = (point1.col < point2.col) ? 1 : -1;
+        let err = dx - dy;
+        let row = point1.row;
+        let col = point1.col;
+      
+        while (true) {
+          points.push({ row, col });
+      
+          if (row === point2.row && col === point2.col) {
+            break;
+          }
+      
+          const e2 = 2 * err;
+          if (e2 > -dy) {
+            err -= dy;
+            row += sx;
+          }
+          if (e2 < dx) {
+            err += dx;
+            col += sy;
+          }
+        }
+      
+        return points;
+      }
 }

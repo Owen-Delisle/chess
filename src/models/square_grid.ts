@@ -1,6 +1,7 @@
 import type Square from "../components/square/square"
 import type { GridPoint } from "../global_types/grid_point"
 import type Piece from "../components/piece/piece"
+import Board from "../components/board/board"
 
 export default class SquareGrid {
     public static square_grid: Array<Array<Square>> = []
@@ -43,6 +44,9 @@ export default class SquareGrid {
     }
 
     public static piece_by_grid_point(point: GridPoint): Piece | undefined {
+        if(!Board.are_coors_within_board_bounds(point.row, point.col)) {
+            return undefined
+        }
         return SquareGrid.square_grid[point.row][point.col].piece_attached_to_square()
     }
 
