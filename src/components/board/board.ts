@@ -1,7 +1,7 @@
 import Square from '../square/square'
 import { Color } from "../square/color"
 import PieceStyles from '../piece/styles';
-import PieceList from '../../models/piece_list';
+import PieceList from '../../models/piece_list/piece_list';
 import SquareStyles from '../square/styles';
 import SquareGrid from '../../models/square_grid'
 import SquareID from '../square/square_id';
@@ -109,16 +109,6 @@ export default class Board extends HTMLElement {
 		this.add_squares_to_board()
 		MoveController.clear_possible_moves_lists()
 		MoveController.load_possible_moves_lists()
-	}
-
-	public static are_coors_within_board_bounds(row: number, col: number): boolean {
-		if (row < Board.start_index) return false
-		if (row >= Board.row_size) return false
-
-		if (col < Board.start_index) return false
-		if (col >= Board.col_size) return false
-
-		return true
 	}
 }
 

@@ -9,7 +9,7 @@ import type Rook from "../components/piece/pieces/rook"
 import type { CastleVars } from "../components/piece/pieces/king"
 import SquareID from "../components/square/square_id"
 import { GameController } from "./game_controller"
-import PieceList from "../models/piece_list"
+import PieceList from "../models/piece_list/piece_list"
 
 export default class MoveController {
     private static focused_square: Square | undefined
@@ -134,12 +134,16 @@ export default class MoveController {
     public static load_possible_moves_lists(): void {
         const white_king: King = PieceList.piece_by_id('king_w') as King
         const black_king: King = PieceList.piece_by_id('king_b') as King
+
         PieceList.piece_list.forEach(piece => {
-            if (piece != undefined) {
+
+            if (piece !== undefined) {
                 const typed_piece = Piece.piece_factory(piece)
                 const king_piece: King = PieceList.king_by_color(piece.color)
                 PieceList.clear_position_restrictions_property()
+
                 king_piece.render_check_paths_list()
+
                 typed_piece.calculate_possible_moves()
             }
         })

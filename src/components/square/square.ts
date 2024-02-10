@@ -3,7 +3,7 @@ import SquareID  from "./square_id"
 import type Piece from "../piece/piece";
 import MoveController from "../../controllers/move_controller";
 import type { GridPoint } from "../../global_types/grid_point";
-import PieceList from "../../models/piece_list";
+import PieceList from "../../models/piece_list/piece_list";
 
 export default class Square extends HTMLElement {
     square_id: string
