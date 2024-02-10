@@ -1,7 +1,7 @@
 import Square from '../square/square'
 import { Color } from "../square/color"
 import PieceStyles from '../piece/styles';
-import PieceList from '../piece/piece_list';
+import PieceList from '../../models/piece_list';
 import SquareStyles from '../square/styles';
 import SquareGrid from '../../models/square_grid'
 import SquareID from '../square/square_id';

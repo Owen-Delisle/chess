@@ -9,7 +9,7 @@ import type Rook from "../components/piece/pieces/rook"
 import type { CastleVars } from "../components/piece/pieces/king"
 import SquareID from "../components/square/square_id"
 import { GameController } from "./game_controller"
-import PieceList from "../components/piece/piece_list"
+import PieceList from "../models/piece_list"
 
 export default class MoveController {
     private static focused_square: Square | undefined

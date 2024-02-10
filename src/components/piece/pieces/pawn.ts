@@ -6,7 +6,7 @@ import { PieceDirections, piece_direction_modifier } from "../piece_directions"
 import type { Color } from "../color"
 import type Square from "../../square/square"
 import SquareID from "../../../components/square/square_id"
-import PieceList from "../piece_list"
+import PieceList from "../../../models/piece_list"
 
 export default class Pawn extends Piece implements Piece_Interface {
     private current_move_distance: number = 2
