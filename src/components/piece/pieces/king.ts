@@ -137,7 +137,9 @@ export default class King extends Piece implements Piece_Interface {
                 if (this.check_if_square_is_covered_by_piece_of_color(initial_row, initial_col, next_row, next_col, row_modifier, col_modifier, direction, 1, not_color(this.color))) {
                     const next_pos: string = SquareID.pos_at_point({ row: initial_row, col: initial_col })
                     if (!attacked_positions.includes(next_pos)) {
-                        attacked_positions.push(next_pos)
+                        if(PieceList.piece_by_position(next_pos) === undefined) {
+                            attacked_positions.push(next_pos)
+                        }
                     }
                 }
             })
@@ -236,12 +238,12 @@ export default class King extends Piece implements Piece_Interface {
         const pieces: Piece[] = path.ordered_pieces_list
 
         if (pieces.length < 1) {
-            this.in_check = false
             return
         }
 
         const first_piece = pieces[0]
 
+        //Blocking Check
         if (first_piece.color === this.color) {
             if (pieces.length > 1) {
                 if (this.piece_in_path_conditions(pieces[1], path.direction)) {
@@ -250,15 +252,21 @@ export default class King extends Piece implements Piece_Interface {
             }
         }
 
+        // In Check
         if (this.piece_in_path_conditions(first_piece, path.direction)) {
-            Piece.position_restrictions.push(SquareID.pos_at_point(first_piece.grid_point!))
+            this.in_check = true
+            if(path.direction < 8) {
+                Piece.position_restrictions = [...SquareID.pos_between_points(this.grid_point!, first_piece.grid_point!)]
+            } else {
+                Piece.position_restrictions = [SquareID.pos_at_point(first_piece.grid_point!)]
+            }
         }
     }
 
     private piece_in_path_conditions(piece: Piece, direction: PieceDirections): boolean {
         if (piece.color === not_color(this.color)) {
             if (piece.directions.includes(direction)) {
-                if (piece.move_distance >= distance_between_points(piece.grid_point!, this.grid_point!) - 1) {
+                if (piece.move_distance >= distance_between_points(piece.grid_point!, this.grid_point!)+1 || piece.type === PieceType.knight) {
                     return true
                 }
             }

@@ -80,4 +80,35 @@ export default class SquareID {
 
         return positions;
     }
+
+    public static calculate_points_between(point1: GridPoint, point2: GridPoint): GridPoint[] {
+        const points: GridPoint[] = [];
+        const dx = Math.abs(point2.row - point1.row);
+        const dy = Math.abs(point2.col - point1.col);
+        const sx = (point1.row < point2.row) ? 1 : -1;
+        const sy = (point1.col < point2.col) ? 1 : -1;
+        let err = dx - dy;
+        let row = point1.row;
+        let col = point1.col;
+      
+        while (true) {
+          points.push({ row, col });
+      
+          if (row === point2.row && col === point2.col) {
+            break;
+          }
+      
+          const e2 = 2 * err;
+          if (e2 > -dy) {
+            err -= dy;
+            row += sx;
+          }
+          if (e2 < dx) {
+            err += dx;
+            col += sy;
+          }
+        }
+      
+        return points;
+      }
 }

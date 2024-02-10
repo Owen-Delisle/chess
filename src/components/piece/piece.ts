@@ -27,7 +27,6 @@ export default class Piece {
     directions: PieceDirections[] = []
     move_distance: number = 8
     position_restrictions: string[] = []
-    can_block_check: boolean = false
 
     //Global Property
     static position_restrictions: string[] = []
@@ -126,8 +125,10 @@ export default class Piece {
             return false
         }
 
+        //If piece at square can be attacked
         if (!square_is_empty({row: new_row, col: new_col})) {
             const piece_at_square: Piece = SquareGrid.piece_by_grid_point({row: new_row, col: new_col})!
+            // Pawn has its own attacking logic
             if(piece_at_square.color !== this.color && this.type !== PieceType.pawn) {
                 if(this.type !== PieceType.king) {
                     moves_in_direction.push(SquareID.pos_at_point({row: new_row, col: new_col}))
@@ -142,15 +143,8 @@ export default class Piece {
     public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[]): void {
         if (this.position_restrictions.length > 0) {
             possible_moves.push(...moves_in_direction.filter(move => this.position_restrictions.includes(move)))
-            this.can_block_check = true
         } else if(Piece.position_restrictions.length > 0 && this.type != PieceType.king) {
-            if(Piece.position_restrictions.length === 1) {
-                possible_moves.push(...moves_in_direction.filter(move => Piece.position_restrictions.includes(move)))
-            }
-            if(Piece.position_restrictions.length > 1) {
-                possible_moves = []
-            }
-            this.can_block_check = true
+            possible_moves.push(...moves_in_direction.filter(move => Piece.position_restrictions.includes(move)))
         } else {
             possible_moves.push(...moves_in_direction)
         }

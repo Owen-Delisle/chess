@@ -40,7 +40,9 @@ export default class Pawn extends Piece implements Piece_Interface {
             if (piece_at_attack_point !== undefined) {
                 if(piece_at_attack_point.color !== this.color) {
                     if(Piece.position_restrictions.length < 2) {
-                        this.possible_moves.push(SquareID.pos_at_point({row: next_row, col: next_col}))
+                        if(Piece.position_restrictions.includes(SquareID.pos_at_point({row: next_row, col: next_col})) || Piece.position_restrictions.length < 1) {
+                            this.possible_moves.push(SquareID.pos_at_point({row: next_row, col: next_col}))
+                        }
                     }
                 }
             }
