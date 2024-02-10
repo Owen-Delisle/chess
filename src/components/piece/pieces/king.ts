@@ -8,9 +8,9 @@ import SquareGrid from "../../../models/square_grid"
 import type Square from "../../../components/square/square"
 import type Rook from "./rook"
 import { RookType } from "./rook"
-import PieceList from "../../../models/piece_list"
+import PieceList from "../../../models/piece_list/piece_list"
 import SquareID from "../../../components/square/square_id"
-import Board from "../../../components/board/board"
+import { are_coors_within_board_bounds } from "../../../utils/bounds"
 import { distance_between_points } from "../../../utils/math"
 import { arrays_are_equal } from "../../../utils/arrays"
 import { surrounding_points } from "../../../utils/grid"
@@ -173,8 +173,7 @@ export default class King extends Piece implements Piece_Interface {
     ): boolean {
 
         // If all squares in direction have been searched and no piece of other color that can attack king in this direction have been found
-        // TODO -- USE BOARDS BOUNDS CHECKER
-        if (next_row < 0 || next_row >= Board.row_size || next_col < 0 || next_col >= Board.row_size) {
+        if (!are_coors_within_board_bounds(next_row, next_col)) {
             return false
         }
 
@@ -308,7 +307,7 @@ export default class King extends Piece implements Piece_Interface {
         let next_row: number = current_row + modifier.row
         let next_col: number = current_col + modifier.col
 
-        if (next_row < 0 || next_row >= Board.row_size || next_col < 0 || next_col >= Board.row_size) {
+        if (!are_coors_within_board_bounds(next_row, next_col)) {
             should_stop = true
         }
 

@@ -9,7 +9,7 @@ import type Queen from "./pieces/queen"
 import type Rook from "./pieces/rook"
 import type { GridPoint } from "src/global_types/grid_point"
 import type { Color } from "./color"
-import Board from "../board/board"
+import { are_coors_within_board_bounds } from "../../utils/bounds"
 import type Square from "../square/square"
 import SquareID from "../square/square_id"
 import type { PieceDirections } from "./piece_directions"
@@ -117,7 +117,7 @@ export default class Piece {
         let new_row: number = current_pos.row + (row_modifier * distance)
         let new_col: number = current_pos.col + (col_modifier * distance)
 
-        if (!Board.are_coors_within_board_bounds(new_row, new_col)) {
+        if (!are_coors_within_board_bounds(new_row, new_col)) {
             return false
         }
 

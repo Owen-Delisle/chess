@@ -1,5 +1,5 @@
 import type { GridPoint } from "../global_types/grid_point";
-import Board from "../components/board/board";
+import { are_coors_within_board_bounds } from "./bounds";
 import { PieceDirections, piece_direction_modifier } from "../components/piece/piece_directions";
 import SquareGrid from "../models/square_grid";
 
@@ -28,7 +28,7 @@ export function surrounding_points(grid_point: GridPoint): GridPoint[] {
       const neighbor_col = grid_point.col + offset.col;
   
       // Check if the neighboring point is within the grid bounds
-      if (Board.are_coors_within_board_bounds(neighbor_row, neighbor_col)) {
+      if (are_coors_within_board_bounds(neighbor_row, neighbor_col)) {
         surrounding_points.push({ row: neighbor_row, col: neighbor_col });
       }
     }
