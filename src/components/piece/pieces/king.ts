@@ -263,12 +263,17 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     private piece_in_path_conditions(piece: Piece, direction: PieceDirections): boolean {
-        if (piece.color === not_color(this.color)) {
-            if (piece.directions.includes(direction)) {
-                if (piece.move_distance >= distance_between_points(piece.grid_point!, this.grid_point!)+1 || piece.type === PieceType.knight) {
-                    return true
+        try {
+            const distance = distance_between_points(piece.grid_point!, this.grid_point!)+1
+            if (piece.color === not_color(this.color)) {
+                if (piece.directions.includes(direction)) {
+                    if (piece.move_distance >= distance || piece.type === PieceType.knight) {
+                        return true
+                    }
                 }
             }
+        } catch(error) {
+            console.log(error)
         }
         return false
     }
