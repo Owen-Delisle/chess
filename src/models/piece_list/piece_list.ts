@@ -117,6 +117,13 @@ export default class PieceList {
 		}
 	}
 
+    public static remove_piece_by_position(pos: string) {
+        let index = this.piece_list.findIndex((piece) => piece.pos === pos)
+        if (index != -1) {
+			this.piece_list.splice(index, 1)
+		}
+    }
+
 	public static king_by_color(color: Color): King {
 		switch (color) {
 			case Color.black:
