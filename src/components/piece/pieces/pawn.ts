@@ -28,18 +28,32 @@ export default class Pawn extends Piece implements Piece_Interface {
             const next_row: number = SquareGrid.point_at_board_position(this.pos).row + piece_direction_modifier(direction).row
             const next_col: number = SquareGrid.point_at_board_position(this.pos).col + piece_direction_modifier(direction).col
 
-            const piece_at_attack_point: Piece | undefined = SquareGrid.piece_by_grid_point({row: next_row, col: next_col})
+            const piece_at_attack_point: Piece | undefined = SquareGrid.piece_by_grid_point({ row: next_row, col: next_col })
 
-            if (piece_at_attack_point !== undefined) {
-                if(piece_at_attack_point.color !== this.color) {
-                    if(Piece.position_restrictions.length < 2) {
-                        if(Piece.position_restrictions.includes(SquareID.pos_at_point({row: next_row, col: next_col})) || Piece.position_restrictions.length < 1) {
-                            this.possible_moves.push(SquareID.pos_at_point({row: next_row, col: next_col}))
-                        }
-                    }
-                }
+            if(this.conditions_for_adding_attack_square(piece_at_attack_point, next_row, next_col)) {
+                this.possible_moves.push(SquareID.pos_at_point({ row: next_row, col: next_col }))
             }
         })
+    }
+
+    private conditions_for_adding_attack_square(piece_at_attack_point: Piece | undefined, next_row: number, next_col: number): boolean {
+        let should_attack: boolean = true
+
+        if (piece_at_attack_point !== undefined) {
+            if (piece_at_attack_point.color === this.color) {
+                should_attack = false
+            }
+
+            if (Piece.position_restrictions.length > 0) {
+                if (!Piece.position_restrictions.includes(SquareID.pos_at_point({ row: next_row, col: next_col }))) {
+                    should_attack = false
+                }
+            }
+        } else {
+            should_attack = false
+        }
+
+        return should_attack
     }
 
     public move_to(new_square: Square): Promise<void> {
