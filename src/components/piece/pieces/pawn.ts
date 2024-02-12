@@ -9,26 +9,21 @@ import SquareID from "../../../components/square/square_id"
 import PieceList from "../../../models/piece_list/piece_list"
 
 export default class Pawn extends Piece implements Piece_Interface {
-    private current_move_distance: number = 2
     private minimum_move_distance: number = 1
 
     attack_directions: PieceDirections[] = [PieceDirections.north_east, PieceDirections.north_west]
 
     //Global Property
-    public move_distance: number = 1
+    public move_distance: number = 2
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
         super(title, type, pos, svg, color)
         this.type = type
+
+        this.directions = [PieceDirections.north]
     }
 
-    public calculate_possible_moves(): void {        
-        this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.current_move_distance, piece_direction_modifier(PieceDirections.north))
-        
-        this.build_possible_attack_list()
-    }
-
-    private build_possible_attack_list(): void {
+    public build_possible_attack_list(): void {
         this.attack_directions.forEach(direction => {
             const next_row: number = SquareGrid.point_at_board_position(this.pos).row + piece_direction_modifier(direction).row
             const next_col: number = SquareGrid.point_at_board_position(this.pos).col + piece_direction_modifier(direction).col
@@ -50,7 +45,7 @@ export default class Pawn extends Piece implements Piece_Interface {
     public move_to(new_square: Square): Promise<void> {
         return new Promise(async resolve => {
             this.pos = new_square.square_id as string
-            this.current_move_distance = this.minimum_move_distance
+            this.move_distance = this.minimum_move_distance
             this.possible_moves = []
 
             if(new_square.grid_point.row === 7 || new_square.grid_point.row === 0) {

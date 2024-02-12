@@ -28,7 +28,7 @@ export default class PieceList {
 
     public static piece_list: Piece[] = [
         //TODO -- WRONG PIECES, DELETE LATER
-        // new Pawn("pawn_b1", "A7", Pawn_B_SVG, PieceType.pawn, Color.black),
+        // new Pawn("pawn_w1", "A2", Pawn_W_SVG, PieceType.pawn, Color.white),
         //END TODO
 
         new King("king_b", "E8", King_B_SVG, PieceType.king, Color.black),

@@ -39,41 +39,6 @@ export default class King extends Piece implements Piece_Interface {
         ]
     }
 
-    public calculate_possible_moves(): void {
-        // this.render_legal_squares_surrounding_king()
-
-        this.directions.forEach(direction => {
-            switch (direction) {
-                case PieceDirections.north:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north))
-                    break;
-                case PieceDirections.north_east:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north_east))
-                    break;
-                case PieceDirections.east:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.east))
-                    break;
-                case PieceDirections.south_east:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south_east))
-                    break;
-                case PieceDirections.south:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south))
-                    break;
-                case PieceDirections.south_west:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south_west))
-                    break;
-                case PieceDirections.west:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.west))
-                    break;
-                case PieceDirections.north_west:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north_west))
-                    break;
-                default:
-                    console.log("Direction Not Found")
-            }
-        })
-    }
-
     private points_surrounding_king(): GridPoint[] {
         return surrounding_points(SquareGrid.point_at_board_position(this.pos))
     }
@@ -295,7 +260,7 @@ export default class King extends Piece implements Piece_Interface {
         let pieces_in_path: Piece[] = []
         let modifier: { row: number, col: number } = piece_direction_modifier(direction)
 
-        while (!this.stopping_conditions(current_row, current_col, modifier, direction)) {
+        while (are_coors_within_board_bounds(current_row + modifier.row, current_col + modifier.col)) {
             current_row = current_row + modifier.row
             current_col = current_col + modifier.col
 
@@ -306,19 +271,6 @@ export default class King extends Piece implements Piece_Interface {
         }
 
         return pieces_in_path
-    }
-
-    private stopping_conditions(current_row: number, current_col: number, modifier: { row: number, col: number }, direction: PieceDirections): boolean {
-        let should_stop: boolean = false
-
-        let next_row: number = current_row + modifier.row
-        let next_col: number = current_col + modifier.col
-
-        if (!are_coors_within_board_bounds(next_row, next_col)) {
-            should_stop = true
-        }
-
-        return should_stop
     }
 
     public move_to(new_square: Square): Promise<void> {

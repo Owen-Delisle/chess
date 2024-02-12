@@ -24,27 +24,6 @@ export default class Rook extends Piece implements Piece_Interface {
         this.rook_type = rook_type
     }
 
-    public calculate_possible_moves(): void {
-        this.directions.forEach(direction => {
-            switch (direction) {
-                case PieceDirections.north:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north))
-                    break;
-                case PieceDirections.east:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.east))
-                    break;
-                case PieceDirections.south:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south))
-                    break;
-                case PieceDirections.west:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.west))
-                    break;
-                default:
-                    console.log("Direction Not Found")
-            }
-        })
-    }
-
     public move_to(new_square: Square): Promise<void> {
         return new Promise(async resolve => {
             this.pos = new_square.square_id as string

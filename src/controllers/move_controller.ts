@@ -1,5 +1,5 @@
 import type Square from "../components/square/square"
-import Piece from "../components/piece/piece"
+import type Piece from "../components/piece/piece"
 import type { GridPoint } from "../global_types/grid_point"
 import SquareGrid from "../models/square_grid"
 import Index from "../index"
@@ -10,6 +10,7 @@ import type { CastleVars } from "../components/piece/pieces/king"
 import SquareID from "../components/square/square_id"
 import { GameController } from "./game_controller"
 import PieceList from "../models/piece_list/piece_list"
+import type Pawn from "../components/piece/pieces/pawn"
 
 export default class MoveController {
     private static focused_square: Square | undefined
@@ -134,22 +135,23 @@ export default class MoveController {
     }
 
     public static load_possible_moves_lists(): void {
-            const white_king: King = PieceList.piece_by_id('king_w') as King
-            const black_king: King = PieceList.piece_by_id('king_b') as King
+        PieceList.clear_position_restrictions_property()
 
-            PieceList.piece_list.forEach(piece => {
-                if (piece !== undefined) {
-                    const typed_piece = Piece.piece_factory(piece)
-                    const king_piece: King = PieceList.king_by_color(piece.color)
-                    PieceList.clear_position_restrictions_property()
+        const king_of_color: King = PieceList.king_by_color(GameController.turn)
+        king_of_color.render_legal_squares_surrounding_king()
+        king_of_color.render_check_paths_list()
 
-                    king_piece.render_check_paths_list()
-
-                    typed_piece.calculate_possible_moves()
+        PieceList.piece_list.forEach(piece => {
+            if (piece !== undefined) {
+                piece.calculate_possible_moves()
+                if(piece.type === PieceType.pawn)  {
+                    const pawn: Pawn = piece as Pawn
+                    pawn.build_possible_attack_list()
                 }
-            })
-            white_king.check_for_checkmate()
-            black_king.check_for_checkmate()
+            }
+        })
+
+        king_of_color.check_for_checkmate()
     }
 
     public static clear_possible_moves_lists(): void {
@@ -231,7 +233,7 @@ export default class MoveController {
 
     private static async redraw(): Promise<void> {
         this.focused_square = undefined
-        await GameController.switch_turn()
+        GameController.switch_turn()
         Index.board.redraw()
     }
 }

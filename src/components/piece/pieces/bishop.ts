@@ -19,25 +19,4 @@ export default class Bishop extends Piece implements Piece_Interface {
             PieceDirections.north_west
         ]
     }
-
-    public calculate_possible_moves(): void {        
-        this.directions.forEach(direction => {
-            switch (direction) {
-                case PieceDirections.north_east:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north_east))
-                    break;
-                case PieceDirections.south_east:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south_east))
-                    break;
-                case PieceDirections.south_west:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south_west))
-                    break;
-                case PieceDirections.north_west:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north_west))
-                    break;
-                default:
-                    console.log("Direction Not Found")
-            }
-        })
-    }
 }

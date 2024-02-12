@@ -23,37 +23,4 @@ export default class Knight extends Piece implements Piece_Interface {
             PieceDirections.up_left,
         ]
     }
-
-    public calculate_possible_moves(): void {
-        this.directions.forEach(direction => {
-            switch (direction) {
-                case PieceDirections.up_right:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.up_right))
-                    break;
-                case PieceDirections.right_up:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.right_up))
-                    break;
-                case PieceDirections.right_down:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.right_down))
-                    break;
-                case PieceDirections.down_right:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.down_right))
-                    break;
-                case PieceDirections.down_left:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.down_left))
-                    break;
-                case PieceDirections.left_down:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.left_down))
-                    break;
-                case PieceDirections.left_up:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.left_up))
-                    break;
-                case PieceDirections.up_left:
-                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.up_left))
-                    break;
-                default:
-                    console.log("Direction Not Found")
-            }
-        })
-    }
 }
