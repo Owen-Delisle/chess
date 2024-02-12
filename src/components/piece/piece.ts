@@ -14,24 +14,27 @@ import SquareID from "../square/square_id"
 import type { PieceDirections } from "./piece_directions"
 import { square_is_empty } from "../../utils/grid"
 
-export default class Piece {
+export default abstract class Piece {
     title: string
+    type: PieceType
     pos: string
     svg: string
-    image: HTMLImageElement
-    type?: PieceType
     color: Color
+    image: HTMLImageElement
     grid_point: GridPoint | undefined
     possible_moves: string[] = []
     directions: PieceDirections[] = []
-    move_distance: number = 8
     position_restrictions: string[] = []
 
     //Global Property
     static position_restrictions: string[] = []
 
-    constructor(title: string, pos: string, svg: string, color: Color) {
+    //Default property values
+    move_distance: number = 0
+
+    constructor(title: string, type: PieceType, pos: string, svg: string, color: Color) {
         this.title = title
+        this.type = type
         this.pos = pos
         this.svg = svg
         this.image = this.image_builder()

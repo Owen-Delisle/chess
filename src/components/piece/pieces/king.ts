@@ -25,7 +25,7 @@ export default class King extends Piece implements Piece_Interface {
     positions_to_be_blocked: string[] = []
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
-        super(title, pos, svg, color)
+        super(title, type, pos, svg, color)
         this.type = type
         this.directions = [
             PieceDirections.north,

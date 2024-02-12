@@ -13,7 +13,7 @@ export default class Rook extends Piece implements Piece_Interface {
     rook_type: RookType
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color, rook_type: RookType) {
-        super(title, pos, svg, color)
+        super(title, type, pos, svg, color)
         this.type = type
         this.directions = [
             PieceDirections.north,

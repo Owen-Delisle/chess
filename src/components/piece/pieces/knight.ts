@@ -10,7 +10,7 @@ export default class Knight extends Piece implements Piece_Interface {
     directions: PieceDirections[]
 
     constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
-        super(title, pos, svg, color)
+        super(title, type, pos, svg, color)
         this.type = type
         this.directions = [
             PieceDirections.up_right,
