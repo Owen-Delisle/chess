@@ -5,6 +5,6 @@
 	"tabWidth": 4,
 	"semi": false,
 	"bracketSpacing": true,
-	"printWidth": 80,
+	"printWidth": 100,
 	"proseWrap": "preserve"
 }
