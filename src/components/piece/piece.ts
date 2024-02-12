@@ -1,6 +1,5 @@
 import { PieceType } from "./piece_types"
 import SquareGrid from "../../models/square_grid"
-
 import type Bishop from "./pieces/bishop"
 import type King from "./pieces/king"
 import type Knight from "./pieces/knight"
@@ -35,12 +34,12 @@ export default class Piece {
         this.title = title
         this.pos = pos
         this.svg = svg
-        this.image = this.imageBuilder()
+        this.image = this.image_builder()
         this.color = color
         this.grid_point = undefined
     }
 
-    public imageBuilder(): HTMLImageElement {
+    private image_builder(): HTMLImageElement {
         let image: HTMLImageElement = new Image()
         image.src = this.svg
         image.id = this.title
@@ -86,7 +85,7 @@ export default class Piece {
         this.add_positions_to_list_in_direction_for_distance(current_pos, distance, row_modifier, col_modifier, this.possible_moves)
     }
 
-    public add_positions_to_list_in_direction_for_distance(
+    private add_positions_to_list_in_direction_for_distance(
         current_pos: GridPoint,
         distance: number,
         row_modifier: number,
@@ -107,7 +106,7 @@ export default class Piece {
         this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves)
     }
 
-    public conditions_to_continue_adding_positions(
+    private conditions_to_continue_adding_positions(
         current_pos: GridPoint,
         move_distance: number,
         row_modifier: number,
@@ -140,7 +139,7 @@ export default class Piece {
         return true
     }
 
-    public add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[]): void {
+    private add_moves_in_direction_to_all_possible_moves(moves_in_direction: string[], possible_moves: string[]): void {
         if (this.position_restrictions.length > 0) {
             possible_moves.push(...moves_in_direction.filter(move => this.position_restrictions.includes(move)))
         } else if(Piece.position_restrictions.length > 0 && this.type != PieceType.king) {
