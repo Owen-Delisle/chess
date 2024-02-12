@@ -1,22 +1,22 @@
 import Square from '../square/square'
-import { Color } from "../square/color"
-import PieceStyles from '../piece/styles';
-import PieceList from '../piece/piece_list';
-import SquareStyles from '../square/styles';
+import { Color } from '../square/color'
+import PieceStyles from '../piece/styles'
+import PieceList from '../../models/piece_list/piece_list'
+import SquareStyles from '../square/styles'
 import SquareGrid from '../../models/square_grid'
-import SquareID from '../square/square_id';
-import MoveController from '../../controllers/move_controller';
+import SquareID from '../square/square_id'
+import MoveController from '../../controllers/move_controller'
 
 export default class Board extends HTMLElement {
-	container_node: Element = document.createElement("div")
+	container_node: Element = document.createElement('div')
 	static start_index = 0
 	static row_size: number = 8
 	static col_size: number = 8
-	static board_size: number = (Board.row_size * Board.col_size)
+	static board_size: number = Board.row_size * Board.col_size
 
 	constructor() {
-		super();
-		this.render();
+		super()
+		this.render()
 	}
 
 	render(): void {
@@ -31,21 +31,19 @@ export default class Board extends HTMLElement {
 	}
 
 	private board_generator(): void {
-		this.container_node.className = "container"
-		this.container_node.id = "container"
+		this.container_node.className = 'container'
+		this.container_node.id = 'container'
 
 		this.add_squares_to_board()
 
 		this.append(this.container_node)
 	}
 
-	private add_squares_to_board() {
-		SquareID.update_board_positions()
-
+	private add_squares_to_board(): void {
 		let next_square: Square
-		let row_node: Element = document.createElement("div")
+		let row_node: Element = document.createElement('div')
 
-		row_node.className = "row"
+		row_node.className = 'row'
 		this.container_node.appendChild(row_node)
 
 		let row_array: Square[] = []
@@ -53,9 +51,12 @@ export default class Board extends HTMLElement {
 			next_square = this.instantiate_square(col)
 			next_square.build_clickable_square()
 
-			if (col % Board.col_size === Board.start_index && col > Board.start_index) {
-				row_node = document.createElement("div")
-				row_node.className = "row"
+			if (
+				col % Board.col_size === Board.start_index &&
+				col > Board.start_index
+			) {
+				row_node = document.createElement('div')
+				row_node.className = 'row'
 				this.container_node.appendChild(row_node)
 			}
 
@@ -67,7 +68,6 @@ export default class Board extends HTMLElement {
 				row_array = []
 			}
 		}
-		this.add_grid_point_property_to_all_pieces()
 	}
 
 	private instantiate_square(index: number): Square {
@@ -79,12 +79,6 @@ export default class Board extends HTMLElement {
 		let square: Square = new Square(color, index)
 
 		return square
-	}
-
-	private add_grid_point_property_to_all_pieces(): void {
-		PieceList.piece_list.forEach(piece => {
-			piece.grid_point = SquareGrid.point_by_piece(piece)
-		})
 	}
 
 	private current_row(i: number): number {
@@ -103,23 +97,13 @@ export default class Board extends HTMLElement {
 		return mod
 	}
 
-	public redraw() {
+	public async redraw() {
 		SquareGrid.square_grid = []
-		document.querySelectorAll(".row").forEach(e => e.remove())
+		document.querySelectorAll('.row').forEach((e) => e.remove())
 		this.add_squares_to_board()
 		MoveController.clear_possible_moves_lists()
 		MoveController.load_possible_moves_lists()
 	}
-
-	public static are_coors_within_board_bounds(row: number, col: number): boolean {
-		if (row < Board.start_index) return false
-		if (row >= Board.row_size) return false
-
-		if (col < Board.start_index) return false
-		if (col >= Board.col_size) return false
-
-		return true
-	}
 }
 
-customElements.define('board-element', Board);
+customElements.define('board-element', Board)

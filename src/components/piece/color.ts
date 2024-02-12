@@ -1,8 +1,8 @@
 export enum Color {
-    black,
-    white
+	black,
+	white,
 }
 
 export function not_color(color: Color): Color {
-    return color == Color.white ? Color.black : Color.white
+	return color == Color.white ? Color.black : Color.white
 }

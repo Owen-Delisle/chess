@@ -3,11 +3,11 @@ import Board from './components/board/board'
 export default class Index extends HTMLElement {
 	public static board: Board = new Board()
 	constructor() {
-		super();
+		super()
 	}
 
 	connectedCallback() {
-		this.render();
+		this.render()
 	}
 
 	render() {
@@ -16,4 +16,4 @@ export default class Index extends HTMLElement {
 }
 
 // Register the custom element
-customElements.define('index-element', Index);
+customElements.define('index-element', Index)
