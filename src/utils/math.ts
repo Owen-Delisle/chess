@@ -7,7 +7,7 @@ export function distance_between_points(
 ): number {
 	;[point_one, point_two].forEach((point) => {
 		if (!are_coors_within_board_bounds(point.row, point.col)) {
-			throw new Error(`${point} is out of bounds.`)
+			throw new Error(`${point.row}, ${point.col} is out of bounds.`)
 		}
 	})
 

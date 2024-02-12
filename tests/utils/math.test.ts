@@ -16,8 +16,8 @@ test('checks distance_between_points with out of bounds coordinated to throw err
     const gp_4: GridPoint = {row: 7, col: NaN}
     const gp_5: GridPoint = {row: -1, col: NaN}
 
-    expect(() => {distance_between_points(gp_1,gp_2) }).toThrow(`[object Object] is out of bounds.`);
-    expect(() => {distance_between_points(gp_2,gp_1) }).toThrow(`[object Object] is out of bounds.`);
+    expect(() => {distance_between_points(gp_1,gp_2) }).toThrow(`-1, 0 is out of bounds.`);
+    expect(() => {distance_between_points(gp_2,gp_1) }).toThrow(`-1, 0 is out of bounds.`);
     expect(() => {distance_between_points(gp_2,gp_3) }).toThrow(`row input is NaN`);
     expect(() => {distance_between_points(gp_2,gp_4) }).toThrow(`col input is NaN`);
     expect(() => {distance_between_points(gp_2,gp_5) }).toThrow(`col input is NaN`);
