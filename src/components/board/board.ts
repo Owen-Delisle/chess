@@ -39,9 +39,7 @@ export default class Board extends HTMLElement {
 		this.append(this.container_node)
 	}
 
-	private add_squares_to_board() {
-		SquareID.update_board_positions()
-
+	private add_squares_to_board(): void {
 		let next_square: Square
 		let row_node: Element = document.createElement("div")
 
@@ -67,7 +65,6 @@ export default class Board extends HTMLElement {
 				row_array = []
 			}
 		}
-		this.add_grid_point_property_to_all_pieces()
 	}
 
 	private instantiate_square(index: number): Square {
@@ -79,12 +76,6 @@ export default class Board extends HTMLElement {
 		let square: Square = new Square(color, index)
 
 		return square
-	}
-
-	private add_grid_point_property_to_all_pieces(): void {
-		PieceList.piece_list.forEach(piece => {
-			piece.grid_point = SquareGrid.point_by_piece(piece)
-		})
 	}
 
 	private current_row(i: number): number {
@@ -103,7 +94,7 @@ export default class Board extends HTMLElement {
 		return mod
 	}
 
-	public redraw() {
+	public async redraw() {
 		SquareGrid.square_grid = []
 		document.querySelectorAll(".row").forEach(e => e.remove())
 		this.add_squares_to_board()

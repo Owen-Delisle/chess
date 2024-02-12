@@ -21,7 +21,6 @@ export default abstract class Piece {
     svg: string
     color: Color
     image: HTMLImageElement
-    grid_point: GridPoint | undefined
     possible_moves: string[] = []
     directions: PieceDirections[] = []
     position_restrictions: string[] = []
@@ -39,7 +38,6 @@ export default abstract class Piece {
         this.svg = svg
         this.image = this.image_builder()
         this.color = color
-        this.grid_point = undefined
     }
 
     private image_builder(): HTMLImageElement {
@@ -98,13 +96,13 @@ export default abstract class Piece {
         let index: number = 1
         let moves_in_direction: string[] = []
 
-        while (this.conditions_to_continue_adding_positions(current_pos, distance, row_modifier, col_modifier, index, moves_in_direction) ){
-            let next_row: number = current_pos.row + (row_modifier * index)
-            let next_col: number = current_pos.col + (col_modifier * index)
-            let pos_at_point: string = SquareID.pos_at_point({ row: next_row, col: next_col })
-            moves_in_direction.push(pos_at_point)
-            index++
-        }
+            while (this.conditions_to_continue_adding_positions(current_pos, distance, row_modifier, col_modifier, index, moves_in_direction) ){
+                let next_row: number = current_pos.row + (row_modifier * index)
+                let next_col: number = current_pos.col + (col_modifier * index)
+                let pos_at_point: string = SquareID.pos_at_point({ row: next_row, col: next_col })
+                moves_in_direction.push(pos_at_point)
+                index++
+            }
 
         this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves)
     }

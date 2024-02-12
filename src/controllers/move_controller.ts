@@ -63,7 +63,7 @@ export default class MoveController {
 
             if (king_piece.color == rook_piece.color) {
                 if (!king_piece.has_moved && !rook_piece.has_moved) {
-                    if(!king_piece.in_check && !king_piece.kings_castle_squares_attacked(rook_piece)) {
+                    if (!king_piece.in_check && !king_piece.kings_castle_squares_attacked(rook_piece)) {
                         should_castle = true
                     }
                 }
@@ -74,22 +74,24 @@ export default class MoveController {
     }
 
     private static castle(clicked_square: Square | undefined): void {
-        let focused_piece: Piece = this.focused_square?.piece_attached_to_square()!
-        let clicked_piece: Piece = clicked_square?.piece_attached_to_square()!
+        const focused_piece: Piece = this.focused_square?.piece_attached_to_square()!
+        const clicked_piece: Piece = clicked_square?.piece_attached_to_square()!
 
-        let king_piece: King = focused_piece as King
-        let rook_piece: Rook = clicked_piece as Rook
+        const king_piece: King = focused_piece as King
+        const rook_piece: Rook = clicked_piece as Rook
 
-        let castle_vars: CastleVars = king_piece.castle_vars_for_rook_type(rook_piece.rook_type)
+        const castle_vars: CastleVars = king_piece.castle_vars_for_rook_type(rook_piece.rook_type)
 
         if (king_piece.squares_between_king_and_rook_empty(rook_piece)) {
-            let next_king_point: GridPoint = {
-                row: king_piece.grid_point!.row,
-                col: king_piece.grid_point!.col + (castle_vars.king_col_modifier)
+            const king_gp: GridPoint = SquareGrid.point_at_board_position(king_piece.pos)
+            const rook_gp: GridPoint = SquareGrid.point_at_board_position(rook_piece.pos)
+            const next_king_point: GridPoint = {
+                row: king_gp.row,
+                col: king_gp.col + (castle_vars.king_col_modifier)
             }
-            let next_rook_point: GridPoint = {
-                row: rook_piece.grid_point!.row,
-                col: rook_piece.grid_point!.col + (castle_vars.rook_col_modifier)
+            const next_rook_point: GridPoint = {
+                row: rook_gp.row,
+                col: rook_gp.col + (castle_vars.rook_col_modifier)
             }
 
             king_piece.possible_moves.push(SquareID.pos_at_point(next_king_point))
@@ -132,23 +134,22 @@ export default class MoveController {
     }
 
     public static load_possible_moves_lists(): void {
-        const white_king: King = PieceList.piece_by_id('king_w') as King
-        const black_king: King = PieceList.piece_by_id('king_b') as King
+            const white_king: King = PieceList.piece_by_id('king_w') as King
+            const black_king: King = PieceList.piece_by_id('king_b') as King
 
-        PieceList.piece_list.forEach(piece => {
+            PieceList.piece_list.forEach(piece => {
+                if (piece !== undefined) {
+                    const typed_piece = Piece.piece_factory(piece)
+                    const king_piece: King = PieceList.king_by_color(piece.color)
+                    PieceList.clear_position_restrictions_property()
 
-            if (piece !== undefined) {
-                const typed_piece = Piece.piece_factory(piece)
-                const king_piece: King = PieceList.king_by_color(piece.color)
-                PieceList.clear_position_restrictions_property()
+                    king_piece.render_check_paths_list()
 
-                king_piece.render_check_paths_list()
-
-                typed_piece.calculate_possible_moves()
-            }
-        })
-        white_king.check_for_checkmate()
-        black_king.check_for_checkmate()
+                    typed_piece.calculate_possible_moves()
+                }
+            })
+            white_king.check_for_checkmate()
+            black_king.check_for_checkmate()
     }
 
     public static clear_possible_moves_lists(): void {
@@ -163,7 +164,7 @@ export default class MoveController {
         if (piece !== undefined) {
             this.add_dots_to_possible_moves_for(piece)
             this.add_border_to_attacked_piece_for(piece)
-            if(piece.type === PieceType.king) {
+            if (piece.type === PieceType.king) {
                 const king: King = piece as King
                 king.add_borders_to_castleable_rooks(king.rooks_for_king())
             }
@@ -184,8 +185,8 @@ export default class MoveController {
     private static add_border_to_attacked_piece_for(piece: Piece | undefined): void {
         piece!.possible_moves.forEach(position => {
             const piece_at_position = PieceList.piece_by_position(position)
-            if(piece_at_position !== undefined) {
-                if(piece!.color !== piece_at_position.color) {
+            if (piece_at_position !== undefined) {
+                if (piece!.color !== piece_at_position.color) {
                     SquareGrid.square_by_board_position(position)!.add_border()
                 }
             }
@@ -228,9 +229,9 @@ export default class MoveController {
         this.redraw()
     }
 
-    private static redraw(): void {
+    private static async redraw(): Promise<void> {
         this.focused_square = undefined
-        GameController.switch_turn()
+        await GameController.switch_turn()
         Index.board.redraw()
     }
 }

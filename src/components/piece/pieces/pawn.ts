@@ -22,18 +22,16 @@ export default class Pawn extends Piece implements Piece_Interface {
         this.type = type
     }
 
-    public calculate_possible_moves(): void {
-        this.grid_point = SquareGrid.point_by_piece(this)
-        
-        this.build_possible_moves_list(this.grid_point!, this.current_move_distance, piece_direction_modifier(PieceDirections.north))
+    public calculate_possible_moves(): void {        
+        this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.current_move_distance, piece_direction_modifier(PieceDirections.north))
         
         this.build_possible_attack_list()
     }
 
     private build_possible_attack_list(): void {
         this.attack_directions.forEach(direction => {
-            const next_row: number = this.grid_point!.row + piece_direction_modifier(direction).row
-            const next_col: number = this.grid_point!.col + piece_direction_modifier(direction).col
+            const next_row: number = SquareGrid.point_at_board_position(this.pos).row + piece_direction_modifier(direction).row
+            const next_col: number = SquareGrid.point_at_board_position(this.pos).col + piece_direction_modifier(direction).col
 
             const piece_at_attack_point: Piece | undefined = SquareGrid.piece_by_grid_point({row: next_row, col: next_col})
 

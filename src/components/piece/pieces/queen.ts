@@ -25,33 +25,31 @@ export default class Queen extends Piece implements Piece_Interface {
     }
 
     public calculate_possible_moves(): void {
-        this.grid_point = SquareGrid.point_by_piece(this)
-
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.north))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north))
                     break;
                 case PieceDirections.north_east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.north_east))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north_east))
                     break;
                 case PieceDirections.east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.east))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.east))
                     break;
                 case PieceDirections.south_east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.south_east))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south_east))
                     break;
                 case PieceDirections.south:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.south))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south))
                     break;
                 case PieceDirections.south_west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.south_west))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south_west))
                     break;
                 case PieceDirections.west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.west))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.west))
                     break;
                 case PieceDirections.north_west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.north_west))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north_west))
                     break;
                 default:
                     console.log("Direction Not Found")

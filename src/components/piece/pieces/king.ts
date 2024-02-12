@@ -40,35 +40,33 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     public calculate_possible_moves(): void {
-        this.render_legal_squares_surrounding_king()
-
-        this.grid_point = SquareGrid.point_by_piece(this)
+        // this.render_legal_squares_surrounding_king()
 
         this.directions.forEach(direction => {
             switch (direction) {
                 case PieceDirections.north:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.north))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north))
                     break;
                 case PieceDirections.north_east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.north_east))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north_east))
                     break;
                 case PieceDirections.east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.east))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.east))
                     break;
                 case PieceDirections.south_east:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.south_east))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south_east))
                     break;
                 case PieceDirections.south:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.south))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south))
                     break;
                 case PieceDirections.south_west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.south_west))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.south_west))
                     break;
                 case PieceDirections.west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.west))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.west))
                     break;
                 case PieceDirections.north_west:
-                    this.build_possible_moves_list(this.grid_point!, this.move_distance, piece_direction_modifier(PieceDirections.north_west))
+                    this.build_possible_moves_list(SquareGrid.point_at_board_position(this.pos), this.move_distance, piece_direction_modifier(PieceDirections.north_west))
                     break;
                 default:
                     console.log("Direction Not Found")
@@ -77,11 +75,11 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     private points_surrounding_king(): GridPoint[] {
-        return surrounding_points(this.grid_point!)
+        return surrounding_points(SquareGrid.point_at_board_position(this.pos))
     }
 
     private moveable_positions_surrounding_king(): string[] {
-        const list: string[] = surrounding_points(this.grid_point!).filter(point => {
+        const list: string[] = surrounding_points(SquareGrid.point_at_board_position(this.pos)).filter(point => {
             const piece: Piece | undefined = SquareGrid.piece_by_grid_point(point)
             if (piece === undefined) {
                 return true
@@ -149,10 +147,11 @@ export default class King extends Piece implements Piece_Interface {
 
     private check_if_piece_is_covered_in_any_direction(piece: Piece): boolean {
         return every_direction().some(direction => {
-            const starting_row: number = piece.grid_point!.row
-            const starting_col: number = piece.grid_point!.col
-            const next_row: number = piece.grid_point!.row + piece_direction_modifier(direction).row
-            const next_col: number = piece.grid_point!.col + piece_direction_modifier(direction).col
+            const gp: GridPoint = SquareGrid.point_at_board_position(piece.pos)
+            const starting_row: number = gp.row
+            const starting_col: number = gp.col
+            const next_row: number = gp.row + piece_direction_modifier(direction).row
+            const next_col: number = gp.col + piece_direction_modifier(direction).col
             const row_modifier: number = piece_direction_modifier(direction).row
             const col_modifier: number = piece_direction_modifier(direction).col
 
@@ -241,12 +240,13 @@ export default class King extends Piece implements Piece_Interface {
         }
 
         const first_piece = pieces[0]
+        const first_piece_gp = SquareGrid.point_at_board_position(first_piece.pos)
 
         //Blocking Check
         if (first_piece.color === this.color) {
             if (pieces.length > 1) {
                 if (this.piece_in_path_conditions(pieces[1], path.direction)) {
-                    first_piece.position_restrictions = SquareID.pos_between_points(this.grid_point!, pieces[1].grid_point!)
+                    first_piece.position_restrictions = SquareID.pos_between_points(SquareGrid.point_at_board_position(this.pos), SquareGrid.point_at_board_position(pieces[1].pos))
                 }
             }
         }
@@ -255,16 +255,18 @@ export default class King extends Piece implements Piece_Interface {
         if (this.piece_in_path_conditions(first_piece, path.direction)) {
             this.in_check = true
             if(path.direction < 8) {
-                Piece.position_restrictions = [...SquareID.pos_between_points(this.grid_point!, first_piece.grid_point!)]
+                Piece.position_restrictions = [...SquareID.pos_between_points(SquareGrid.point_at_board_position(this.pos), first_piece_gp)]
             } else {
-                Piece.position_restrictions = [SquareID.pos_at_point(first_piece.grid_point!)]
+                Piece.position_restrictions = [SquareID.pos_at_point(first_piece_gp)]
             }
         }
     }
 
     private piece_in_path_conditions(piece: Piece, direction: PieceDirections): boolean {
         try {
-            const distance = distance_between_points(piece.grid_point!, this.grid_point!)+1
+            const king_gp: GridPoint = SquareGrid.point_at_board_position(this.pos)
+            const piece_gp: GridPoint = SquareGrid.point_at_board_position(piece.pos)
+            const distance = distance_between_points(piece_gp, king_gp)+1
             if (piece.color === not_color(this.color)) {
                 if (piece.directions.includes(direction)) {
                     if (piece.move_distance >= distance || piece.type === PieceType.knight) {
@@ -287,7 +289,7 @@ export default class King extends Piece implements Piece_Interface {
     }
 
     private list_of_pieces_in_direction(direction: PieceDirections): Piece[] {
-        const starting_point: GridPoint = this.grid_point!
+        const starting_point: GridPoint = SquareGrid.point_at_board_position(this.pos)
         let current_row: number = starting_point.row
         let current_col: number = starting_point.col
         let pieces_in_path: Piece[] = []
@@ -339,9 +341,10 @@ export default class King extends Piece implements Piece_Interface {
 
     public add_borders_to_castleable_rooks(rooks: Piece[]) {
         rooks.forEach(piece => {
-            let rook = piece as Rook
+            const rook = piece as Rook
+            const rook_gp: GridPoint = SquareGrid.point_at_board_position(rook.pos)
             if (this.squares_between_king_and_rook_empty(rook) && !this.has_moved && !rook.has_moved && !this.in_check && !this.kings_castle_squares_attacked(rook)) {
-                SquareGrid.square_by_grid_point({ row: rook.grid_point!.row, col: rook.grid_point!.col })
+                SquareGrid.square_by_grid_point({ row: rook_gp.row, col: rook_gp.col })
                     .add_border()
             }
         })
@@ -349,9 +352,10 @@ export default class King extends Piece implements Piece_Interface {
 
     public squares_between_king_and_rook_empty(rook: Rook): boolean {
         const castle_vars = this.castle_vars_for_rook_type(rook.rook_type)
+        const rook_gp: GridPoint = SquareGrid.point_at_board_position(rook.pos)
 
-        const square_beside_king: GridPoint = { row: this.grid_point!.row, col: this.grid_point!.col + castle_vars.index_modifier }
-        const square_beside_rook: GridPoint = { row: rook.grid_point!.row, col: rook.grid_point!.col - castle_vars.index_modifier }
+        const square_beside_king: GridPoint = { row: SquareGrid.point_at_board_position(this.pos).row, col: SquareGrid.point_at_board_position(this.pos).col + castle_vars.index_modifier }
+        const square_beside_rook: GridPoint = { row: rook_gp.row, col: rook_gp.col - castle_vars.index_modifier }
 
         let positions_between_king_and_rook = SquareID.pos_between_points(square_beside_king, square_beside_rook)
         const any_pieces = positions_between_king_and_rook.some(position => PieceList.piece_by_position(position) !== undefined)
@@ -361,7 +365,7 @@ export default class King extends Piece implements Piece_Interface {
     public kings_castle_squares_attacked(rook: Rook): boolean {
         const castle_vars = this.castle_vars_for_rook_type(rook.rook_type)
 
-        const first_point: GridPoint = { row: this.grid_point!.row, col: this.grid_point!.col + castle_vars.index_modifier }
+        const first_point: GridPoint = { row: SquareGrid.point_at_board_position(this.pos).row, col: SquareGrid.point_at_board_position(this.pos).col + castle_vars.index_modifier }
         const second_point: GridPoint = { row: first_point.row, col: first_point!.col + castle_vars.index_modifier }
 
         const first_position = SquareID.pos_at_point(first_point)

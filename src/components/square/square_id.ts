@@ -25,22 +25,16 @@ export default class SquareID {
         "H8","G8","F8","E8","D8","C8","B8","A8"
     ]
 
-    public static positions: string[] = SquareID.board_positions()
-
-    public static update_board_positions(): void {
-        SquareID.positions = this.board_positions()
-    }
-
     private static board_positions(): string[] {
         return GameController.turn == Color.white ? SquareID.white_board_positions : SquareID.black_board_positions
     }
     
     public static pos_at_index(index: number): string {
-        return SquareID.positions[index]
+        return this.board_positions()[index]
     }
 
     public static point_at_index(index: number): GridPoint {
-        let s: string = SquareID.positions[index]
+        let s: string = this.board_positions()[index]
         return {
             row: 8-parseInt(`${s[1]}`),
             col: s[0].charCodeAt(0)-65
@@ -48,8 +42,8 @@ export default class SquareID {
     }
 
     public static pos_at_point(point: GridPoint): string {
-        let position: number = (point.row*8)+point.col
-        return SquareID.positions[position]
+        let index: number = (point.row*8)+point.col
+        return this.board_positions()[index]
     }
 
     public static pos_between_points(point_one: GridPoint, point_two: GridPoint): string[] {
@@ -80,35 +74,4 @@ export default class SquareID {
 
         return positions;
     }
-
-    public static calculate_points_between(point1: GridPoint, point2: GridPoint): GridPoint[] {
-        const points: GridPoint[] = [];
-        const dx = Math.abs(point2.row - point1.row);
-        const dy = Math.abs(point2.col - point1.col);
-        const sx = (point1.row < point2.row) ? 1 : -1;
-        const sy = (point1.col < point2.col) ? 1 : -1;
-        let err = dx - dy;
-        let row = point1.row;
-        let col = point1.col;
-      
-        while (true) {
-          points.push({ row, col });
-      
-          if (row === point2.row && col === point2.col) {
-            break;
-          }
-      
-          const e2 = 2 * err;
-          if (e2 > -dy) {
-            err -= dy;
-            row += sx;
-          }
-          if (e2 < dx) {
-            err += dx;
-            col += sy;
-          }
-        }
-      
-        return points;
-      }
 }
