@@ -1,7 +1,7 @@
 export default class SquareStyles {
-  public static square_style(): Element {
-    let style = document.createElement("style")
-    style.innerHTML = `
+	public static square_style(): Element {
+		let style = document.createElement('style')
+		style.innerHTML = `
     .black {
       height: 100px;
       width: 100px;
@@ -43,6 +43,6 @@ export default class SquareStyles {
       }
       `
 
-    return style
-  }
+		return style
+	}
 }

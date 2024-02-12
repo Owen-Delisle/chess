@@ -1,7 +1,7 @@
 export default class PieceStyles {
-  public static piece_style(): Element {
-    let style = document.createElement("style")
-    style.innerHTML = `
+	public static piece_style(): Element {
+		let style = document.createElement('style')
+		style.innerHTML = `
       .piece {
         height: 80px;
         width: 80px;
@@ -11,6 +11,6 @@ export default class PieceStyles {
         margin: -50px 0 0 -50px;
       }`
 
-    return style
-  }
+		return style
+	}
 }
