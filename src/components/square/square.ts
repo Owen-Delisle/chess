@@ -87,9 +87,7 @@ export default class Square extends HTMLElement {
 	}
 
 	public remove_dot(): void {
-		const node: HTMLElement | null = document.getElementById(
-			`${this.square_id}-dot`,
-		)
+		const node: HTMLElement | null = document.getElementById(`${this.square_id}-dot`)
 		if (node !== null) {
 			this.element!.removeChild(node)
 		}

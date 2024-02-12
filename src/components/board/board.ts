@@ -51,10 +51,7 @@ export default class Board extends HTMLElement {
 			next_square = this.instantiate_square(col)
 			next_square.build_clickable_square()
 
-			if (
-				col % Board.col_size === Board.start_index &&
-				col > Board.start_index
-			) {
+			if (col % Board.col_size === Board.start_index && col > Board.start_index) {
 				row_node = document.createElement('div')
 				row_node.className = 'row'
 				this.container_node.appendChild(row_node)

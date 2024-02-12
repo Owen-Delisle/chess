@@ -31,13 +31,7 @@ export default abstract class Piece {
 	//Default property values
 	move_distance: number = 0
 
-	constructor(
-		title: string,
-		type: PieceType,
-		pos: string,
-		svg: string,
-		color: Color,
-	) {
+	constructor(title: string, type: PieceType, pos: string, svg: string, color: Color) {
 		this.title = title
 		this.type = type
 		this.pos = pos
@@ -230,10 +224,7 @@ export default abstract class Piece {
 			index++
 		}
 
-		this.add_moves_in_direction_to_all_possible_moves(
-			moves_in_direction,
-			possible_moves,
-		)
+		this.add_moves_in_direction_to_all_possible_moves(moves_in_direction, possible_moves)
 	}
 
 	private conditions_to_continue_adding_positions(
@@ -262,14 +253,9 @@ export default abstract class Piece {
 				col: new_col,
 			})!
 			// Pawn has its own attacking logic
-			if (
-				piece_at_square.color !== this.color &&
-				this.type !== PieceType.pawn
-			) {
+			if (piece_at_square.color !== this.color && this.type !== PieceType.pawn) {
 				if (this.type !== PieceType.king) {
-					moves_in_direction.push(
-						SquareID.pos_at_point({ row: new_row, col: new_col }),
-					)
+					moves_in_direction.push(SquareID.pos_at_point({ row: new_row, col: new_col }))
 				}
 			}
 			return false
@@ -284,18 +270,11 @@ export default abstract class Piece {
 	): void {
 		if (this.position_restrictions.length > 0) {
 			possible_moves.push(
-				...moves_in_direction.filter((move) =>
-					this.position_restrictions.includes(move),
-				),
+				...moves_in_direction.filter((move) => this.position_restrictions.includes(move)),
 			)
-		} else if (
-			Piece.position_restrictions.length > 0 &&
-			this.type != PieceType.king
-		) {
+		} else if (Piece.position_restrictions.length > 0 && this.type != PieceType.king) {
 			possible_moves.push(
-				...moves_in_direction.filter((move) =>
-					Piece.position_restrictions.includes(move),
-				),
+				...moves_in_direction.filter((move) => Piece.position_restrictions.includes(move)),
 			)
 		} else {
 			possible_moves.push(...moves_in_direction)

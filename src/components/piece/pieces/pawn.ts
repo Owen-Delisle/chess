@@ -11,21 +11,12 @@ import PieceList from '../../../models/piece_list/piece_list'
 export default class Pawn extends Piece implements Piece_Interface {
 	private minimum_move_distance: number = 1
 
-	attack_directions: PieceDirections[] = [
-		PieceDirections.north_east,
-		PieceDirections.north_west,
-	]
+	attack_directions: PieceDirections[] = [PieceDirections.north_east, PieceDirections.north_west]
 
 	//Global Property
 	public move_distance: number = 2
 
-	constructor(
-		title: string,
-		pos: string,
-		svg: string,
-		type: PieceType,
-		color: Color,
-	) {
+	constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
 		super(title, type, pos, svg, color)
 		this.type = type
 
@@ -41,19 +32,15 @@ export default class Pawn extends Piece implements Piece_Interface {
 				SquareGrid.point_at_board_position(this.pos).col +
 				piece_direction_modifier(direction).col
 
-			const piece_at_attack_point: Piece | undefined =
-				SquareGrid.piece_by_grid_point({ row: next_row, col: next_col })
+			const piece_at_attack_point: Piece | undefined = SquareGrid.piece_by_grid_point({
+				row: next_row,
+				col: next_col,
+			})
 
 			if (
-				this.conditions_for_adding_attack_square(
-					piece_at_attack_point,
-					next_row,
-					next_col,
-				)
+				this.conditions_for_adding_attack_square(piece_at_attack_point, next_row, next_col)
 			) {
-				this.possible_moves.push(
-					SquareID.pos_at_point({ row: next_row, col: next_col }),
-				)
+				this.possible_moves.push(SquareID.pos_at_point({ row: next_row, col: next_col }))
 			}
 		})
 	}
@@ -92,10 +79,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 			this.move_distance = this.minimum_move_distance
 			this.possible_moves = []
 
-			if (
-				new_square.grid_point.row === 7 ||
-				new_square.grid_point.row === 0
-			) {
+			if (new_square.grid_point.row === 7 || new_square.grid_point.row === 0) {
 				this.make_queen()
 			}
 

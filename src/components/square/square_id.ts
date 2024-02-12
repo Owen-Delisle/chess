@@ -160,10 +160,7 @@ export default class SquareID {
 		return this.board_positions()[index]
 	}
 
-	public static pos_between_points(
-		point_one: GridPoint,
-		point_two: GridPoint,
-	): string[] {
+	public static pos_between_points(point_one: GridPoint, point_two: GridPoint): string[] {
 		const positions: string[] = []
 
 		// Calculate the differences in x and y coordinates
@@ -171,10 +168,7 @@ export default class SquareID {
 		const delta_col = point_two.col - point_one.col
 
 		// Determine the number of points to interpolate
-		const number_of_points = Math.max(
-			Math.abs(delta_row),
-			Math.abs(delta_col),
-		)
+		const number_of_points = Math.max(Math.abs(delta_row), Math.abs(delta_col))
 
 		// Calculate the step sizes for x and y coordinates
 		const row_step = delta_row / number_of_points
@@ -187,8 +181,7 @@ export default class SquareID {
 				col: point_one.col + i * col_step,
 			}
 
-			const interpolated_position: string =
-				this.pos_at_point(interpolated_point)
+			const interpolated_position: string = this.pos_at_point(interpolated_point)
 
 			positions.push(interpolated_position)
 		}

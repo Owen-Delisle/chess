@@ -19,9 +19,7 @@ export enum PieceDirections {
 	up_left,
 }
 
-export function piece_direction_modifier(
-	direction: PieceDirections,
-): GridPoint {
+export function piece_direction_modifier(direction: PieceDirections): GridPoint {
 	switch (direction) {
 		case PieceDirections.north:
 			return { row: -1, col: 0 }
@@ -63,33 +61,21 @@ export function direction_by_modifier(modifier: {
 	col: number
 }): PieceDirections | undefined {
 	if (modifier.row === -1 && modifier.col === 0) return PieceDirections.north
-	if (modifier.row === -1 && modifier.col === 1)
-		return PieceDirections.north_east
+	if (modifier.row === -1 && modifier.col === 1) return PieceDirections.north_east
 	if (modifier.row === 0 && modifier.col === 1) return PieceDirections.east
-	if (modifier.row === 1 && modifier.col === 1)
-		return PieceDirections.south_east
+	if (modifier.row === 1 && modifier.col === 1) return PieceDirections.south_east
 	if (modifier.row === 1 && modifier.col === 0) return PieceDirections.south
-	if (modifier.row === 1 && modifier.col === -1)
-		return PieceDirections.south_west
+	if (modifier.row === 1 && modifier.col === -1) return PieceDirections.south_west
 	if (modifier.row === 0 && modifier.col === -1) return PieceDirections.west
-	if (modifier.row === -1 && modifier.col === -1)
-		return PieceDirections.north_west
-	if (modifier.row === -2 && modifier.col === 1)
-		return PieceDirections.up_right
-	if (modifier.row === -1 && modifier.col === 2)
-		return PieceDirections.right_up
-	if (modifier.row === 1 && modifier.col === 2)
-		return PieceDirections.right_down
-	if (modifier.row === 2 && modifier.col === 1)
-		return PieceDirections.down_right
-	if (modifier.row === 2 && modifier.col === -1)
-		return PieceDirections.down_left
-	if (modifier.row === 1 && modifier.col === -2)
-		return PieceDirections.left_down
-	if (modifier.row === -1 && modifier.col === -2)
-		return PieceDirections.left_up
-	if (modifier.row === -2 && modifier.col === -1)
-		return PieceDirections.up_left
+	if (modifier.row === -1 && modifier.col === -1) return PieceDirections.north_west
+	if (modifier.row === -2 && modifier.col === 1) return PieceDirections.up_right
+	if (modifier.row === -1 && modifier.col === 2) return PieceDirections.right_up
+	if (modifier.row === 1 && modifier.col === 2) return PieceDirections.right_down
+	if (modifier.row === 2 && modifier.col === 1) return PieceDirections.down_right
+	if (modifier.row === 2 && modifier.col === -1) return PieceDirections.down_left
+	if (modifier.row === 1 && modifier.col === -2) return PieceDirections.left_down
+	if (modifier.row === -1 && modifier.col === -2) return PieceDirections.left_up
+	if (modifier.row === -2 && modifier.col === -1) return PieceDirections.up_left
 }
 
 export function every_direction(): number[] {

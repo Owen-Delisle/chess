@@ -1,10 +1,7 @@
 export const start_index = 0
 export const row_and_column_size = 8
 
-export function are_coors_within_board_bounds(
-	row: number,
-	col: number,
-): boolean {
+export function are_coors_within_board_bounds(row: number, col: number): boolean {
 	if (isNaN(row)) {
 		throw new Error('row input is NaN')
 	}

@@ -37,96 +37,20 @@ export default class PieceList {
 		new Queen('queen_b', 'D8', Queen_B_SVG, PieceType.queen, Color.black),
 		new Queen('queen_w', 'D1', Queen_W_SVG, PieceType.queen, Color.white),
 
-		new Bishop(
-			'bishop_b1',
-			'C8',
-			Bishop_B_SVG,
-			PieceType.bishop,
-			Color.black,
-		),
-		new Bishop(
-			'bishop_w1',
-			'C1',
-			Bishop_W_SVG,
-			PieceType.bishop,
-			Color.white,
-		),
-		new Bishop(
-			'bishop_b2',
-			'F8',
-			Bishop_B_SVG,
-			PieceType.bishop,
-			Color.black,
-		),
-		new Bishop(
-			'bishop_w2',
-			'F1',
-			Bishop_W_SVG,
-			PieceType.bishop,
-			Color.white,
-		),
+		new Bishop('bishop_b1', 'C8', Bishop_B_SVG, PieceType.bishop, Color.black),
+		new Bishop('bishop_w1', 'C1', Bishop_W_SVG, PieceType.bishop, Color.white),
+		new Bishop('bishop_b2', 'F8', Bishop_B_SVG, PieceType.bishop, Color.black),
+		new Bishop('bishop_w2', 'F1', Bishop_W_SVG, PieceType.bishop, Color.white),
 
-		new Knight(
-			'knight_b1',
-			'B8',
-			Knight_B_SVG,
-			PieceType.knight,
-			Color.black,
-		),
-		new Knight(
-			'knight_w1',
-			'B1',
-			Knight_W_SVG,
-			PieceType.knight,
-			Color.white,
-		),
-		new Knight(
-			'knight_b2',
-			'G8',
-			Knight_B_SVG,
-			PieceType.knight,
-			Color.black,
-		),
-		new Knight(
-			'knight_w2',
-			'G1',
-			Knight_W_SVG,
-			PieceType.knight,
-			Color.white,
-		),
+		new Knight('knight_b1', 'B8', Knight_B_SVG, PieceType.knight, Color.black),
+		new Knight('knight_w1', 'B1', Knight_W_SVG, PieceType.knight, Color.white),
+		new Knight('knight_b2', 'G8', Knight_B_SVG, PieceType.knight, Color.black),
+		new Knight('knight_w2', 'G1', Knight_W_SVG, PieceType.knight, Color.white),
 
-		new Rook(
-			'rook_b1',
-			'A8',
-			Rook_B_SVG,
-			PieceType.rook,
-			Color.black,
-			RookType.long_rook,
-		),
-		new Rook(
-			'rook_w1',
-			'A1',
-			Rook_W_SVG,
-			PieceType.rook,
-			Color.white,
-			RookType.long_rook,
-		),
-		new Rook(
-			'rook_b2',
-			'H8',
-			Rook_B_SVG,
-			PieceType.rook,
-			Color.black,
-			RookType.short_rook,
-		),
-		new Rook(
-			'rook_w2',
-			'H1',
-			Rook_W_SVG,
-			PieceType.rook,
-			Color.white,
-			RookType.short_rook,
-		),
+		new Rook('rook_b1', 'A8', Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
+		new Rook('rook_w1', 'A1', Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
+		new Rook('rook_b2', 'H8', Rook_B_SVG, PieceType.rook, Color.black, RookType.short_rook),
+		new Rook('rook_w2', 'H1', Rook_W_SVG, PieceType.rook, Color.white, RookType.short_rook),
 
 		new Pawn('pawn_b1', 'A7', Pawn_B_SVG, PieceType.pawn, Color.black),
 		new Pawn('pawn_w1', 'A2', Pawn_W_SVG, PieceType.pawn, Color.white),
@@ -151,8 +75,7 @@ export default class PieceList {
 	}
 
 	public static pieces_by_other_color(color: Color): Piece[] {
-		const other_color: Color =
-			color === Color.white ? Color.black : Color.white
+		const other_color: Color = color === Color.white ? Color.black : Color.white
 		return this.piece_list.filter((piece) => piece.color === other_color)
 	}
 
@@ -210,21 +133,11 @@ export default class PieceList {
 		})
 	}
 
-	public static swap_with_queen(
-		piece_id: string,
-		position: string,
-		color: Color,
-	) {
+	public static swap_with_queen(piece_id: string, position: string, color: Color) {
 		const svg: string = color === Color.white ? Queen_W_SVG : Queen_B_SVG
 		this.remove_piece_by_id(piece_id)
 		this.piece_list.push(
-			new Queen(
-				`queen_${++this.number_of_queens}`,
-				position,
-				svg,
-				PieceType.queen,
-				color,
-			),
+			new Queen(`queen_${++this.number_of_queens}`, position, svg, PieceType.queen, color),
 		)
 	}
 }
