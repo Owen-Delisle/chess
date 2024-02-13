@@ -50,11 +50,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 				if(!this.en_passant_directions.includes(direction)) {
 					this.possible_moves.push(SquareID.pos_at_point({ row: next_row, col: next_col }))
 				} else {
-					if(this.conditions_for_en_passant(piece_at_attack_point!)) {
-						if(!this.en_passant_moves.includes(SquareID.pos_at_point({ row: next_row-1, col: next_col }))) {
-							this.en_passant_moves.push(SquareID.pos_at_point({ row: next_row-1, col: next_col }))
-						}
-					}
+					this.add_en_passant_move(piece_at_attack_point, next_row, next_col)
 				}
 			}
 		})
@@ -91,7 +87,21 @@ export default class Pawn extends Piece implements Piece_Interface {
 		return should_attack
 	}
 
-	private conditions_for_en_passant(piece_at_attack_point: Piece): boolean {
+	private add_en_passant_move(piece_at_attack_point: Piece | undefined, next_row: number, next_col: number): void {
+		if(this.conditions_for_en_passant(piece_at_attack_point, next_row, next_col)) {
+			this.en_passant_moves.push(SquareID.pos_at_point({ row: next_row-1, col: next_col }))
+		}
+	}
+
+	private conditions_for_en_passant(piece_at_attack_point: Piece | undefined, next_row: number, next_col: number): boolean {
+		if(piece_at_attack_point === undefined) {
+			return false
+		}
+
+		if(this.en_passant_moves.includes(SquareID.pos_at_point({ row: next_row-1, col: next_col }))) {
+			return false
+		}
+
 		if(piece_at_attack_point.type === PieceType.pawn) {
 			const pawn = piece_at_attack_point as Pawn
 			const last_pawn_gp: GridPoint = SquareGrid.point_at_board_position(pawn.last_position)

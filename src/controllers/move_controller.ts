@@ -225,6 +225,7 @@ export default class MoveController {
 			selected_square.remove_piece()
 		}
 
+		GameController.add_move_to_list({piece: piece, from: piece.pos, to: selected_square.square_id})
 		await piece.move_to(selected_square)
 
 		this.redraw()
