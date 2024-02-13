@@ -7,21 +7,24 @@ import { Color } from '../color'
 import type Square from '../../square/square'
 import SquareID from '../../../components/square/square_id'
 import PieceList from '../../../models/piece_list/piece_list'
-import { GridPoint } from '../../../global_types/grid_point'
 import { board_start_index, row_and_column_size } from '../../../utils/bounds'
+import { GameController } from '../../../controllers/game_controller'
+import { Move } from '../../../global_types/move'
+import { distance_between_aligned_positions } from '../../../utils/math'
 
 export default class Pawn extends Piece implements Piece_Interface {
 	private maximum_move_distance: number = 2
 	private minimum_move_distance: number = 1
+	public attack_distance: number = 1
 
-	en_passant_directions: PieceDirections[] = [PieceDirections.west, PieceDirections.east]
-	attack_directions: PieceDirections[] = [PieceDirections.north_east, PieceDirections.north_west, ...this.en_passant_directions]
+	private en_passant_directions: PieceDirections[] = [PieceDirections.west, PieceDirections.east]
+	public attack_directions: PieceDirections[] = [PieceDirections.north_east, PieceDirections.north_west, ...this.en_passant_directions]
+
+	private en_passant_position: string = ""
 
 	//Global Properties
 	//Initial move distance
 	public move_distance: number = this.maximum_move_distance
-	public last_position: string = this.pos
-	public en_passant_moves: string[] = []
 
 	constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
 		super(title, type, pos, svg, color)
@@ -50,13 +53,10 @@ export default class Pawn extends Piece implements Piece_Interface {
 				if(!this.en_passant_directions.includes(direction)) {
 					this.possible_moves.push(SquareID.pos_at_point({ row: next_row, col: next_col }))
 				} else {
-					this.add_en_passant_move(piece_at_attack_point, next_row, next_col)
+					this.add_en_passant_move(piece_at_attack_point)
 				}
 			}
 		})
-		if(!this.possible_moves.includes(this.en_passant_moves[this.en_passant_moves.length-1])) {
-			this.possible_moves.push(this.en_passant_moves[this.en_passant_moves.length-1])
-		}
 	}
 
 	private conditions_for_adding_attack_square(
@@ -87,9 +87,18 @@ export default class Pawn extends Piece implements Piece_Interface {
 		return should_attack
 	}
 
-	private add_en_passant_move(piece_at_attack_point: Piece | undefined, next_row: number, next_col: number): void {
-		if(this.conditions_for_en_passant(piece_at_attack_point, next_row, next_col)) {
-			this.en_passant_moves.push(SquareID.pos_at_point({ row: next_row-1, col: next_col }))
+	private add_en_passant_move(piece_at_attack_point: Piece | undefined): void {
+		const piece_gp = SquareGrid.point_at_board_position(piece_at_attack_point!.pos)
+		const next_row: number = piece_gp.row
+		const next_col: number = piece_gp.col
+		try {
+			if(this.conditions_for_en_passant(piece_at_attack_point, next_row, next_col)) {
+				const en_passant_position = SquareID.pos_at_point({ row: next_row-1, col: next_col })
+				this.possible_moves.push(en_passant_position)
+				this.en_passant_position = en_passant_position
+			}
+		} catch(error) {
+			console.log(error)
 		}
 	}
 
@@ -98,16 +107,17 @@ export default class Pawn extends Piece implements Piece_Interface {
 			return false
 		}
 
-		if(this.en_passant_moves.includes(SquareID.pos_at_point({ row: next_row-1, col: next_col }))) {
-			return false
+		if(GameController.move_list.last_move() === undefined) {
+			throw(Error("Move list is empty and not functioning properly."))
 		}
 
+		const last_move: Move = GameController.move_list.last_move()!
+
 		if(piece_at_attack_point.type === PieceType.pawn) {
-			const pawn = piece_at_attack_point as Pawn
-			const last_pawn_gp: GridPoint = SquareGrid.point_at_board_position(pawn.last_position)
-			const pawn_gp: GridPoint = SquareGrid.point_at_board_position(pawn.pos)
-			if(last_pawn_gp.row === pawn_gp.row - this.maximum_move_distance) {
-				return true
+			if(last_move.piece === piece_at_attack_point) {
+				if(distance_between_aligned_positions(last_move.from, last_move.to) === this.maximum_move_distance) {
+					return true
+				}
 			}
 		}
 		return false
@@ -116,18 +126,15 @@ export default class Pawn extends Piece implements Piece_Interface {
 	public move_to(new_square: Square): Promise<void> {
 		return new Promise(async (resolve) => {
 
-			if(this.en_passant_moves[this.en_passant_moves.length-1] === new_square.square_id) {
-				const move_point: GridPoint = SquareGrid.point_at_board_position(this.en_passant_moves[this.en_passant_moves.length-1])
-				const piece_pos: string = SquareID.pos_at_point({row: move_point.row+1, col:move_point.col})
-				PieceList.remove_piece_by_position(piece_pos)
+			if(this.should_enpassand(new_square.square_id)) {
+				this.en_passand()
 			}
-
-			this.last_position = this.pos
-			this.pos = new_square.square_id as string
+			
+			this.pos = new_square.square_id
 			this.move_distance = this.minimum_move_distance
 			this.possible_moves = []
 
-			if (new_square.grid_point.row === row_and_column_size-1 || new_square.grid_point.row === board_start_index) {
+			if (this.should_make_queen(new_square.grid_point.row)) {
 				this.make_queen()
 			}
 
@@ -135,7 +142,20 @@ export default class Pawn extends Piece implements Piece_Interface {
 		})
 	}
 
-	public make_queen() {
+	private make_queen() {
 		PieceList.swap_with_queen(this.title, this.pos, this.color)
+	}
+
+	private should_make_queen(new_square_row: number) {
+		return new_square_row === row_and_column_size-1 || new_square_row === board_start_index
+	}
+
+	private should_enpassand(square_id: string): boolean {
+		return square_id === this.en_passant_position
+	}
+
+	private en_passand() {
+		const point = SquareGrid.point_at_board_position(this.en_passant_position)
+		PieceList.remove_piece_by_point({row: point.row+1, col: point.col})
 	}
 }

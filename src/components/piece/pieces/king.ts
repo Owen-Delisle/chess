@@ -15,11 +15,12 @@ import { RookType } from './rook'
 import PieceList from '../../../models/piece_list/piece_list'
 import SquareID from '../../../components/square/square_id'
 import { are_coors_within_board_bounds } from '../../../utils/bounds'
-import { distance_between_points } from '../../../utils/math'
+import { distance_between_aligned_points } from '../../../utils/math'
 import { arrays_are_equal } from '../../../utils/arrays'
 import { surrounding_points } from '../../../utils/grid'
 import { not_color } from '../color'
 import { every_direction } from '../piece_directions'
+import Pawn from './pawn'
 
 export default class King extends Piece implements Piece_Interface {
 	move_distance: number = 1
@@ -192,14 +193,15 @@ export default class King extends Piece implements Piece_Interface {
 				col: col_modifier,
 			})
 			if (direction !== undefined) {
-				if (
-					piece.directions.includes(direction) ||
-					this.pawn_attack_square(piece, direction, distance)
-				) {
-					if (piece.move_distance >= distance) {
-						return true
+				if(piece.type !== PieceType.pawn) {
+					if (piece.directions.includes(direction)) {
+						if (piece.move_distance >= distance) {
+							return true
+						}
+						return false
 					}
-					return false
+				} else {
+					return this.pawn_attack_square(piece, direction, distance)
 				}
 			}
 		}
@@ -229,14 +231,10 @@ export default class King extends Piece implements Piece_Interface {
 		direction: PieceDirections,
 		distance: number,
 	): boolean {
-		if (distance <= piece.move_distance) {
-			if (piece.type === PieceType.pawn) {
-				if (direction === PieceDirections.north_west) {
-					return true
-				}
-				if (direction === PieceDirections.north_east) {
-					return true
-				}
+		const pawn: Pawn = piece as Pawn
+		if (distance <= pawn.attack_distance) {
+			if(pawn.attack_directions.includes(direction)) {
+				return true
 			}
 		}
 		return false
@@ -279,6 +277,7 @@ export default class King extends Piece implements Piece_Interface {
 		// In Check
 		if (this.piece_in_path_conditions(first_piece, path.direction)) {
 			this.in_check = true
+			// TODO -- Take out 8
 			if (path.direction < 8) {
 				Piece.position_restrictions = [
 					...SquareID.pos_between_points(
@@ -296,10 +295,18 @@ export default class King extends Piece implements Piece_Interface {
 		try {
 			const king_gp: GridPoint = SquareGrid.point_at_board_position(this.pos)
 			const piece_gp: GridPoint = SquareGrid.point_at_board_position(piece.pos)
-			const distance = distance_between_points(piece_gp, king_gp) + 1
+			
+			let distance: number
+			// TODO -- Take out 8
+			if(direction < 8) {
+				distance = distance_between_aligned_points(piece_gp, king_gp)
+			} else {
+				distance = piece.move_distance
+			}
+			
 			if (piece.color === not_color(this.color)) {
 				if (piece.directions.includes(direction)) {
-					if (piece.move_distance >= distance || piece.type === PieceType.knight) {
+					if (piece.move_distance >= distance) {
 						return true
 					}
 				}

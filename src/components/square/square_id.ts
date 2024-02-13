@@ -3,6 +3,7 @@ import type { GridPoint } from '../../global_types/grid_point'
 import { Color } from '../piece/color'
 
 export default class SquareID {
+	// TODO -- Make One Board
 	public static white_board_positions: string[] = [
 		'A8',
 		'B8',
