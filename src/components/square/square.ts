@@ -9,6 +9,7 @@ export default class Square extends HTMLElement {
 	square_id: string
 	color: Color
 	element: HTMLElement | null = null
+	// TODO -- Has Bug When Board Flips
 	grid_point: GridPoint
 
 	constructor(color: Color, square_id: number) {
@@ -87,9 +88,7 @@ export default class Square extends HTMLElement {
 	}
 
 	public remove_dot(): void {
-		const node: HTMLElement | null = document.getElementById(
-			`${this.square_id}-dot`,
-		)
+		const node: HTMLElement | null = document.getElementById(`${this.square_id}-dot`)
 		if (node !== null) {
 			this.element!.removeChild(node)
 		}

@@ -9,13 +9,7 @@ export default class Queen extends Piece implements Piece_Interface {
 	move_distance: number = 7
 	directions: PieceDirections[]
 
-	constructor(
-		title: string,
-		pos: string,
-		svg: string,
-		type: PieceType,
-		color: Color,
-	) {
+	constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
 		super(title, type, pos, svg, color)
 		this.type = type
 		this.directions = [

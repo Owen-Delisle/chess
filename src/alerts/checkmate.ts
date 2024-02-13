@@ -25,9 +25,7 @@ class FancyAnimatedCheckmateAlert {
 	}
 
 	private printMessage(): void {
-		const padding = ' '.repeat(
-			Math.floor((this.width - this.message.length) / 2),
-		)
+		const padding = ' '.repeat(Math.floor((this.width - this.message.length) / 2))
 		console.log(`%c│${padding}${this.message}${padding}│`, 'color: red;')
 	}
 
@@ -37,6 +35,4 @@ class FancyAnimatedCheckmateAlert {
 }
 
 // Example usage:
-export const animatedCheckmateAlert = new FancyAnimatedCheckmateAlert(
-	'Checkmate! You win!',
-)
+export const animatedCheckmateAlert = new FancyAnimatedCheckmateAlert('Checkmate! You win!')
