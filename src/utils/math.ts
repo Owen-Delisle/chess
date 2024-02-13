@@ -2,6 +2,7 @@ import SquareGrid from '../models/square_grid'
 import SquareID from '../components/square/square_id'
 import type { GridPoint } from '../global_types/grid_point'
 import { are_coors_within_board_bounds } from './bounds'
+import { knight_direction_modifiers } from '../components/piece/piece_directions'
 
 export function distance_between_aligned_points(point_one: GridPoint, point_two: GridPoint): number {
 	[point_one, point_two].forEach((point) => {
@@ -42,4 +43,17 @@ export function distance_between_aligned_positions(pos_one: string, pos_two: str
 	const point_two: GridPoint = SquareGrid.point_at_board_position(pos_two)
 
 	return distance_between_aligned_points(point_one, point_two)
+}
+
+export function is_within_one_knight_move(from: GridPoint, to: GridPoint) {
+	let one_move: boolean = false
+
+	knight_direction_modifiers().forEach(modifier => {
+		const next_gp: GridPoint = { row: from.row + modifier.row, col: from.col + modifier.col }
+		if (next_gp.row == to.row && next_gp.col === to.col) {
+			one_move = true
+		}
+	});
+
+	return one_move
 }

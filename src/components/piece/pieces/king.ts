@@ -5,6 +5,7 @@ import {
 	PieceDirections,
 	piece_direction_modifier,
 	direction_by_modifier,
+	index_of_knight_directions
 } from '../piece_directions'
 import type Piece_Interface from '../piece_interface'
 import { PieceType } from '../piece_types'
@@ -15,7 +16,7 @@ import { RookType } from './rook'
 import PieceList from '../../../models/piece_list/piece_list'
 import SquareID from '../../../components/square/square_id'
 import { are_coors_within_board_bounds } from '../../../utils/bounds'
-import { distance_between_aligned_points } from '../../../utils/math'
+import { distance_between_aligned_points, is_within_one_knight_move } from '../../../utils/math'
 import { arrays_are_equal } from '../../../utils/arrays'
 import { surrounding_points } from '../../../utils/grid'
 import { not_color } from '../color'
@@ -24,6 +25,8 @@ import Pawn from './pawn'
 
 export default class King extends Piece implements Piece_Interface {
 	move_distance: number = 1
+	piece_value: number = 0
+
 	directions: PieceDirections[]
 	has_moved: boolean = false
 	in_check: boolean = false
@@ -277,16 +280,16 @@ export default class King extends Piece implements Piece_Interface {
 		// In Check
 		if (this.piece_in_path_conditions(first_piece, path.direction)) {
 			this.in_check = true
-			// TODO -- Take out 8
-			if (path.direction < 8) {
-				Piece.position_restrictions = [
+			if (path.direction < index_of_knight_directions) {
+				this.set_global_movement_restrictions([
 					...SquareID.pos_between_points(
 						SquareGrid.point_at_board_position(this.pos),
 						first_piece_gp,
 					),
-				]
+				])
 			} else {
-				Piece.position_restrictions = [SquareID.pos_at_point(first_piece_gp)]
+				const attacking_knight_position: string = SquareID.pos_at_point(first_piece_gp)
+				this.set_global_movement_restrictions([attacking_knight_position])
 			}
 		}
 	}
@@ -295,18 +298,23 @@ export default class King extends Piece implements Piece_Interface {
 		try {
 			const king_gp: GridPoint = SquareGrid.point_at_board_position(this.pos)
 			const piece_gp: GridPoint = SquareGrid.point_at_board_position(piece.pos)
+			let piece_is_within_distance: boolean = false
 			
-			let distance: number
-			// TODO -- Take out 8
-			if(direction < 8) {
-				distance = distance_between_aligned_points(piece_gp, king_gp)
+			if(direction < index_of_knight_directions) {
+				if(piece.move_distance >= distance_between_aligned_points(piece_gp, king_gp)) {
+					piece_is_within_distance = true
+				}
 			} else {
-				distance = piece.move_distance
+				if(is_within_one_knight_move(king_gp, piece_gp)) {
+					piece_is_within_distance = true
+				} else {
+					piece_is_within_distance = false
+				}
 			}
 			
 			if (piece.color === not_color(this.color)) {
 				if (piece.directions.includes(direction)) {
-					if (piece.move_distance >= distance) {
+					if (piece_is_within_distance) {
 						return true
 					}
 				}
