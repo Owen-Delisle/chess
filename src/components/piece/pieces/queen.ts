@@ -7,6 +7,7 @@ import SquareGrid from '../../../models/square_grid'
 
 export default class Queen extends Piece implements Piece_Interface {
 	move_distance: number = 7
+	piece_value: number = 3
 	directions: PieceDirections[]
 
 	constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {

@@ -166,7 +166,7 @@ export default class MoveController {
 			}
 		})
 
-		king_of_color.check_for_checkmate()
+		GameController.should_game_end(king_of_color)
 	}
 
 	public static clear_possible_moves_lists(): void {

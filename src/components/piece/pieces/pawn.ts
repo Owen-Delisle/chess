@@ -25,6 +25,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 	//Global Properties
 	//Initial move distance
 	public move_distance: number = this.maximum_move_distance
+	piece_value: number = 1
 
 	constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
 		super(title, type, pos, svg, color)
