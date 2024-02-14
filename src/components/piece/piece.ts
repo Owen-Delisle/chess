@@ -1,11 +1,5 @@
 import { PieceType } from './piece_types'
 import SquareGrid from '../../models/square_grid'
-import type Bishop from './pieces/bishop'
-import type King from './pieces/king'
-import type Knight from './pieces/knight'
-import type Pawn from './pieces/pawn'
-import type Queen from './pieces/queen'
-import type Rook from './pieces/rook'
 import type { GridPoint } from 'src/global_types/grid_point'
 import type { Color } from './color'
 import { are_coors_within_board_bounds } from '../../utils/bounds'
@@ -254,6 +248,7 @@ export default abstract class Piece {
 				col: new_col,
 			})!
 			// Pawn has its own attacking logic
+			//TODO -- Move PieceType.pawn down an if statement
 			if (piece_at_square.color !== this.color && this.type !== PieceType.pawn) {
 				if (this.type !== PieceType.king) {
 					moves_in_direction.push(SquareID.pos_at_point({ row: new_row, col: new_col }))
@@ -269,14 +264,18 @@ export default abstract class Piece {
 		moves_in_direction: string[],
 		possible_moves: string[],
 	): void {
-		if (this.position_restrictions.length > 0) {
+		if (this.position_restrictions.length > 0 && Piece.position_restrictions.length <= 0) {
 			possible_moves.push(
 				...moves_in_direction.filter((move) => this.position_restrictions.includes(move)),
 			)
 		} else if (Piece.position_restrictions.length > 0 && this.type != PieceType.king) {
-			possible_moves.push(
-				...moves_in_direction.filter((move) => Piece.position_restrictions.includes(move)),
-			)
+			if(this.position_restrictions.length > 0) {
+				this.possible_moves = []
+			} else {
+				possible_moves.push(
+					...moves_in_direction.filter((move) => Piece.position_restrictions.includes(move)),
+				)
+			}
 		} else {
 			possible_moves.push(...moves_in_direction)
 		}

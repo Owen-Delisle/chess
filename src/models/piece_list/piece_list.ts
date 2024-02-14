@@ -31,8 +31,23 @@ export default class PieceList {
 
 	public static piece_list: Piece[] = [
 		//TODO -- WRONG PIECES, DELETE LATER
-        // new Bishop('bishop_b1', 'C8', Bishop_B_SVG, PieceType.bishop, Color.black),
-        // new Bishop('bishop_w2', 'F1', Bishop_W_SVG, PieceType.bishop, Color.white),
+        // new King('king_b', 'E8', King_B_SVG, PieceType.king, Color.black),
+        
+        // new Pawn('pawn_b5', 'E7', Pawn_B_SVG, PieceType.pawn, Color.black),
+        // new Pawn('pawn_w5', 'F6', Pawn_W_SVG, PieceType.pawn, Color.white),
+
+        // new Queen('queen_w', 'D6', Queen_W_SVG, PieceType.queen, Color.white),
+
+        // new Rook('rook_w1', 'E4', Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
+
+        // new Queen('queen_b', 'E7', Queen_B_SVG, PieceType.queen, Color.black),
+
+        // new Knight('knight_w1', 'D6', Knight_W_SVG, PieceType.knight, Color.white),
+
+        // new Bishop('bishop_w2', 'F6', Bishop_W_SVG, PieceType.bishop, Color.white),
+        // new Bishop('bishop_b1', 'E7', Bishop_B_SVG, PieceType.bishop, Color.black),
+
+        // new Rook('rook_b1', 'E7', Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
 		//END TODO
 
 		new King('king_b', 'E8', King_B_SVG, PieceType.king, Color.black),
