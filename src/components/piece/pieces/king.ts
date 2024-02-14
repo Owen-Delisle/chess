@@ -69,7 +69,11 @@ export default class King extends Piece implements Piece_Interface {
 
 	public check_for_checkmate() {
 		if (!this.any_piece_can_move()) {
-			console.log('Checkmate')
+			if(this.in_check) {
+				console.log('Game Over: Checkmate')
+			} else {
+				console.log('Game Over: Stalemate')
+			}
 		}
 	}
 

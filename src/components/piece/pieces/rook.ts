@@ -1,13 +1,13 @@
 import type { Color } from '../color'
 import Piece from '../piece'
-import { PieceDirections, piece_direction_modifier } from '../piece_directions'
+import { PieceDirections } from '../piece_directions'
 import type Piece_Interface from '../piece_interface'
 import type { PieceType } from '../piece_types'
 import type Square from '../../../components/square/square'
-import SquareGrid from '../../../models/square_grid'
 
 export default class Rook extends Piece implements Piece_Interface {
 	move_distance: number = 7
+	piece_value: number = 5
 	directions: PieceDirections[]
 	has_moved: boolean = false
 	rook_type: RookType

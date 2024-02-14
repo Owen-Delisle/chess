@@ -4,6 +4,7 @@ import { Color } from '../../components/piece/color'
 import { RookType } from '../../components/piece/pieces/rook'
 import { GridPoint } from '../../global_types/grid_point'
 import SquareID from '../../components/square/square_id'
+import SquareGrid from '../square_grid'
 
 import Bishop from '../../components/piece/pieces/bishop'
 import King from '../../components/piece/pieces/king'
@@ -30,46 +31,47 @@ export default class PieceList {
 
 	public static piece_list: Piece[] = [
 		//TODO -- WRONG PIECES, DELETE LATER
-		    new Pawn('pawn_b1', 'E3', Pawn_B_SVG, PieceType.pawn, Color.black),
+        // new Bishop('bishop_b1', 'C8', Bishop_B_SVG, PieceType.bishop, Color.black),
+        // new Bishop('bishop_w2', 'F1', Bishop_W_SVG, PieceType.bishop, Color.white),
 		//END TODO
 
 		new King('king_b', 'E8', King_B_SVG, PieceType.king, Color.black),
 		new King('king_w', 'E1', King_W_SVG, PieceType.king, Color.white),
 
-		// new Queen('queen_b', 'D8', Queen_B_SVG, PieceType.queen, Color.black),
-		// new Queen('queen_w', 'D1', Queen_W_SVG, PieceType.queen, Color.white),
+		new Queen('queen_b', 'D8', Queen_B_SVG, PieceType.queen, Color.black),
+		new Queen('queen_w', 'D1', Queen_W_SVG, PieceType.queen, Color.white),
 
-		// new Bishop('bishop_b1', 'C8', Bishop_B_SVG, PieceType.bishop, Color.black),
-		// new Bishop('bishop_w1', 'C1', Bishop_W_SVG, PieceType.bishop, Color.white),
-		// new Bishop('bishop_b2', 'F8', Bishop_B_SVG, PieceType.bishop, Color.black),
-		// new Bishop('bishop_w2', 'F1', Bishop_W_SVG, PieceType.bishop, Color.white),
+		new Bishop('bishop_b1', 'C8', Bishop_B_SVG, PieceType.bishop, Color.black),
+		new Bishop('bishop_w1', 'C1', Bishop_W_SVG, PieceType.bishop, Color.white),
+		new Bishop('bishop_b2', 'F8', Bishop_B_SVG, PieceType.bishop, Color.black),
+		new Bishop('bishop_w2', 'F1', Bishop_W_SVG, PieceType.bishop, Color.white),
 
-		// new Knight('knight_b1', 'B8', Knight_B_SVG, PieceType.knight, Color.black),
-		// new Knight('knight_w1', 'B1', Knight_W_SVG, PieceType.knight, Color.white),
-		// new Knight('knight_b2', 'G8', Knight_B_SVG, PieceType.knight, Color.black),
-		// new Knight('knight_w2', 'G1', Knight_W_SVG, PieceType.knight, Color.white),
+		new Knight('knight_b1', 'B8', Knight_B_SVG, PieceType.knight, Color.black),
+		new Knight('knight_w1', 'B1', Knight_W_SVG, PieceType.knight, Color.white),
+		new Knight('knight_b2', 'G8', Knight_B_SVG, PieceType.knight, Color.black),
+		new Knight('knight_w2', 'G1', Knight_W_SVG, PieceType.knight, Color.white),
 
-		// new Rook('rook_b1', 'A8', Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
-		// new Rook('rook_w1', 'A1', Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
-		// new Rook('rook_b2', 'H8', Rook_B_SVG, PieceType.rook, Color.black, RookType.short_rook),
-		// new Rook('rook_w2', 'H1', Rook_W_SVG, PieceType.rook, Color.white, RookType.short_rook),
+		new Rook('rook_b1', 'A8', Rook_B_SVG, PieceType.rook, Color.black, RookType.long_rook),
+		new Rook('rook_w1', 'A1', Rook_W_SVG, PieceType.rook, Color.white, RookType.long_rook),
+		new Rook('rook_b2', 'H8', Rook_B_SVG, PieceType.rook, Color.black, RookType.short_rook),
+		new Rook('rook_w2', 'H1', Rook_W_SVG, PieceType.rook, Color.white, RookType.short_rook),
 
-		// new Pawn('pawn_b1', 'A7', Pawn_B_SVG, PieceType.pawn, Color.black),
-		// new Pawn('pawn_w1', 'A2', Pawn_W_SVG, PieceType.pawn, Color.white),
-		// new Pawn('pawn_b2', 'B7', Pawn_B_SVG, PieceType.pawn, Color.black),
-		// new Pawn('pawn_w2', 'B2', Pawn_W_SVG, PieceType.pawn, Color.white),
-		// new Pawn('pawn_b3', 'C7', Pawn_B_SVG, PieceType.pawn, Color.black),
-		// new Pawn('pawn_w3', 'C2', Pawn_W_SVG, PieceType.pawn, Color.white),
-		// new Pawn('pawn_b4', 'D7', Pawn_B_SVG, PieceType.pawn, Color.black),
-		// new Pawn('pawn_w4', 'D2', Pawn_W_SVG, PieceType.pawn, Color.white),
-		// new Pawn('pawn_b5', 'E7', Pawn_B_SVG, PieceType.pawn, Color.black),
-		// new Pawn('pawn_w5', 'E2', Pawn_W_SVG, PieceType.pawn, Color.white),
-		// new Pawn('pawn_b6', 'F7', Pawn_B_SVG, PieceType.pawn, Color.black),
-		// new Pawn('pawn_w6', 'F2', Pawn_W_SVG, PieceType.pawn, Color.white),
-		// new Pawn('pawn_b7', 'G7', Pawn_B_SVG, PieceType.pawn, Color.black),
-		// new Pawn('pawn_w7', 'G2', Pawn_W_SVG, PieceType.pawn, Color.white),
-		// new Pawn('pawn_b8', 'H7', Pawn_B_SVG, PieceType.pawn, Color.black),
-		// new Pawn('pawn_w8', 'H2', Pawn_W_SVG, PieceType.pawn, Color.white),
+		new Pawn('pawn_b1', 'A7', Pawn_B_SVG, PieceType.pawn, Color.black),
+		new Pawn('pawn_w1', 'A2', Pawn_W_SVG, PieceType.pawn, Color.white),
+		new Pawn('pawn_b2', 'B7', Pawn_B_SVG, PieceType.pawn, Color.black),
+		new Pawn('pawn_w2', 'B2', Pawn_W_SVG, PieceType.pawn, Color.white),
+		new Pawn('pawn_b3', 'C7', Pawn_B_SVG, PieceType.pawn, Color.black),
+		new Pawn('pawn_w3', 'C2', Pawn_W_SVG, PieceType.pawn, Color.white),
+		new Pawn('pawn_b4', 'D7', Pawn_B_SVG, PieceType.pawn, Color.black),
+		new Pawn('pawn_w4', 'D2', Pawn_W_SVG, PieceType.pawn, Color.white),
+		new Pawn('pawn_b5', 'E7', Pawn_B_SVG, PieceType.pawn, Color.black),
+		new Pawn('pawn_w5', 'E2', Pawn_W_SVG, PieceType.pawn, Color.white),
+		new Pawn('pawn_b6', 'F7', Pawn_B_SVG, PieceType.pawn, Color.black),
+		new Pawn('pawn_w6', 'F2', Pawn_W_SVG, PieceType.pawn, Color.white),
+		new Pawn('pawn_b7', 'G7', Pawn_B_SVG, PieceType.pawn, Color.black),
+		new Pawn('pawn_w7', 'G2', Pawn_W_SVG, PieceType.pawn, Color.white),
+		new Pawn('pawn_b8', 'H7', Pawn_B_SVG, PieceType.pawn, Color.black),
+		new Pawn('pawn_w8', 'H2', Pawn_W_SVG, PieceType.pawn, Color.white),
 	]
 
 	public static pieces_by_color(color: Color): Piece[] {
@@ -154,4 +156,37 @@ export default class PieceList {
 			new Queen(`queen_${++this.number_of_queens}`, position, svg, PieceType.queen, color),
 		)
 	}
+
+    public static any_pawns_left_in_game(): boolean {
+        return this.piece_list.some(piece => piece.type === PieceType.pawn)
+    }
+
+    public static material_value_in_game(): number {
+        return this.piece_list.map(piece => piece.piece_value).reduce((acc, value) => acc + value, 0);
+    }
+
+    public static only_same_square_color_bishops_left_in_game(): boolean {
+        if(this.piece_list.length !== 4) {
+            return false
+        }
+
+        const bishops = this.piece_list.filter(piece => piece.type === PieceType.bishop)
+        if(bishops.length !== 2) {
+            return false
+        }
+
+        if(bishops[0].color === bishops[1].color) {
+            return false
+        }
+
+        const bishop_1_square_color = SquareGrid.square_by_board_position(bishops[0].pos)!.color
+        const bishop_2_square_color = SquareGrid.square_by_board_position(bishops[1].pos)!.color
+
+        if(bishop_1_square_color !== bishop_2_square_color) {
+            return false
+        }
+
+        return true
+    }
+
 }

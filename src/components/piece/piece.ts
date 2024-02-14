@@ -30,6 +30,7 @@ export default abstract class Piece {
 
 	//Default property values
 	move_distance: number = 0
+	piece_value: number = 0
 
 	constructor(title: string, type: PieceType, pos: string, svg: string, color: Color) {
 		this.title = title
@@ -279,5 +280,9 @@ export default abstract class Piece {
 		} else {
 			possible_moves.push(...moves_in_direction)
 		}
+	}
+
+	public set_global_movement_restrictions(restrictions: string[]) {
+		Piece.position_restrictions = restrictions
 	}
 }

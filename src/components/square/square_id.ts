@@ -161,6 +161,7 @@ export default class SquareID {
 		return this.board_positions()[index]
 	}
 
+	// TODO -- Make sure only sqaures aligned vertically, horizontally, or diagonally are calculated
 	public static pos_between_points(point_one: GridPoint, point_two: GridPoint): string[] {
 		const positions: string[] = []
 

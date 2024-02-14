@@ -1,5 +1,7 @@
 import type { GridPoint } from '../../global_types/grid_point'
 
+export const index_of_knight_directions: number = 8
+
 export enum PieceDirections {
 	north,
 	north_east,
@@ -18,6 +20,8 @@ export enum PieceDirections {
 	left_up,
 	up_left,
 }
+
+// TODO -- Move to a Controller file
 
 export function piece_direction_modifier(direction: PieceDirections): GridPoint {
 	switch (direction) {
@@ -82,4 +86,12 @@ export function every_direction(): number[] {
 	return Object.keys(PieceDirections)
 		.filter((key) => !isNaN(parseInt(key, 10)))
 		.map((key) => parseInt(key, 10))
+}
+
+export function knight_directions(): number[] {
+	return every_direction().slice(index_of_knight_directions)
+}
+
+export function knight_direction_modifiers(): {row: number, col: number}[] {
+	return knight_directions().map(direction => piece_direction_modifier(direction))
 }
