@@ -281,7 +281,11 @@ export default abstract class Piece {
 		}
 	}
 
-	public set_global_movement_restrictions(restrictions: string[]) {
+	public static update_global_movement_restrictions(restrictions: string[]) {
 		Piece.position_restrictions = restrictions
+	}
+
+	public static read_global_movement_restrictions(): string[] {
+		return Piece.position_restrictions
 	}
 }

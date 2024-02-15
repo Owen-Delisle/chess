@@ -285,7 +285,7 @@ export default class King extends Piece implements Piece_Interface {
 		if (this.piece_in_path_conditions(first_piece, path.direction)) {
 			this.in_check = true
 			if (path.direction < index_of_knight_directions) {
-				this.set_global_movement_restrictions([
+				Piece.update_global_movement_restrictions([
 					...SquareID.pos_between_points(
 						SquareGrid.point_at_board_position(this.pos),
 						first_piece_gp,
@@ -293,7 +293,7 @@ export default class King extends Piece implements Piece_Interface {
 				])
 			} else {
 				const attacking_knight_position: string = SquareID.pos_at_point(first_piece_gp)
-				this.set_global_movement_restrictions([attacking_knight_position])
+				Piece.update_global_movement_restrictions([attacking_knight_position])
 			}
 		}
 	}
