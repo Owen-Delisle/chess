@@ -1,7 +1,7 @@
-import { distance_between_aligned_points } from '../../src/utils/math'
-import * as math_functions from "../../src/utils/math"
+import { distance_between_aligned_points } from '../../../src/utils/math'
+import * as math_functions from "../../../src/utils/math"
 
-jest.mock('../../src/utils/math')
+jest.mock('../../../src/utils/math')
 
 describe("Testing distance_between_aligned_points with jest mock", () => {
     it("should return a number", () => {

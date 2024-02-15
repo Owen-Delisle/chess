@@ -1,4 +1,4 @@
-import { arrays_are_equal } from "../../src/utils/arrays"
+import { arrays_are_equal } from "../../../src/utils/arrays"
 
 test('checks arr_1 and arr_2 to be equal', () => {
     const arr_1: number[] = [1,2,3]

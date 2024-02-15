@@ -1,4 +1,4 @@
-import { are_coors_within_board_bounds } from "../../src/utils/bounds"
+import { are_coors_within_board_bounds } from "../../../src/utils/bounds"
 
 test('checks coors are within board bounds to be true', () => {
     const row_1: number = 4
