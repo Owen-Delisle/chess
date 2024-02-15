@@ -25,7 +25,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 	//Global Properties
 	//Initial move distance
 	public move_distance: number = this.maximum_move_distance
-	piece_value: number = 1
+	public piece_value: number = 1
 
 	constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
 		super(title, type, pos, svg, color)
@@ -94,7 +94,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 		const next_row: number = piece_gp.row
 		const next_col: number = piece_gp.col
 		try {
-			if(this.conditions_for_en_passant(piece_at_attack_point, next_row, next_col)) {
+			if(this.conditions_for_en_passant(piece_at_attack_point)) {
 				const en_passant_position = SquareID.pos_at_point({ row: next_row-1, col: next_col })
 				this.possible_moves.push(en_passant_position)
 				this.en_passant_position = en_passant_position
@@ -104,7 +104,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 		}
 	}
 
-	private conditions_for_en_passant(piece_at_attack_point: Piece | undefined, next_row: number, next_col: number): boolean {
+	private conditions_for_en_passant(piece_at_attack_point: Piece | undefined): boolean {
 		if(piece_at_attack_point === undefined) {
 			return false
 		}

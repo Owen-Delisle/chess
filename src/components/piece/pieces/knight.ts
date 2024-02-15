@@ -2,8 +2,7 @@ import type { Color } from '../color'
 import Piece from '../piece'
 import type Piece_Interface from '../piece_interface'
 import type { PieceType } from '../piece_types'
-import { PieceDirections, piece_direction_modifier } from '../piece_directions'
-import SquareGrid from '../../../models/square_grid'
+import { PieceDirections } from '../piece_directions'
 
 export default class Knight extends Piece implements Piece_Interface {
 	move_distance: number = 1
