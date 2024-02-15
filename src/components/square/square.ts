@@ -2,21 +2,17 @@ import type { Color } from './color'
 import SquareID from './square_id'
 import type Piece from '../piece/piece'
 import MoveController from '../../controllers/move_controller'
-import type { GridPoint } from '../../global_types/grid_point'
 import PieceList from '../../models/piece_list/piece_list'
 
 export default class Square extends HTMLElement {
 	square_id: string
 	color: Color
 	element: HTMLElement | null = null
-	// TODO -- Has Bug When Board Flips
-	grid_point: GridPoint
 
 	constructor(color: Color, square_id: number) {
 		super()
 		this.square_id = SquareID.pos_at_index(square_id)
 		this.color = color
-		this.grid_point = SquareID.point_at_index(square_id)
 	}
 
 	async build_clickable_square() {

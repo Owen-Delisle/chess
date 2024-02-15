@@ -11,6 +11,7 @@ import { board_start_index, row_and_column_size } from '../../../utils/bounds'
 import { GameController } from '../../../controllers/game_controller'
 import { Move } from '../../../global_types/move'
 import { distance_between_aligned_positions } from '../../../utils/math'
+import { GridPoint } from '../../../global_types/grid_point'
 
 export default class Pawn extends Piece implements Piece_Interface {
 	private maximum_move_distance: number = 2
@@ -136,7 +137,8 @@ export default class Pawn extends Piece implements Piece_Interface {
 			this.move_distance = this.minimum_move_distance
 			this.possible_moves = []
 
-			if (this.should_make_queen(new_square.grid_point.row)) {
+			const point: GridPoint = SquareGrid.point_at_board_position(new_square.square_id)
+			if (this.should_make_queen(point.row)) {
 				this.make_queen()
 			}
 
