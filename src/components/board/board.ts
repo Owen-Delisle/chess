@@ -1,5 +1,5 @@
 import Square from '../square/square'
-import { Color } from '../square/color'
+import { SquareColor } from '../square/color'
 import PieceStyles from '../piece/styles'
 import SquareStyles from '../square/styles'
 import SquareGrid from '../../models/square_grid'
@@ -64,9 +64,9 @@ export default class Board extends HTMLElement {
 	}
 
 	private instantiate_square(index: number): Square {
-		let color: Color = Color.black
+		let color: SquareColor = SquareColor.black
 		if (index % 2 === this.current_row(index)) {
-			color = Color.white
+			color = SquareColor.white
 		}
 
 		let square: Square = new Square(color, index)

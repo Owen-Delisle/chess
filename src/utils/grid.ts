@@ -2,6 +2,7 @@ import type { GridPoint } from '../global_types/grid_point'
 import { are_coors_within_board_bounds } from './bounds'
 import { PieceDirections, piece_direction_modifier } from '../components/piece/piece_directions'
 import SquareGrid from '../models/square_grid'
+import SquareID from '../components/square/square_id'
 
 export function square_is_empty(point: GridPoint): boolean {
 	return SquareGrid.piece_by_grid_point(point)! === undefined
@@ -32,6 +33,5 @@ export function surrounding_points(grid_point: GridPoint): GridPoint[] {
 			surrounding_points.push({ row: neighbor_row, col: neighbor_col })
 		}
 	}
-
 	return surrounding_points
 }

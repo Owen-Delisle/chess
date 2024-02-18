@@ -13,7 +13,7 @@ import SquareGrid from '../../../models/square_grid'
 import type Square from '../../../components/square/square'
 import type Rook from './rook'
 import { RookType } from './rook'
-import PieceList from '../../../models/piece_list/piece_list'
+import PieceList from '../../../models/piece_list'
 import SquareID from '../../../components/square/square_id'
 import { are_coors_within_board_bounds } from '../../../utils/bounds'
 import { distance_between_aligned_points, is_within_one_knight_move } from '../../../utils/math'
@@ -67,12 +67,12 @@ export default class King extends Piece implements Piece_Interface {
 		return list
 	}
 
-	public check_for_checkmate() {
+	public check_for_checkmate(): string | undefined {
 		if (!this.any_piece_can_move()) {
 			if(this.in_check) {
-				console.log('Game Over: Checkmate')
+				return 'Game Over: Checkmate'
 			} else {
-				console.log('Game Over: Stalemate')
+				return 'Game Over: Stalemate'
 			}
 		}
 	}
@@ -88,7 +88,6 @@ export default class King extends Piece implements Piece_Interface {
 	public render_legal_squares_surrounding_king(): void {
 		const positions_surrounding_king = this.moveable_positions_surrounding_king()
 		const attacked_points_around_king = this.attacked_points_around_king()
-
 		if (arrays_are_equal(positions_surrounding_king, attacked_points_around_king)) {
 			this.move_distance = 0
 		} else {

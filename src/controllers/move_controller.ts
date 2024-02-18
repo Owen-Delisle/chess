@@ -9,7 +9,7 @@ import type Rook from '../components/piece/pieces/rook'
 import type { CastleVars } from '../components/piece/pieces/king'
 import SquareID from '../components/square/square_id'
 import { GameController } from './game_controller'
-import PieceList from '../models/piece_list/piece_list'
+import PieceList from '../models/piece_list'
 import type Pawn from '../components/piece/pieces/pawn'
 
 export default class MoveController {
