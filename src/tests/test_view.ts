@@ -22,19 +22,40 @@ export default class TestView extends HTMLElement {
     private append_children(): Promise<void> {
         return new Promise(async (resolve) => {
             this.appendChild(TestStyles.test_style())
-            let div_node: Element = document.createElement('div')
-            let p_node: Element = document.createElement('p')
-            div_node.appendChild(p_node)
 
-            p_node.className = 'p'
+            let test_view: Element = document.createElement('div')
+            test_view.className = "test_view"
+            this.appendChild(test_view)
+            this.className = "test_view"
 
-            new TestRunner().build_test_list().forEach(test => {
-                div_node.appendChild(test)
+            const test_runner = new TestRunner()
+
+            let checkmate_tests_node: Element = document.createElement('div')
+            checkmate_tests_node.className = "test_list"
+            this.add_title(checkmate_tests_node, "Checkmate Tests")
+
+            test_runner.build_checkmate_board_list().forEach(test => {
+                checkmate_tests_node.appendChild(test)
             });
+            test_view.appendChild(checkmate_tests_node)
 
-            this.appendChild(div_node)
+            let pin_test_node: Element = document.createElement('div')
+            pin_test_node.className = "test_list"
+            this.add_title(pin_test_node, "Pin Tests")
+
+            test_runner.build_pin_board_list().forEach(test => {
+                pin_test_node.appendChild(test)
+            })
+            test_view.appendChild(pin_test_node)
+
             resolve()
         })
+    }
+
+    private add_title(el: Element, content: string) {
+        let title: Element = document.createElement('p')
+        title.textContent = content
+        el.appendChild(title)
     }
 
     private build_square_grid(): void {
