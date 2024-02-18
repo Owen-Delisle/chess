@@ -1,3 +1,5 @@
+import are_equal from "../utils/types"
+
 export default class Assert {
     assert_type: AssertType
     result: AssertResult
@@ -20,11 +22,11 @@ export default class Assert {
     }
 
     private equals(lhs: any, rhs: any): boolean {
-        return lhs === rhs
+        return are_equal(lhs, rhs)
     }
 
     private not_equals(lhs: any, rhs: any): boolean {
-        return lhs !== rhs
+        return !are_equal(lhs, rhs)
     }
 }
 
