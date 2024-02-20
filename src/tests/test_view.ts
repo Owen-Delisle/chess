@@ -6,6 +6,7 @@ import SquareGrid from '../models/square_grid'
 import { board_start_index, row_and_column_size } from '../utils/bounds'
 import TestRunner from './test_runner'
 import TestStyles from './styles'
+import Test from './test'
 
 export default class TestView extends HTMLElement {
     constructor() {
@@ -30,26 +31,26 @@ export default class TestView extends HTMLElement {
 
             const test_runner = new TestRunner()
 
-            let checkmate_tests_node: Element = document.createElement('div')
-            checkmate_tests_node.className = "test_list"
-            this.add_title(checkmate_tests_node, "Checkmate Tests")
-
-            test_runner.build_checkmate_board_list().forEach(test => {
-                checkmate_tests_node.appendChild(test)
-            });
-            test_view.appendChild(checkmate_tests_node)
-
-            let pin_test_node: Element = document.createElement('div')
-            pin_test_node.className = "test_list"
-            this.add_title(pin_test_node, "Pin Tests")
-
-            test_runner.build_pin_board_list().forEach(test => {
-                pin_test_node.appendChild(test)
-            })
-            test_view.appendChild(pin_test_node)
+            this.render_board_list(test_runner.build_checkmate_board_list(), test_view, "Checkmate Tests")
+            
+            this.render_board_list(test_runner.build_pawn_pin_board_list(), test_view, "Pawn Pin Tests")
+            this.render_board_list(test_runner.build_rook_pin_board_list(), test_view, "Rook Pin Tests")
+            this.render_board_list(test_runner.build_bishop_pin_board_list(), test_view, "Bishop Pin Test")
 
             resolve()
         })
+    }
+
+    private render_board_list(tests: Test[], test_view: Element, title: string) {
+        let test_node: Element = document.createElement('div')
+        test_node.className = "test_list"
+        this.add_title(test_node, title)
+
+        tests.forEach(test => {
+            test_node.appendChild(test)
+        })
+
+        test_view.appendChild(test_node)
     }
 
     private add_title(el: Element, content: string) {
