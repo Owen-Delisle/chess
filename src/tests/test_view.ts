@@ -32,10 +32,7 @@ export default class TestView extends HTMLElement {
             const test_runner = new TestRunner()
 
             this.render_board_list(test_runner.build_checkmate_board_list(), test_view, "Checkmate Tests")
-            
-            this.render_board_list(test_runner.build_pawn_pin_board_list(), test_view, "Pawn Pin Tests")
-            this.render_board_list(test_runner.build_rook_pin_board_list(), test_view, "Rook Pin Tests")
-            this.render_board_list(test_runner.build_bishop_pin_board_list(), test_view, "Bishop Pin Test")
+            this.render_board_list(test_runner.build_pin_boards(), test_view, "Pin Tests")
 
             resolve()
         })

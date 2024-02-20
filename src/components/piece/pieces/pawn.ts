@@ -75,7 +75,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 
 			if (Piece.position_restrictions.length > 0 || this.position_restrictions.length > 0) {
 				const next_pos: string = SquareID.pos_at_point({ row: next_row, col: next_col })
-				if (this.any_restrictions_include_position(next_pos)) {
+				if (!this.any_restrictions_include_position(next_pos)) {
 					should_attack = false
 				}
 			}
@@ -87,7 +87,15 @@ export default class Pawn extends Piece implements Piece_Interface {
 	}
 
 	private any_restrictions_include_position(position: string): boolean {
-		return !Piece.position_restrictions.includes(position) || !this.position_restrictions.includes(position)
+		if(Piece.position_restrictions.length > 0) {
+			return Piece.position_restrictions.includes(position)
+		}
+
+		if(this.position_restrictions.length > 0) {
+			return this.position_restrictions.includes(position)
+		}
+
+		return false
 	}
 
 	private add_en_passant_move(piece_at_attack_point: Piece | undefined): void {

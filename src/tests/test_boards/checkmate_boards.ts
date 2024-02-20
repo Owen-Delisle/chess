@@ -2,9 +2,9 @@ import piece_factory from "../../components/piece/piece_factory/piece_factory"
 import { PieceType } from "../../components/piece/piece_types"
 import { Color } from "../../components/piece/color"
 import { RookType } from "../../components/piece/pieces/rook"
-import Piece from "../../components/piece/piece"
+import CheckmateBoard from "../types/CheckmateBoard"
 
-const list_of_checkmate_boards: { title: string, board: Piece[] }[] = [
+const list_of_checkmate_boards: CheckmateBoard[] = [
     anastasias_mate(),
     anderssens_mate(),
     arabian_mate(),
@@ -42,7 +42,7 @@ const list_of_checkmate_boards: { title: string, board: Piece[] }[] = [
     vukovic_mate()
 ]
 
-function anastasias_mate(): { title: string, board: Piece[] } {
+function anastasias_mate(): CheckmateBoard {
     return {
         title: 'Anastasias Mate', board: [
             piece_factory('king_w', 'H7', PieceType.king, Color.white),
@@ -57,7 +57,7 @@ function anastasias_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function anderssens_mate(): { title: string, board: Piece[] } {
+function anderssens_mate(): CheckmateBoard {
     return {
         title: 'Anderssens Mate', board: [
             piece_factory('king_w', 'G1', PieceType.king, Color.white),
@@ -70,7 +70,7 @@ function anderssens_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function arabian_mate(): { title: string, board: Piece[] } {
+function arabian_mate(): CheckmateBoard {
     return {
         title: 'Arabian Mate', board: [
             piece_factory('king_w', 'H1', PieceType.king, Color.white),
@@ -83,7 +83,7 @@ function arabian_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function backrank_mate(): { title: string, board: Piece[] } {
+function backrank_mate(): CheckmateBoard {
     return {
         title: 'BackRank Mate', board: [
             piece_factory('king_w', 'F1', PieceType.king, Color.white),
@@ -98,7 +98,7 @@ function backrank_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function belstra_mate(): { title: string, board: Piece[] } {
+function belstra_mate(): CheckmateBoard {
     return {
         title: 'Belstra Mate', board: [
             piece_factory('king_w', 'D1', PieceType.king, Color.white),
@@ -110,7 +110,7 @@ function belstra_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function blackburns_mate(): { title: string, board: Piece[] } {
+function blackburns_mate(): CheckmateBoard {
     return {
         title: 'Blackburns Mate', board: [
             piece_factory('king_w', 'B1', PieceType.king, Color.white),
@@ -126,7 +126,7 @@ function blackburns_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function blind_swine_mate(): { title: string, board: Piece[] } {
+function blind_swine_mate(): CheckmateBoard {
     return {
         title: 'Blind Swine Mate', board: [
             piece_factory('king_w', 'B1', PieceType.king, Color.white),
@@ -141,7 +141,7 @@ function blind_swine_mate(): { title: string, board: Piece[] } {
 }
 
 
-function bodens_mate(): { title: string, board: Piece[] } {
+function bodens_mate(): CheckmateBoard {
     return {
         title: 'Bodens Mate', board: [
             piece_factory('king_w', 'C1', PieceType.king, Color.white),
@@ -157,7 +157,7 @@ function bodens_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function corner_mate(): { title: string, board: Piece[] } {
+function corner_mate(): CheckmateBoard {
     return {
         title: 'Corner Mate', board: [
             piece_factory('king_w', 'A1', PieceType.king, Color.white),
@@ -172,7 +172,7 @@ function corner_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function corridor_mate(): { title: string, board: Piece[] } {
+function corridor_mate(): CheckmateBoard {
     return {
         title: 'Corridor Mate', board: [
             piece_factory('king_w', 'C2', PieceType.king, Color.white),
@@ -186,7 +186,7 @@ function corridor_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function diagonal_corridor_mate(): { title: string, board: Piece[] } {
+function diagonal_corridor_mate(): CheckmateBoard {
     return {
         title: 'Diagonal Corridor Mate', board: [
             piece_factory('king_w', 'A1', PieceType.king, Color.white),
@@ -201,7 +201,7 @@ function diagonal_corridor_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function cozios_mate(): { title: string, board: Piece[] } {
+function cozios_mate(): CheckmateBoard {
     return {
         title: 'Cozios Mate', board: [
             piece_factory('king_w', 'B3', PieceType.king, Color.white),
@@ -215,7 +215,7 @@ function cozios_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function damianos_mate(): { title: string, board: Piece[] } {
+function damianos_mate(): CheckmateBoard {
     return {
         title: 'Damianos Mate', board: [
             piece_factory('king_w', 'B1', PieceType.king, Color.white),
@@ -230,7 +230,7 @@ function damianos_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function david_and_goliath_mate(): { title: string, board: Piece[] } {
+function david_and_goliath_mate(): CheckmateBoard {
     return {
         title: 'David and Goliath Mate', board: [
             piece_factory('king_w', 'B3', PieceType.king, Color.white),
@@ -247,7 +247,7 @@ function david_and_goliath_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function epaulette_mate(): { title: string, board: Piece[] } {
+function epaulette_mate(): CheckmateBoard {
     return {
         title: 'Epaulette Mate', board: [
             piece_factory('king_w', 'E1', PieceType.king, Color.white),
@@ -261,7 +261,7 @@ function epaulette_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function fools_mate(): { title: string, board: Piece[] } {
+function fools_mate(): CheckmateBoard {
     return {
         title: 'Fools Mate', board: [
             piece_factory('king_b', 'E8', PieceType.king, Color.black),
@@ -305,7 +305,7 @@ function fools_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function grecos_mate(): { title: string, board: Piece[] } {
+function grecos_mate(): CheckmateBoard {
     return {
         title: 'Grecos Mate', board: [
             piece_factory('king_w', 'A1', PieceType.king, Color.white),
@@ -320,7 +320,7 @@ function grecos_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function h_file_mate(): { title: string, board: Piece[] } {
+function h_file_mate(): CheckmateBoard {
     return {
         title: 'H-File Mate', board: [
             piece_factory('king_w', 'B1', PieceType.king, Color.white),
@@ -333,7 +333,7 @@ function h_file_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function hook_mate(): { title: string, board: Piece[] } {
+function hook_mate(): CheckmateBoard {
     return {
         title: 'Hook Mate', board: [
             piece_factory('king_w', 'A2', PieceType.king, Color.white),
@@ -350,7 +350,7 @@ function hook_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function kill_box_mate(): { title: string, board: Piece[] } {
+function kill_box_mate(): CheckmateBoard {
     return {
         title: 'Kill Box Mate', board: [
             piece_factory('king_w', 'B1', PieceType.king, Color.white),
@@ -363,7 +363,7 @@ function kill_box_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function lawn_mower_mate(): { title: string, board: Piece[] } {
+function lawn_mower_mate(): CheckmateBoard {
     return {
         title: 'Lawn Mower Mate', board: [
             piece_factory('king_w', 'A1', PieceType.king, Color.white),
@@ -375,7 +375,7 @@ function lawn_mower_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function legals_mate(): { title: string, board: Piece[] } {
+function legals_mate(): CheckmateBoard {
     return {
         title: 'Legals Mate', board: [
             piece_factory('king_b', 'E8', PieceType.king, Color.black),
@@ -414,7 +414,7 @@ function legals_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function lollis_mate(): { title: string, board: Piece[] } {
+function lollis_mate(): CheckmateBoard {
     return {
         title: 'Lollis Mate', board: [
             piece_factory('king_w', 'B1', PieceType.king, Color.white),
@@ -430,7 +430,7 @@ function lollis_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function max_langes_mate(): { title: string, board: Piece[] } {
+function max_langes_mate(): CheckmateBoard {
     return {
         title: 'Max Langes Mate', board: [
             piece_factory('king_w', 'A2', PieceType.king, Color.white),
@@ -446,7 +446,7 @@ function max_langes_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function mayets_mate(): { title: string, board: Piece[] } {
+function mayets_mate(): CheckmateBoard {
     return {
         title: 'Mayets Mate', board: [
             piece_factory('king_w', 'D1', PieceType.king, Color.white),
@@ -461,7 +461,7 @@ function mayets_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function morphys_mate(): { title: string, board: Piece[] } {
+function morphys_mate(): CheckmateBoard {
     return {
         title: 'Morphys Mate', board: [
             piece_factory('king_w', 'D1', PieceType.king, Color.white),
@@ -476,7 +476,7 @@ function morphys_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function opera_mate(): { title: string, board: Piece[] } {
+function opera_mate(): CheckmateBoard {
     return {
         title: 'Opera Mate', board: [
             piece_factory('king_b', 'C8', PieceType.king, Color.black),
@@ -506,7 +506,7 @@ function opera_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function pillsburys_mate(): { title: string, board: Piece[] } {
+function pillsburys_mate(): CheckmateBoard {
     return {
         title: 'Pillsburys Mate', board: [
             piece_factory('king_w', 'B1', PieceType.king, Color.white),
@@ -523,7 +523,7 @@ function pillsburys_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function retis_mate(): { title: string, board: Piece[] } {
+function retis_mate(): CheckmateBoard {
     return {
         title: 'Retis Mate', board: [
             piece_factory('king_w', 'F2', PieceType.king, Color.white),
@@ -544,7 +544,7 @@ function retis_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function scholars_mate(): { title: string, board: Piece[] } {
+function scholars_mate(): CheckmateBoard {
     return {
         title: 'Scholars Mate', board: [
             piece_factory('king_b', 'E8', PieceType.king, Color.black),
@@ -587,7 +587,7 @@ function scholars_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function smothered_mate(): { title: string, board: Piece[] } {
+function smothered_mate(): CheckmateBoard {
     return {
         title: 'Smothered Mate', board: [
             piece_factory('king_w', 'A1', PieceType.king, Color.white),
@@ -603,7 +603,7 @@ function smothered_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function suffocation_mate(): { title: string, board: Piece[] } {
+function suffocation_mate(): CheckmateBoard {
     return {
         title: 'Smothered Mate', board: [
             piece_factory('king_w', 'A1', PieceType.king, Color.white),
@@ -619,7 +619,7 @@ function suffocation_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function swallows_tail_mate(): { title: string, board: Piece[] } {
+function swallows_tail_mate(): CheckmateBoard {
     return {
         title: 'Swallows Tail Mate', board: [
             piece_factory('king_w', 'B3', PieceType.king, Color.white),
@@ -633,7 +633,7 @@ function swallows_tail_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function triangle_mate(): { title: string, board: Piece[] } {
+function triangle_mate(): CheckmateBoard {
     return {
         title: 'Triangle Mate', board: [
             piece_factory('king_w', 'B3', PieceType.king, Color.white),
@@ -648,7 +648,7 @@ function triangle_mate(): { title: string, board: Piece[] } {
     }
 }
 
-function vukovic_mate(): { title: string, board: Piece[] } {
+function vukovic_mate(): CheckmateBoard {
     return {
         title: 'Vukovic Mate', board: [
             piece_factory('king_w', 'C1', PieceType.king, Color.white),

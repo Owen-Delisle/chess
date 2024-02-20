@@ -249,8 +249,8 @@ export default abstract class Piece {
 			})!
 			// Pawn has its own attacking logic
 			//TODO -- Move PieceType.pawn down an if statement
-			if (piece_at_square.color !== this.color && this.type !== PieceType.pawn) {
-				if (this.type !== PieceType.king) {
+			if (piece_at_square.color !== this.color) {
+				if (this.type !== PieceType.king && this.type !== PieceType.pawn) {
 					moves_in_direction.push(SquareID.pos_at_point({ row: new_row, col: new_col }))
 				}
 			}

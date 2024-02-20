@@ -2,23 +2,23 @@ import piece_factory from "../../../components/piece/piece_factory/piece_factory
 import { PieceType } from "../../../components/piece/piece_types"
 import { Color } from "../../../components/piece/color"
 import Piece from "../../../components/piece/piece"
-import PinBoard from "../../../tests/types/PinBoard"
+import PinBoard from "../../types/PinBoard"
 
-const bishop_pin_boards: PinBoard[] = [
-    bishop_pin_north(),
-    bishop_pin_north_east(),
-    bishop_pin_east(),
-    bishop_pin_south_east(),
-    bishop_pin_south(),
-    bishop_pin_south_west(),
-    bishop_pin_west(),
-    bishop_pin_north_west()
+const knight_pin_boards: PinBoard[] = [
+    knight_pin_north(),
+    knight_pin_north_east(),
+    knight_pin_east(),
+    knight_pin_south_east(),
+    knight_pin_south(),
+    knight_pin_south_west(),
+    knight_pin_west(),
+    knight_pin_north_west()
 ]
 
-function bishop_pin_north(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function knight_pin_north(): PinBoard {
+    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
     return {
-        title: 'Bishop Pin from North', 
+        title: 'Knight Pin from North', 
         board: [
             subject_piece,
             piece_factory('king_w', 'E1', PieceType.king, Color.white),
@@ -30,10 +30,10 @@ function bishop_pin_north(): PinBoard {
     }
 }
 
-function bishop_pin_north_east(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function knight_pin_north_east(): PinBoard {
+    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
     return {
-        title: 'Bishop Pin from North East', 
+        title: 'Knight Pin from North East', 
         board: [
             subject_piece,
             piece_factory('king_w', 'D1', PieceType.king, Color.white),
@@ -41,14 +41,14 @@ function bishop_pin_north_east(): PinBoard {
             piece_factory('queen_b', 'G4', PieceType.queen, Color.black),
         ],
         subject_piece: subject_piece,
-        expected_result: ['F3', 'G4']
+        expected_result: []
     }
 }
 
-function bishop_pin_east(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function knight_pin_east(): PinBoard {
+    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
     return {
-        title: 'Bishop Pin from East', 
+        title: 'Knight Pin from East', 
         board: [
             subject_piece,
             piece_factory('king_w', 'D2', PieceType.king, Color.white),
@@ -61,10 +61,10 @@ function bishop_pin_east(): PinBoard {
     }
 }
 
-function bishop_pin_south_east(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function knight_pin_south_east(): PinBoard {
+    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
     return {
-        title: 'Bishop Pin from South East', 
+        title: 'Knight Pin from South East', 
         board: [
             subject_piece,
             piece_factory('king_w', 'D3', PieceType.king, Color.white),
@@ -73,14 +73,14 @@ function bishop_pin_south_east(): PinBoard {
             piece_factory('queen_b', 'F1', PieceType.queen, Color.black),
         ],
         subject_piece: subject_piece,
-        expected_result: ['F1']
+        expected_result: []
     }
 }
 
-function bishop_pin_south(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function knight_pin_south(): PinBoard {
+    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
     return {
-        title: 'Bishop Pin from South', 
+        title: 'Knight Pin from South', 
         board: [
             subject_piece,
             piece_factory('king_w', 'E5', PieceType.king, Color.white),
@@ -93,10 +93,10 @@ function bishop_pin_south(): PinBoard {
     }
 }
 
-function bishop_pin_south_west(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function knight_pin_south_west(): PinBoard {
+    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
     return {
-        title: 'Bishop Pin from South West', 
+        title: 'Knight Pin from South West', 
         board: [
             subject_piece,
             piece_factory('king_w', 'G4', PieceType.king, Color.white),
@@ -105,14 +105,14 @@ function bishop_pin_south_west(): PinBoard {
             piece_factory('queen_b', 'D1', PieceType.queen, Color.black),
         ],
         subject_piece: subject_piece,
-        expected_result: ['F3', 'D1']
+        expected_result: []
     }
 }
 
-function bishop_pin_west(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function knight_pin_west(): PinBoard {
+    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
     return {
-        title: 'Bishop Pin from West', 
+        title: 'Knight Pin from West', 
         board: [
             subject_piece,
             piece_factory('king_w', 'F2', PieceType.king, Color.white),
@@ -125,10 +125,10 @@ function bishop_pin_west(): PinBoard {
     }
 }
 
-function bishop_pin_north_west(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function knight_pin_north_west(): PinBoard {
+    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
     return {
-        title: 'Bishop Pin from North West', 
+        title: 'Knight Pin from North West', 
         board: [
             subject_piece,
             piece_factory('king_w', 'F1', PieceType.king, Color.white),
@@ -137,8 +137,8 @@ function bishop_pin_north_west(): PinBoard {
             piece_factory('queen_b', 'C4', PieceType.queen, Color.black),
         ],
         subject_piece: subject_piece,
-        expected_result: ['D3', 'C4']
+        expected_result: []
     }
 }
 
-export default bishop_pin_boards
+export default knight_pin_boards

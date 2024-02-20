@@ -1,13 +1,16 @@
 import PieceList from "../models/piece_list"
-import Piece from "../components/piece/piece";
 import MoveController from "../controllers/move_controller";
 import King from "../components/piece/pieces/king";
 import { Color } from "../components/piece/color";
+import PinBoard from "./types/PinBoard";
+import CheckmateBoard from "./types/CheckmateBoard";
 
 import list_of_checkmate_boards from "./test_boards/checkmate_boards";
 import pawn_pin_boards from "./test_boards/pin_boards/pawn_pin_boards";
 import rook_pin_boards from "./test_boards/pin_boards/rook_pin_boards";
 import bishop_pin_boards from "./test_boards/pin_boards/bishop_pin_boards";
+import knight_pin_boards from "./test_boards/pin_boards/knight_pin_boards";
+import queen_pin_boards from "./test_boards/pin_boards/queen_pin_boards";
 
 import Test from "./test";
 import Assert, { AssertType } from "./assert";
@@ -16,7 +19,7 @@ export default class TestRunner {
     constructor() {
     }
 
-    private before_each(test_position: {title: string, board: Piece[]}) {
+    private before_each(test_position: CheckmateBoard) {
         PieceList.piece_list = test_position.board
         MoveController.load_possible_moves_lists()
     }
@@ -34,32 +37,17 @@ export default class TestRunner {
         return test_list
     }
 
-    public build_pawn_pin_board_list(): Test[] {
+    public build_pin_boards(): Test[] {
         const test_list: Test[] = []
-        pawn_pin_boards.forEach(board => {
+        const pin_boards: PinBoard[] = [
+            ...pawn_pin_boards, 
+            ...rook_pin_boards, 
+            ...bishop_pin_boards, 
+            ...knight_pin_boards,
+            ...queen_pin_boards
+        ]
 
-            this.before_each(board)
-            const assert = new Assert(AssertType.equals, board.subject_piece.possible_moves, board.expected_result)
-            test_list.push(new Test(board.title, assert))
-        })
-        return test_list
-    }
-
-    public build_rook_pin_board_list(): Test[] {
-        const test_list: Test[] = []
-        rook_pin_boards.forEach(board => {
-
-            this.before_each(board)
-            const assert = new Assert(AssertType.equals, board.subject_piece.possible_moves, board.expected_result)
-            test_list.push(new Test(board.title, assert))
-        })
-        return test_list
-    }
-
-    public build_bishop_pin_board_list(): Test[] {
-        const test_list: Test[] = []
-        bishop_pin_boards.forEach(board => {
-
+        pin_boards.forEach(board => {
             this.before_each(board)
             const assert = new Assert(AssertType.equals, board.subject_piece.possible_moves, board.expected_result)
             test_list.push(new Test(board.title, assert))

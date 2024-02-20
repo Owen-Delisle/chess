@@ -4,21 +4,21 @@ import { Color } from "../../../components/piece/color"
 import Piece from "../../../components/piece/piece"
 import PinBoard from "../../../tests/types/PinBoard"
 
-const bishop_pin_boards: PinBoard[] = [
-    bishop_pin_north(),
-    bishop_pin_north_east(),
-    bishop_pin_east(),
-    bishop_pin_south_east(),
-    bishop_pin_south(),
-    bishop_pin_south_west(),
-    bishop_pin_west(),
-    bishop_pin_north_west()
+const queen_pin_boards: PinBoard[] = [
+    queen_pin_north(),
+    queen_pin_north_east(),
+    queen_pin_east(),
+    queen_pin_south_east(),
+    queen_pin_south(),
+    queen_pin_south_west(),
+    queen_pin_west(),
+    queen_pin_north_west()
 ]
 
-function bishop_pin_north(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function queen_pin_north(): PinBoard {
+    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
     return {
-        title: 'Bishop Pin from North', 
+        title: 'Queen Pin from North', 
         board: [
             subject_piece,
             piece_factory('king_w', 'E1', PieceType.king, Color.white),
@@ -26,14 +26,14 @@ function bishop_pin_north(): PinBoard {
             piece_factory('queen_b', 'E6', PieceType.queen, Color.black),
         ],
         subject_piece: subject_piece,
-        expected_result: []
+        expected_result: ['E3', 'E4', 'E5', 'E6']
     }
 }
 
-function bishop_pin_north_east(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function queen_pin_north_east(): PinBoard {
+    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
     return {
-        title: 'Bishop Pin from North East', 
+        title: 'Queen Pin from North East', 
         board: [
             subject_piece,
             piece_factory('king_w', 'D1', PieceType.king, Color.white),
@@ -45,10 +45,10 @@ function bishop_pin_north_east(): PinBoard {
     }
 }
 
-function bishop_pin_east(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function queen_pin_east(): PinBoard {
+    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
     return {
-        title: 'Bishop Pin from East', 
+        title: 'Queen Pin from East', 
         board: [
             subject_piece,
             piece_factory('king_w', 'D2', PieceType.king, Color.white),
@@ -57,14 +57,14 @@ function bishop_pin_east(): PinBoard {
             piece_factory('queen_b', 'G2', PieceType.queen, Color.black),
         ],
         subject_piece: subject_piece,
-        expected_result: []
+        expected_result: ['F2', 'G2']
     }
 }
 
-function bishop_pin_south_east(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function queen_pin_south_east(): PinBoard {
+    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
     return {
-        title: 'Bishop Pin from South East', 
+        title: 'Queen Pin from South East', 
         board: [
             subject_piece,
             piece_factory('king_w', 'D3', PieceType.king, Color.white),
@@ -77,10 +77,10 @@ function bishop_pin_south_east(): PinBoard {
     }
 }
 
-function bishop_pin_south(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function queen_pin_south(): PinBoard {
+    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
     return {
-        title: 'Bishop Pin from South', 
+        title: 'Queen Pin from South', 
         board: [
             subject_piece,
             piece_factory('king_w', 'E5', PieceType.king, Color.white),
@@ -89,14 +89,14 @@ function bishop_pin_south(): PinBoard {
             piece_factory('queen_b', 'E1', PieceType.queen, Color.black),
         ],
         subject_piece: subject_piece,
-        expected_result: []
+        expected_result: ['E3', 'E4', 'E1']
     }
 }
 
-function bishop_pin_south_west(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function queen_pin_south_west(): PinBoard {
+    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
     return {
-        title: 'Bishop Pin from South West', 
+        title: 'Queen Pin from South West', 
         board: [
             subject_piece,
             piece_factory('king_w', 'G4', PieceType.king, Color.white),
@@ -109,10 +109,10 @@ function bishop_pin_south_west(): PinBoard {
     }
 }
 
-function bishop_pin_west(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function queen_pin_west(): PinBoard {
+    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
     return {
-        title: 'Bishop Pin from West', 
+        title: 'Queen Pin from West', 
         board: [
             subject_piece,
             piece_factory('king_w', 'F2', PieceType.king, Color.white),
@@ -121,14 +121,14 @@ function bishop_pin_west(): PinBoard {
             piece_factory('queen_b', 'D2', PieceType.queen, Color.black),
         ],
         subject_piece: subject_piece,
-        expected_result: []
+        expected_result: ['D2']
     }
 }
 
-function bishop_pin_north_west(): PinBoard {
-    const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
+function queen_pin_north_west(): PinBoard {
+    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
     return {
-        title: 'Bishop Pin from North West', 
+        title: 'Queen Pin from North West', 
         board: [
             subject_piece,
             piece_factory('king_w', 'F1', PieceType.king, Color.white),
@@ -141,4 +141,4 @@ function bishop_pin_north_west(): PinBoard {
     }
 }
 
-export default bishop_pin_boards
+export default queen_pin_boards

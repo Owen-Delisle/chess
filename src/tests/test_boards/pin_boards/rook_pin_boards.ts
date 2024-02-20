@@ -3,8 +3,9 @@ import { PieceType } from "../../../components/piece/piece_types"
 import { Color } from "../../../components/piece/color"
 import { RookType } from "../../../components/piece/pieces/rook"
 import Piece from "../../../components/piece/piece"
+import PinBoard from "../../../tests/types/PinBoard"
 
-const rook_pin_boards: { title: string, board: Piece[], subject_piece: Piece, expected_result: string[] }[] = [
+const rook_pin_boards: PinBoard[] = [
     rook_pin_north(),
     rook_pin_north_east(),
     rook_pin_east(),
@@ -15,7 +16,7 @@ const rook_pin_boards: { title: string, board: Piece[], subject_piece: Piece, ex
     rook_pin_north_west()
 ]
 
-function rook_pin_north(): { title: string, board: Piece[], subject_piece: Piece, expected_result: string[] } {
+function rook_pin_north(): PinBoard {
     const subject_piece: Piece = piece_factory('rook_w1', 'E2', PieceType.rook, Color.white, RookType.short_rook)
     return {
         title: 'Rook Pin from North', 
@@ -30,7 +31,7 @@ function rook_pin_north(): { title: string, board: Piece[], subject_piece: Piece
     }
 }
 
-function rook_pin_north_east(): { title: string, board: Piece[], subject_piece: Piece, expected_result: string[] } {
+function rook_pin_north_east(): PinBoard {
     const subject_piece: Piece = piece_factory('rook_w1', 'E2', PieceType.rook, Color.white, RookType.short_rook)
     return {
         title: 'Rook Pin from North East', 
@@ -45,7 +46,7 @@ function rook_pin_north_east(): { title: string, board: Piece[], subject_piece: 
     }
 }
 
-function rook_pin_east(): { title: string, board: Piece[], subject_piece: Piece, expected_result: string[] } {
+function rook_pin_east(): PinBoard {
     const subject_piece: Piece = piece_factory('rook_w1', 'E2', PieceType.rook, Color.white, RookType.short_rook)
     return {
         title: 'Rook Pin from East', 
@@ -61,7 +62,7 @@ function rook_pin_east(): { title: string, board: Piece[], subject_piece: Piece,
     }
 }
 
-function rook_pin_south_east(): { title: string, board: Piece[], subject_piece: Piece, expected_result: string[] } {
+function rook_pin_south_east(): PinBoard {
     const subject_piece: Piece = piece_factory('rook_w1', 'E2', PieceType.rook, Color.white, RookType.short_rook)
     return {
         title: 'Rook Pin from South East', 
@@ -77,7 +78,7 @@ function rook_pin_south_east(): { title: string, board: Piece[], subject_piece: 
     }
 }
 
-function rook_pin_south(): { title: string, board: Piece[], subject_piece: Piece, expected_result: string[] } {
+function rook_pin_south(): PinBoard {
     const subject_piece: Piece = piece_factory('rook_w1', 'E2', PieceType.rook, Color.white, RookType.short_rook)
     return {
         title: 'Rook Pin from South', 
@@ -93,7 +94,7 @@ function rook_pin_south(): { title: string, board: Piece[], subject_piece: Piece
     }
 }
 
-function rook_pin_south_west(): { title: string, board: Piece[], subject_piece: Piece, expected_result: string[] } {
+function rook_pin_south_west(): PinBoard {
     const subject_piece: Piece = piece_factory('rook_w1', 'E2', PieceType.rook, Color.white, RookType.short_rook)
     return {
         title: 'Rook Pin from South West', 
@@ -109,7 +110,7 @@ function rook_pin_south_west(): { title: string, board: Piece[], subject_piece: 
     }
 }
 
-function rook_pin_west(): { title: string, board: Piece[], subject_piece: Piece, expected_result: string[] } {
+function rook_pin_west(): PinBoard {
     const subject_piece: Piece = piece_factory('rook_w1', 'E2', PieceType.rook, Color.white, RookType.short_rook)
     return {
         title: 'Rook Pin from West', 
@@ -125,7 +126,7 @@ function rook_pin_west(): { title: string, board: Piece[], subject_piece: Piece,
     }
 }
 
-function rook_pin_north_west(): { title: string, board: Piece[], subject_piece: Piece, expected_result: string[] } {
+function rook_pin_north_west(): PinBoard {
     const subject_piece: Piece = piece_factory('rook_w1', 'E2', PieceType.rook, Color.white, RookType.short_rook)
     return {
         title: 'Rook Pin from North West', 
