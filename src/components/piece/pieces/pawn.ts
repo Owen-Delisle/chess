@@ -113,7 +113,8 @@ export default class Pawn extends Piece implements Piece_Interface {
 		}
 	}
 
-	private conditions_for_en_passant(piece_at_attack_point: Piece | undefined): boolean {
+	//Public for testing
+	public conditions_for_en_passant(piece_at_attack_point: Piece | undefined): boolean {
 		if(piece_at_attack_point === undefined) {
 			return false
 		}
@@ -137,8 +138,8 @@ export default class Pawn extends Piece implements Piece_Interface {
 	public move_to(new_square: Square): Promise<void> {
 		return new Promise(async (resolve) => {
 
-			if(this.should_enpassand(new_square.square_id)) {
-				this.en_passand()
+			if(this.should_en_passant(new_square.square_id)) {
+				this.en_passant()
 			}
 			
 			this.pos = new_square.square_id
@@ -158,15 +159,20 @@ export default class Pawn extends Piece implements Piece_Interface {
 		PieceList.swap_with_queen(this.title, this.pos, this.color)
 	}
 
-	private should_make_queen(new_square_row: number) {
-		return new_square_row === row_and_column_size-1 || new_square_row === board_start_index
+	// Public for testing
+	public should_make_queen(new_square_row: number): boolean {
+		if(this.color === Color.white) {
+			return new_square_row === board_start_index
+		} else {
+			return new_square_row === row_and_column_size-1
+		}
 	}
 
-	private should_enpassand(square_id: string): boolean {
+	private should_en_passant(square_id: string): boolean {
 		return square_id === this.en_passant_position
 	}
 
-	private en_passand() {
+	private en_passant() {
 		const point = SquareGrid.point_at_board_position(this.en_passant_position)
 		PieceList.remove_piece_by_point({row: point.row+1, col: point.col})
 	}

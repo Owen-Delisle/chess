@@ -3,7 +3,7 @@ import Piece from "../../components/piece/piece"
 type SubjectResultBoard = { 
     title: string, 
     board: Piece[], 
-    subject_piece: any, 
+    subject: any, 
     expected_result: any
 }
 

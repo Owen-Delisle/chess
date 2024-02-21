@@ -25,7 +25,7 @@ function should_short_castle(): SubjectResultBoard {
             king,
             rook,
         ],
-        subject_piece: [king, rook],
+        subject: [king, rook],
         expected_result: true
     }
 }
@@ -41,7 +41,7 @@ function should_long_castle(): SubjectResultBoard {
             king,
             rook,
         ],
-        subject_piece: [king, rook],
+        subject: [king, rook],
         expected_result: true
     }
 }
@@ -59,7 +59,7 @@ function piece_blocking_short_castle(): SubjectResultBoard {
             king,
             rook,
         ],
-        subject_piece: [king, rook],
+        subject: [king, rook],
         expected_result: true
     }
 }
@@ -77,7 +77,7 @@ function piece_blocking_long_castle(): SubjectResultBoard {
             king,
             rook,
         ],
-        subject_piece: [king, rook],
+        subject: [king, rook],
         expected_result: true
     }
 }
@@ -95,7 +95,7 @@ function piece_attacking_short_castle(): SubjectResultBoard {
             king,
             rook,
         ],
-        subject_piece: [king, rook],
+        subject: [king, rook],
         expected_result: false
     }
 }
@@ -113,7 +113,7 @@ function piece_attacking_long_castle(): SubjectResultBoard {
             king,
             rook,
         ],
-        subject_piece: [king, rook],
+        subject: [king, rook],
         expected_result: false
     }
 }

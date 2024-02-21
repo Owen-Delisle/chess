@@ -6,21 +6,21 @@ import VariableResultBoard from "../types/subject_result_board"
 
 export default function setup_board(
     title: string, 
-    subject_piece: Piece, 
+    subject: Piece, 
     white_king_pos: string, 
     black_queen_pos: string, 
     expected_result: string[]): VariableResultBoard {
     return {
         title: title,
         board: [
-            subject_piece,
+            subject,
             piece_factory('king_b', 'E8', PieceType.king, Color.black),
 
             //Variable positions
             piece_factory('king_w', white_king_pos, PieceType.king, Color.white),
             piece_factory('queen_b', black_queen_pos, PieceType.queen, Color.black),
         ],
-        subject_piece,
+        subject,
         expected_result: expected_result
     }
 }

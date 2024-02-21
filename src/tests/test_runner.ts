@@ -18,6 +18,8 @@ import bishop_check_boards from "./test_boards/check_boards/bishop_check_board";
 import rook_check_boards from "./test_boards/check_boards/rook_check_board";
 import knight_check_boards from "./test_boards/check_boards/knight_check_board";
 import queen_check_boards from "./test_boards/check_boards/queen_check_board";
+import promotion_boards from "./test_boards/special_moves/promotion_boards";
+import en_passant_boards from "./test_boards/special_moves/en_passant_boards";
 
 import castle_boards from "./test_boards/special_moves/castle_boards";
 
@@ -26,7 +28,8 @@ import Assert, { AssertType } from "./assert";
 
 import Square from "../components/square/square";
 import SquareGrid from "../models/square_grid";
-import Piece from "../components/piece/piece";
+import { GameController } from "../controllers/game_controller";
+import MoveList from "../utils/classes/MoveList";
 
 export default class TestRunner {
     constructor() {
@@ -61,7 +64,7 @@ export default class TestRunner {
 
         pin_boards.forEach(board => {
             this.before_each(board)
-            const assert = new Assert(AssertType.equals, board.subject_piece.possible_moves, board.expected_result)
+            const assert = new Assert(AssertType.equals, board.subject.possible_moves, board.expected_result)
             test_list.push(new Test(board.title, assert))
         })
         return test_list
@@ -79,7 +82,7 @@ export default class TestRunner {
 
         check_boards.forEach(board => {
             this.before_each(board)
-            const assert = new Assert(AssertType.equals, board.subject_piece.possible_moves, board.expected_result)
+            const assert = new Assert(AssertType.equals, board.subject.possible_moves, board.expected_result)
             test_list.push(new Test(board.title, assert))
         })
         return test_list
@@ -90,10 +93,40 @@ export default class TestRunner {
 
         castle_boards.forEach(board => {
             this.before_each(board)
-            const king_square: Square | undefined = SquareGrid.square_by_board_position(board.subject_piece[0].pos)
-            const rook_square: Square | undefined = SquareGrid.square_by_board_position(board.subject_piece[1].pos)
+            const king_square: Square | undefined = SquareGrid.square_by_board_position(board.subject[0].pos)
+            const rook_square: Square | undefined = SquareGrid.square_by_board_position(board.subject[1].pos)
 
             const assert = new Assert(AssertType.equals, MoveController.conditions_for_castle(king_square, rook_square!), board.expected_result)
+            test_list.push(new Test(board.title, assert))
+        })
+
+        return test_list
+    }
+
+    public build_promotion_boards(): Test[] {
+        const test_list: Test[] = []
+
+        promotion_boards.forEach(board => {
+            this.before_each(board)
+            const pawn_row: number = SquareGrid.point_at_board_position(board.subject.pos)!.row
+
+            const assert = new Assert(AssertType.equals, board.subject.should_make_queen(pawn_row), board.expected_result)
+            test_list.push(new Test(board.title, assert))
+        })
+
+        return test_list
+    }
+
+    public build_en_passant_boards() {
+        const test_list: Test[] = []
+
+        en_passant_boards.forEach(board => {
+            this.before_each(board)
+            GameController.move_list = new MoveList()
+            GameController.move_list.add_move(board.subject.move)
+
+            const res: boolean = board.subject.white_pawn.conditions_for_en_passant(board.subject.black_pawn)
+            const assert = new Assert(AssertType.equals, res, board.expected_result)
             test_list.push(new Test(board.title, assert))
         })
 
