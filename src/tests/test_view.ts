@@ -34,6 +34,7 @@ export default class TestView extends HTMLElement {
             this.render_board_list(test_runner.build_checkmate_board_list(), test_view, "Checkmate Tests")
             this.render_board_list(test_runner.build_pin_boards(), test_view, "Pin Tests")
             this.render_board_list(test_runner.build_check_boards(), test_view, "Block Check Tests")
+            this.render_board_list(test_runner.build_castle_boards(), test_view, "Castle Tests")
 
             resolve()
         })

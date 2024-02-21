@@ -1,5 +1,5 @@
 import { PieceType } from "../../../components/piece/piece_types"
-import VariableResultBoard from "../../types/variable_result_board"
+import VariableResultBoard from "../../types/subject_result_board"
 import BoardSetupInput from "../../../tests/types/board_setup_input"
 import results_board from "../results_board"
 

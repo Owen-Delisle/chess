@@ -19,7 +19,7 @@ export default class MoveController {
 		if (this.conditions_for_standard_move(clicked_square)) {
 			this.clear_prev_focused_square()
 			this.make_standard_move(clicked_square)
-		} else if (this.conditions_for_castle(clicked_square)) {
+		} else if (this.conditions_for_castle(this.focused_square, clicked_square)) {
 			this.clear_prev_focused_square()
 			this.castle(clicked_square)
 		} else {
@@ -56,9 +56,10 @@ export default class MoveController {
 		}
 	}
 
-	private static conditions_for_castle(clicked_square: Square): boolean {
+	// Made public for testing
+	public static conditions_for_castle(focused_square: Square | undefined, clicked_square: Square): boolean {
 		let should_castle: boolean = false
-		let focused_piece: Piece | undefined = this.focused_square?.piece_attached_to_square()
+		let focused_piece: Piece | undefined = focused_square?.piece_attached_to_square()
 		let clicked_piece: Piece | undefined = clicked_square?.piece_attached_to_square()
 
 		if (focused_piece == undefined || clicked_piece == undefined) {
