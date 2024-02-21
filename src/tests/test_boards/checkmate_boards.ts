@@ -2,7 +2,7 @@ import piece_factory from "../../components/piece/piece_factory/piece_factory"
 import { PieceType } from "../../components/piece/piece_types"
 import { Color } from "../../components/piece/color"
 import { RookType } from "../../components/piece/pieces/rook"
-import CheckmateBoard from "../types/CheckmateBoard"
+import CheckmateBoard from "../types/check_mate_board"
 
 const list_of_checkmate_boards: CheckmateBoard[] = [
     anastasias_mate(),

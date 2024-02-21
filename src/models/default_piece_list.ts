@@ -6,15 +6,11 @@ import Piece from "../components/piece/piece"
 
 const default_piece_list: Piece[] = [
 
-    piece_factory('king_w', 'D2', PieceType.king, Color.white),
-    piece_factory('king_b', 'B8', PieceType.king, Color.black),
-
-    piece_factory('pawn_b1', 'D3', PieceType.pawn, Color.black),
-
-    // piece_factory('rook_b1', 'C2', PieceType.rook, Color.black, RookType.long_rook),
-
-    // piece_factory('knight_b1', 'C3', PieceType.knight, Color.black),
-
+    piece_factory('king_w', 'C1', PieceType.king, Color.white),
+    piece_factory('king_b', 'E8', PieceType.king, Color.black),
+    piece_factory('queen_b', 'G5', PieceType.queen, Color.black),
+            
+    piece_factory('rook_w2', 'E2', PieceType.rook, Color.white, RookType.short_rook),
     
     // piece_factory('king_b', 'E8', PieceType.king, Color.black),
     // piece_factory('king_w', 'E1', PieceType.king, Color.white),

@@ -2,9 +2,9 @@ import piece_factory from "../../../components/piece/piece_factory/piece_factory
 import { PieceType } from "../../../components/piece/piece_types"
 import { Color } from "../../../components/piece/color"
 import Piece from "../../../components/piece/piece"
-import PinBoard from "../../../tests/types/PinBoard"
+import VariableResultBoard from "../../types/variable_result_board"
 
-const bishop_pin_boards: PinBoard[] = [
+const bishop_pin_boards: VariableResultBoard[] = [
     bishop_pin_north(),
     bishop_pin_north_east(),
     bishop_pin_east(),
@@ -15,7 +15,7 @@ const bishop_pin_boards: PinBoard[] = [
     bishop_pin_north_west()
 ]
 
-function bishop_pin_north(): PinBoard {
+function bishop_pin_north(): VariableResultBoard {
     const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
     return {
         title: 'Bishop Pin from North', 
@@ -30,7 +30,7 @@ function bishop_pin_north(): PinBoard {
     }
 }
 
-function bishop_pin_north_east(): PinBoard {
+function bishop_pin_north_east(): VariableResultBoard {
     const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
     return {
         title: 'Bishop Pin from North East', 
@@ -45,7 +45,7 @@ function bishop_pin_north_east(): PinBoard {
     }
 }
 
-function bishop_pin_east(): PinBoard {
+function bishop_pin_east(): VariableResultBoard {
     const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
     return {
         title: 'Bishop Pin from East', 
@@ -61,7 +61,7 @@ function bishop_pin_east(): PinBoard {
     }
 }
 
-function bishop_pin_south_east(): PinBoard {
+function bishop_pin_south_east(): VariableResultBoard {
     const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
     return {
         title: 'Bishop Pin from South East', 
@@ -77,7 +77,7 @@ function bishop_pin_south_east(): PinBoard {
     }
 }
 
-function bishop_pin_south(): PinBoard {
+function bishop_pin_south(): VariableResultBoard {
     const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
     return {
         title: 'Bishop Pin from South', 
@@ -93,7 +93,7 @@ function bishop_pin_south(): PinBoard {
     }
 }
 
-function bishop_pin_south_west(): PinBoard {
+function bishop_pin_south_west(): VariableResultBoard {
     const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
     return {
         title: 'Bishop Pin from South West', 
@@ -109,7 +109,7 @@ function bishop_pin_south_west(): PinBoard {
     }
 }
 
-function bishop_pin_west(): PinBoard {
+function bishop_pin_west(): VariableResultBoard {
     const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
     return {
         title: 'Bishop Pin from West', 
@@ -125,7 +125,7 @@ function bishop_pin_west(): PinBoard {
     }
 }
 
-function bishop_pin_north_west(): PinBoard {
+function bishop_pin_north_west(): VariableResultBoard {
     const subject_piece: Piece = piece_factory('bishop_w1', 'E2', PieceType.bishop, Color.white)
     return {
         title: 'Bishop Pin from North West', 

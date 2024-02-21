@@ -22,6 +22,9 @@ export default class Assert {
     }
 
     private equals(lhs: any, rhs: any): boolean {
+        if(!are_equal(lhs, rhs)) {
+            console.log("Actual", lhs, "Expected", rhs)
+        }
         return are_equal(lhs, rhs)
     }
 
