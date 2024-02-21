@@ -1,144 +1,59 @@
-import piece_factory from "../../../components/piece/piece_factory/piece_factory"
 import { PieceType } from "../../../components/piece/piece_types"
-import { Color } from "../../../components/piece/color"
-import Piece from "../../../components/piece/piece"
 import VariableResultBoard from "../../types/variable_result_board"
+import BoardSetupInput from "../../../tests/types/board_setup_input"
+import results_board from "../results_board"
 
-const knight_pin_boards: VariableResultBoard[] = [
-    knight_pin_north(),
-    knight_pin_north_east(),
-    knight_pin_east(),
-    knight_pin_south_east(),
-    knight_pin_south(),
-    knight_pin_south_west(),
-    knight_pin_west(),
-    knight_pin_north_west()
+const test_inputs: BoardSetupInput[] = [
+    {
+        title: "Knight Pin from North",
+        white_king_pos: 'E1',
+        black_queen_pos: 'E5',
+        expected_result: []
+    },
+    {
+        title: "Knight Pin from North East",
+        white_king_pos: 'D1',
+        black_queen_pos: 'G4',
+        expected_result: []
+    },
+    {
+        title: "Knight Pin from East",
+        white_king_pos: 'C2',
+        black_queen_pos: 'G2',
+        expected_result: []
+    },
+    {
+        title: "Knight Pin from South East",
+        white_king_pos: 'C4',
+        black_queen_pos: 'F1',
+        expected_result: []
+    },
+    {
+        title: "Knight Pin from South",
+        white_king_pos: 'E5',
+        black_queen_pos: 'E1',
+        expected_result: []
+    },
+    {
+        title: "Knight Pin from South West",
+        white_king_pos: 'G4',
+        black_queen_pos: 'D1',
+        expected_result: []
+    },
+    {
+        title: "Knight Pin from West",
+        white_king_pos: 'G2',
+        black_queen_pos: 'C2',
+        expected_result: []
+    },
+    {
+        title: "Knight Pin from North West",
+        white_king_pos: 'F1',
+        black_queen_pos: 'C4',
+        expected_result: []
+    },
 ]
 
-function knight_pin_north(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
-    return {
-        title: 'Knight Pin from North', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'E1', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-            piece_factory('queen_b', 'E6', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: []
-    }
-}
-
-function knight_pin_north_east(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
-    return {
-        title: 'Knight Pin from North East', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'D1', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-            piece_factory('queen_b', 'G4', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: []
-    }
-}
-
-function knight_pin_east(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
-    return {
-        title: 'Knight Pin from East', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'D2', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'G2', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: []
-    }
-}
-
-function knight_pin_south_east(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
-    return {
-        title: 'Knight Pin from South East', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'D3', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'F1', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: []
-    }
-}
-
-function knight_pin_south(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
-    return {
-        title: 'Knight Pin from South', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'E5', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'E1', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: []
-    }
-}
-
-function knight_pin_south_west(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
-    return {
-        title: 'Knight Pin from South West', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'G4', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'D1', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: []
-    }
-}
-
-function knight_pin_west(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
-    return {
-        title: 'Knight Pin from West', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'F2', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'D2', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: []
-    }
-}
-
-function knight_pin_north_west(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('knight_w1', 'E2', PieceType.knight, Color.white)
-    return {
-        title: 'Knight Pin from North West', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'F1', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'C4', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: []
-    }
-}
+const knight_pin_boards: VariableResultBoard[] = results_board(PieceType.knight, test_inputs)
 
 export default knight_pin_boards

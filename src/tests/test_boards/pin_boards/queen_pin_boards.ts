@@ -1,144 +1,59 @@
-import piece_factory from "../../../components/piece/piece_factory/piece_factory"
 import { PieceType } from "../../../components/piece/piece_types"
-import { Color } from "../../../components/piece/color"
-import Piece from "../../../components/piece/piece"
 import VariableResultBoard from "../../types/variable_result_board"
+import BoardSetupInput from "../../../tests/types/board_setup_input"
+import results_board from "../results_board"
 
-const queen_pin_boards: VariableResultBoard[] = [
-    queen_pin_north(),
-    queen_pin_north_east(),
-    queen_pin_east(),
-    queen_pin_south_east(),
-    queen_pin_south(),
-    queen_pin_south_west(),
-    queen_pin_west(),
-    queen_pin_north_west()
+const test_inputs: BoardSetupInput[] = [
+    {
+        title: "Queen Pin from North",
+        white_king_pos: 'E1',
+        black_queen_pos: 'E5',
+        expected_result: ['E3','E4', 'E5']
+    },
+    {
+        title: "Queen Pin from North East",
+        white_king_pos: 'D1',
+        black_queen_pos: 'G4',
+        expected_result: ['F3', 'G4']
+    },
+    {
+        title: "Queen Pin from East",
+        white_king_pos: 'C2',
+        black_queen_pos: 'G2',
+        expected_result: ['F2','G2', 'D2']
+    },
+    {
+        title: "Queen Pin from South East",
+        white_king_pos: 'C4',
+        black_queen_pos: 'F1',
+        expected_result: ['F1','D3']
+    },
+    {
+        title: "Queen Pin from South",
+        white_king_pos: 'E5',
+        black_queen_pos: 'E1',
+        expected_result: ['E3','E4','E1']
+    },
+    {
+        title: "Queen Pin from South West",
+        white_king_pos: 'G4',
+        black_queen_pos: 'D1',
+        expected_result: ['F3','D1']
+    },
+    {
+        title: "Queen Pin from West",
+        white_king_pos: 'G2',
+        black_queen_pos: 'C2',
+        expected_result: ['F2','D2','C2']
+    },
+    {
+        title: "Queen Pin from North West",
+        white_king_pos: 'F1',
+        black_queen_pos: 'C4',
+        expected_result: ['D3', 'C4']
+    },
 ]
 
-function queen_pin_north(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
-    return {
-        title: 'Queen Pin from North', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'E1', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-            piece_factory('queen_b', 'E6', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: ['E3', 'E4', 'E5', 'E6']
-    }
-}
-
-function queen_pin_north_east(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
-    return {
-        title: 'Queen Pin from North East', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'D1', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-            piece_factory('queen_b', 'G4', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: ['F3', 'G4']
-    }
-}
-
-function queen_pin_east(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
-    return {
-        title: 'Queen Pin from East', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'D2', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'G2', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: ['F2', 'G2']
-    }
-}
-
-function queen_pin_south_east(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
-    return {
-        title: 'Queen Pin from South East', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'D3', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'F1', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: ['F1']
-    }
-}
-
-function queen_pin_south(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
-    return {
-        title: 'Queen Pin from South', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'E5', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'E1', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: ['E3', 'E4', 'E1']
-    }
-}
-
-function queen_pin_south_west(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
-    return {
-        title: 'Queen Pin from South West', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'G4', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'D1', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: ['F3', 'D1']
-    }
-}
-
-function queen_pin_west(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
-    return {
-        title: 'Queen Pin from West', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'F2', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'D2', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: ['D2']
-    }
-}
-
-function queen_pin_north_west(): VariableResultBoard {
-    const subject_piece: Piece = piece_factory('queen_w1', 'E2', PieceType.queen, Color.white)
-    return {
-        title: 'Queen Pin from North West', 
-        board: [
-            subject_piece,
-            piece_factory('king_w', 'F1', PieceType.king, Color.white),
-            piece_factory('king_b', 'E8', PieceType.king, Color.black),
-
-            piece_factory('queen_b', 'C4', PieceType.queen, Color.black),
-        ],
-        subject_piece: subject_piece,
-        expected_result: ['D3', 'C4']
-    }
-}
+const queen_pin_boards: VariableResultBoard[] = results_board(PieceType.queen, test_inputs)
 
 export default queen_pin_boards
