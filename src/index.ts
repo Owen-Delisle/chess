@@ -1,7 +1,7 @@
 import Board from './components/board/board'
 import TestView from './tests/test_view'
 export default class Index extends HTMLElement {
-	private static test_view: TestView = new TestView()
+	// private static test_view: TestView = new TestView()
 	private static board: Board = new Board()
 
 	constructor() {
@@ -13,7 +13,7 @@ export default class Index extends HTMLElement {
 	}
 
 	render() {
-		this.appendChild(Index.test_view)
+		this.appendChild(Index.board)
 	}
 }
 

@@ -19,7 +19,8 @@ export default class Pawn extends Piece implements Piece_Interface {
 	public attack_distance: number = 1
 
 	private en_passant_directions: PieceDirections[] = [PieceDirections.west, PieceDirections.east]
-	public attack_directions: PieceDirections[] = [PieceDirections.north_east, PieceDirections.north_west, ...this.en_passant_directions]
+	public attack_directions: PieceDirections[] = [PieceDirections.north_east, PieceDirections.north_west]
+	private all_attack_directions: PieceDirections[] = [...this.attack_directions, ...this.en_passant_directions]
 
 	private en_passant_position: string = ""
 
@@ -36,7 +37,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 	}
 
 	public build_possible_attack_list(): void {
-		this.attack_directions.forEach((direction) => {
+		this.all_attack_directions.forEach((direction) => {
 			const next_row: number =
 				SquareGrid.point_at_board_position(this.pos).row +
 				piece_direction_modifier(direction).row
@@ -61,6 +62,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 		})
 	}
 
+	// Refactor
 	private conditions_for_adding_attack_square(
 		piece_at_attack_point: Piece | undefined,
 		next_row: number,

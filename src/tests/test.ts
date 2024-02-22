@@ -18,12 +18,12 @@ export default class Test extends HTMLElement {
     private append_children(): Promise<void> {
 		return new Promise(async (resolve) => {
 			let div_node: Element = document.createElement('div')
-			let p_node: Element = document.createElement('p')
+			let title_node: Element = document.createElement('p')
 
-			div_node.appendChild(p_node)
-            p_node.className = this.assert.result
-
-            p_node.innerHTML = `${this.title} -- ${this.assert.result}`
+			title_node.className = this.assert.result
+            title_node.innerHTML = `${this.title}`
+			
+			div_node.appendChild(title_node)
 
             this.appendChild(div_node)
 

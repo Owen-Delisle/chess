@@ -6,6 +6,7 @@ import VariableResultBoard from "./types/subject_result_board";
 import CheckmateBoard from "./types/check_mate_board";
 
 import list_of_checkmate_boards from "./test_boards/end_of_game/checkmate_boards";
+import list_of_stalemates from "./test_boards/end_of_game/stalemate_boards";
 
 import pawn_pin_boards from "./test_boards/pin_boards/pawn_pin_boards";
 import rook_pin_boards from "./test_boards/pin_boards/rook_pin_boards";
@@ -47,6 +48,18 @@ export default class TestRunner {
             const white_king: King = PieceList.king_by_color(Color.white)
 
             const assert = new Assert(AssertType.equals, white_king!.check_for_checkmate(), 'Game Over: Checkmate')
+            test_list.push(new Test(board.title, assert))
+        })
+        return test_list
+    }
+
+    public build_stalemate_board_list(): Test[] {
+        const test_list: Test[] = []
+        list_of_stalemates.forEach(board => {
+            this.before_each(board)
+            const white_king: King = PieceList.king_by_color(Color.white)
+
+            const assert = new Assert(AssertType.equals, white_king!.check_for_checkmate(), 'Game Over: Stalemate')
             test_list.push(new Test(board.title, assert))
         })
         return test_list

@@ -297,6 +297,7 @@ export default class King extends Piece implements Piece_Interface {
 		}
 	}
 
+	// Refactor
 	private piece_in_path_conditions(piece: Piece, direction: PieceDirections): boolean {
 		try {
 			const king_gp: GridPoint = SquareGrid.point_at_board_position(this.pos)
@@ -316,9 +317,18 @@ export default class King extends Piece implements Piece_Interface {
 			}
 			
 			if (piece.color === not_color(this.color)) {
-				if (piece.directions.includes(direction)) {
-					if (piece_is_within_distance) {
-						return true
+				if(piece.type !== PieceType.pawn) {
+					if (piece.directions.includes(direction)) {
+						if (piece_is_within_distance) {
+							return true
+						}
+					}
+				} else {
+					const pawn: Pawn = piece as Pawn
+					if(pawn.attack_directions.includes(direction)) {
+						if(piece_is_within_distance) {
+							return true
+						}
 					}
 				}
 			}

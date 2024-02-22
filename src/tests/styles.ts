@@ -3,7 +3,7 @@ export default class TestStyles {
 		let style = document.createElement('style')
 		style.innerHTML = `
       .passed {
-        width: 300px;
+        width: 230px;
         height: 50px;
         background-color: #73BE73;
         color: white;
@@ -13,7 +13,7 @@ export default class TestStyles {
       }
       
       .failed {
-        width: 300px;
+        width: 250px;
         height: 50px;
         background-color: red;
         color: white;
