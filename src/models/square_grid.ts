@@ -59,10 +59,6 @@ export default class SquareGrid {
 				col: s[0].charCodeAt(0) - 65,
 			}
 		} else {
-			// if(parseInt(`${s[1]}`)-1 === 7) {
-			//     console.log(s[0].charCodeAt(0))
-			//     console.log(72-s[0].charCodeAt(0))
-			// }
 			return {
 				row: parseInt(`${s[1]}`) - 1,
 				col: 72 - s[0].charCodeAt(0),

@@ -2,7 +2,7 @@ import MoveList from '../utils/classes/MoveList'
 import { Color } from '../components/piece/color'
 import { Move } from '../global_types/move'
 import King from '../components/piece/pieces/king'
-import PieceList from '../models/piece_list/piece_list'
+import PieceList from '../models/piece_list'
 
 export class GameController {
 	public static turn = Color.white
@@ -31,6 +31,8 @@ export class GameController {
 				console.log("Game Over: Insufficient Material -- Same Color Bishops")
 			}
 		}
-		king.check_for_checkmate()
+		if(king.check_for_checkmate !== undefined) {
+			// console.log(king.check_for_checkmate())
+		}
 	}
 }

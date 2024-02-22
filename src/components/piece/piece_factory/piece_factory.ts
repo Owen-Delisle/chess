@@ -1,6 +1,4 @@
-import Piece from '../piece';
-import { PieceType } from '../piece_types';
-import { Color } from '../color';
+import Piece from '../piece'
 
 import Bishop from '../pieces/bishop'
 import King from '../pieces/king'
@@ -8,6 +6,8 @@ import Knight from '../pieces/knight'
 import Pawn from '../pieces/pawn'
 import Queen from '../pieces/queen'
 import Rook, { RookType } from '../pieces/rook'
+import { PieceType } from '../piece_types'
+import { Color } from '../color'
 
 import Bishop_B_SVG from './assets/bishop-b.svg'
 import Bishop_W_SVG from './assets/bishop-w.svg'

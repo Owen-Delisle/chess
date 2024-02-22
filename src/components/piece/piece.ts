@@ -1,6 +1,6 @@
 import { PieceType } from './piece_types'
 import SquareGrid from '../../models/square_grid'
-import type { GridPoint } from 'src/global_types/grid_point'
+import type { GridPoint } from '../../global_types/grid_point'
 import type { Color } from './color'
 import { are_coors_within_board_bounds } from '../../utils/bounds'
 import type Square from '../square/square'
@@ -249,8 +249,8 @@ export default abstract class Piece {
 			})!
 			// Pawn has its own attacking logic
 			//TODO -- Move PieceType.pawn down an if statement
-			if (piece_at_square.color !== this.color && this.type !== PieceType.pawn) {
-				if (this.type !== PieceType.king) {
+			if (piece_at_square.color !== this.color) {
+				if (this.type !== PieceType.king && this.type !== PieceType.pawn) {
 					moves_in_direction.push(SquareID.pos_at_point({ row: new_row, col: new_col }))
 				}
 			}
@@ -268,14 +268,16 @@ export default abstract class Piece {
 			possible_moves.push(
 				...moves_in_direction.filter((move) => this.position_restrictions.includes(move)),
 			)
-		} else if (Piece.position_restrictions.length > 0 && this.type != PieceType.king) {
-			if(this.position_restrictions.length > 0) {
+		} else if (Piece.position_restrictions.length > 0 && this.type !== PieceType.king) {
+			if (this.position_restrictions.length > 0) {
 				this.possible_moves = []
 			} else {
 				possible_moves.push(
 					...moves_in_direction.filter((move) => Piece.position_restrictions.includes(move)),
 				)
 			}
+		} else if (Piece.position_restrictions.length > 0 && this.type === PieceType.king) {
+			this.possible_moves = this.position_restrictions
 		} else {
 			possible_moves.push(...moves_in_direction)
 		}

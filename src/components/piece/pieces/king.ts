@@ -13,11 +13,11 @@ import SquareGrid from '../../../models/square_grid'
 import type Square from '../../../components/square/square'
 import type Rook from './rook'
 import { RookType } from './rook'
-import PieceList from '../../../models/piece_list/piece_list'
+import PieceList from '../../../models/piece_list'
 import SquareID from '../../../components/square/square_id'
 import { are_coors_within_board_bounds } from '../../../utils/bounds'
 import { distance_between_aligned_points, is_within_one_knight_move } from '../../../utils/math'
-import { arrays_are_equal } from '../../../utils/arrays'
+import are_equal from '../../../utils/types'
 import { surrounding_points } from '../../../utils/grid'
 import { not_color } from '../color'
 import { every_direction } from '../piece_directions'
@@ -67,12 +67,12 @@ export default class King extends Piece implements Piece_Interface {
 		return list
 	}
 
-	public check_for_checkmate() {
+	public check_for_checkmate(): string | undefined {
 		if (!this.any_piece_can_move()) {
 			if(this.in_check) {
-				console.log('Game Over: Checkmate')
+				return 'Game Over: Checkmate'
 			} else {
-				console.log('Game Over: Stalemate')
+				return 'Game Over: Stalemate'
 			}
 		}
 	}
@@ -88,8 +88,7 @@ export default class King extends Piece implements Piece_Interface {
 	public render_legal_squares_surrounding_king(): void {
 		const positions_surrounding_king = this.moveable_positions_surrounding_king()
 		const attacked_points_around_king = this.attacked_points_around_king()
-
-		if (arrays_are_equal(positions_surrounding_king, attacked_points_around_king)) {
+		if (are_equal(positions_surrounding_king, attacked_points_around_king)) {
 			this.move_distance = 0
 		} else {
 			this.move_distance = 1
@@ -298,6 +297,7 @@ export default class King extends Piece implements Piece_Interface {
 		}
 	}
 
+	// Refactor
 	private piece_in_path_conditions(piece: Piece, direction: PieceDirections): boolean {
 		try {
 			const king_gp: GridPoint = SquareGrid.point_at_board_position(this.pos)
@@ -317,9 +317,18 @@ export default class King extends Piece implements Piece_Interface {
 			}
 			
 			if (piece.color === not_color(this.color)) {
-				if (piece.directions.includes(direction)) {
-					if (piece_is_within_distance) {
-						return true
+				if(piece.type !== PieceType.pawn) {
+					if (piece.directions.includes(direction)) {
+						if (piece_is_within_distance) {
+							return true
+						}
+					}
+				} else {
+					const pawn: Pawn = piece as Pawn
+					if(pawn.attack_directions.includes(direction)) {
+						if(piece_is_within_distance) {
+							return true
+						}
 					}
 				}
 			}
