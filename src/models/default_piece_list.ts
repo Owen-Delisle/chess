@@ -5,6 +5,17 @@ import { RookType } from "../components/piece/pieces/rook"
 import Piece from "../components/piece/piece"
 
 const default_piece_list: Piece[] = [
+    // piece_factory('king_b', 'G7', PieceType.king, Color.black),
+    // piece_factory('king_w', 'C5', PieceType.king, Color.white),
+
+    // piece_factory('pawn_b1', 'C7', PieceType.pawn, Color.black),
+    // piece_factory('pawn_w1', 'A7', PieceType.pawn, Color.white),
+
+    // piece_factory('knight_w1', 'D4', PieceType.knight, Color.white),
+    // piece_factory('rook_b1', 'H4', PieceType.rook, Color.black, RookType.long_rook),
+
+    // piece_factory('pawn_b1', 'G1', PieceType.pawn, Color.black),
+
     piece_factory('king_b', 'E8', PieceType.king, Color.black),
     piece_factory('king_w', 'E1', PieceType.king, Color.white),
 

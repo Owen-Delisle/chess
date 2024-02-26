@@ -1,8 +1,9 @@
 import MoveList from '../utils/classes/MoveList'
-import { Color } from '../components/piece/color'
+import { Color, not_color } from '../components/piece/color'
 import { Move } from '../global_types/move'
 import King from '../components/piece/pieces/king'
 import PieceList from '../models/piece_list'
+import MoveController from './move_controller'
 
 export class GameController {
 	public static turn = Color.white
@@ -31,8 +32,22 @@ export class GameController {
 				console.log("Game Over: Insufficient Material -- Same Color Bishops")
 			}
 		}
-		if(king.check_for_checkmate !== undefined) {
-			// console.log(king.check_for_checkmate())
+		if(king.check_for_checkmate() !== undefined) {
+			console.log(king.check_for_checkmate())
+			king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.lose)
+
+			const winning_king = PieceList.king_by_color(not_color(king.color))
+			winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
 		}
 	}
+}
+
+export enum GameEndType {
+	checkmate,
+	stalemate
+}
+
+export enum WinOrLose {
+	win,
+	lose
 }

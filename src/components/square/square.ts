@@ -15,7 +15,7 @@ export default class Square extends HTMLElement {
 		this.color = color
 	}
 
-	async build_clickable_square() {
+	public async build_clickable_square() {
 		await this.append_children()
 		this.element = document.getElementById(`${this.square_id}`)
 		this.add_event_listener()
@@ -49,8 +49,22 @@ export default class Square extends HTMLElement {
 
 	private piece_image(): HTMLImageElement {
 		let piece: Piece | undefined = this.piece_attached_to_square()
-		if (piece != undefined) return piece.image
+		if (piece != undefined) {
+			piece.image.id = `${this.square_id}-image`
+			return piece.image
+		} 
 		else return new Image()
+	}
+
+	public update_image(new_image: HTMLImageElement): void {
+		this.element = document.getElementById(`${this.square_id}`)
+		const image: HTMLElement | null = document.getElementById(`${this.square_id}-image`)
+		if(image !== null) {
+			if(this.element !== null) {
+				this.element.removeChild(image)
+				this.element.appendChild(new_image)
+			}
+		}
 	}
 
 	public is_empty(): boolean {
@@ -90,9 +104,18 @@ export default class Square extends HTMLElement {
 		}
 	}
 
+	public add_check_border() {
+		this.element = document.getElementById(`${this.square_id}`)
+		if(this.element != undefined) {
+			this.element!.style.backgroundColor = 'red'
+		}
+	}
+
 	public remove_piece(): void {
 		let piece: Piece | undefined = this.piece_attached_to_square()
-		if (piece != undefined) PieceList.remove_piece_by_id(piece.title)
+		if (piece != undefined) {
+			PieceList.remove_piece_by_id(piece.title)
+		} 
 	}
 }
 
