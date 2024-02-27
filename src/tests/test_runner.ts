@@ -14,6 +14,8 @@ import bishop_pin_boards from "./test_boards/pin_boards/bishop_pin_boards";
 import knight_pin_boards from "./test_boards/pin_boards/knight_pin_boards";
 import queen_pin_boards from "./test_boards/pin_boards/queen_pin_boards";
 
+import pawn_pin_attack_boards from "./test_boards/pin_boards/pawn_pin_with_attack";
+
 import pawn_check_boards from "./test_boards/check_boards/pawn_check_board";
 import bishop_check_boards from "./test_boards/check_boards/bishop_check_board";
 import rook_check_boards from "./test_boards/check_boards/rook_check_board";
@@ -143,6 +145,17 @@ export default class TestRunner {
             test_list.push(new Test(board.title, assert))
         })
 
+        return test_list
+    }
+
+    public build_pawn_pin_attack_boards() {
+        const test_list: Test[] = []
+        pawn_pin_attack_boards.forEach(board => {
+            this.before_each(board)
+
+            const assert = new Assert(AssertType.equals, board.subject.possible_moves, board.expected_result)
+            test_list.push(new Test(board.title, assert))
+        })
         return test_list
     }
 }

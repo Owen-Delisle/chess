@@ -89,6 +89,9 @@ export default class Pawn extends Piece implements Piece_Interface {
 	}
 
 	private any_restrictions_include_position(position: string): boolean {
+		if(Piece.position_restrictions.length > 0 && this.position_restrictions.length > 0) {
+			return Piece.position_restrictions.includes(position) && this.position_restrictions.includes(position)
+		}
 		if(Piece.position_restrictions.length > 0) {
 			return Piece.position_restrictions.includes(position)
 		}
