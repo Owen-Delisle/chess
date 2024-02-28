@@ -1,16 +1,23 @@
 {
   "scripts": {
-    "start": "",
-    "build": "",
+    "start": "bun run server.ts",
+    "build": "bun build ./src/index.ts --outdir ./public",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write \"src/**/*.{ts,js}\"",
     "lint": "prettier --check \"src/**/*.{ts,js}\""
   },
   "dependencies": {
     "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/uuid": "^9.0.8",
+    "body-parser": "^1.20.2",
     "bun-types": "^1.0.29",
     "canvas-confetti": "^1.2.0",
-    "hono": "^4.0.7"
+    "hono": "^4.0.7",
+    "jsonwebtoken": "^9.0.2",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.0.0",

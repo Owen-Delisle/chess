@@ -967,6 +967,9 @@ class Pawn extends Piece {
     return should_attack;
   }
   any_restrictions_include_position(position) {
+    if (Piece.position_restrictions.length > 0 && this.position_restrictions.length > 0) {
+      return Piece.position_restrictions.includes(position) && this.position_restrictions.includes(position);
+    }
     if (Piece.position_restrictions.length > 0) {
       return Piece.position_restrictions.includes(position);
     }
