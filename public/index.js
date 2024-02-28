@@ -1918,8 +1918,1738 @@ class Board extends HTMLElement {
 }
 customElements.define("board-element", Board);
 
+// src/tests/test_boards/end_of_game/checkmate_boards.ts
+var anastasias_mate = function() {
+  return {
+    title: "Anastasias Mate",
+    board: [
+      piece_factory("king_w", "H7", PieceType.king, Color.white),
+      piece_factory("king_b", "G1", PieceType.king, Color.black),
+      piece_factory("rook_b2", "H3", PieceType.rook, Color.black, RookType.short_rook),
+      piece_factory("knight_b1", "E7", PieceType.knight, Color.black),
+      piece_factory("pawn_b1", "G7", PieceType.pawn, Color.white)
+    ]
+  };
+};
+var anderssens_mate = function() {
+  return {
+    title: "Anderssens Mate",
+    board: [
+      piece_factory("king_w", "G1", PieceType.king, Color.white),
+      piece_factory("king_b", "F3", PieceType.king, Color.black),
+      piece_factory("pawn_b1", "G2", PieceType.pawn, Color.black),
+      piece_factory("rook_b2", "H1", PieceType.rook, Color.black, RookType.short_rook)
+    ]
+  };
+};
+var arabian_mate = function() {
+  return {
+    title: "Arabian Mate",
+    board: [
+      piece_factory("king_w", "H1", PieceType.king, Color.white),
+      piece_factory("king_b", "F3", PieceType.king, Color.black),
+      piece_factory("knight_w1", "F3", PieceType.knight, Color.black),
+      piece_factory("rook_b2", "H2", PieceType.rook, Color.black, RookType.short_rook)
+    ]
+  };
+};
+var backrank_mate = function() {
+  return {
+    title: "BackRank Mate",
+    board: [
+      piece_factory("king_w", "F1", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "E2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w2", "F2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w3", "G2", PieceType.pawn, Color.white),
+      piece_factory("rook_b2", "D1", PieceType.rook, Color.black, RookType.short_rook)
+    ]
+  };
+};
+var belstra_mate = function() {
+  return {
+    title: "Belstra Mate",
+    board: [
+      piece_factory("king_w", "D1", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("queen_b", "C3", PieceType.queen, Color.black),
+      piece_factory("bishop_b1", "F3", PieceType.bishop, Color.black)
+    ]
+  };
+};
+var blackburns_mate = function() {
+  return {
+    title: "Blackburns Mate",
+    board: [
+      piece_factory("king_w", "B1", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("bishop_b1", "A2", PieceType.bishop, Color.black),
+      piece_factory("bishop_b2", "G7", PieceType.bishop, Color.black),
+      piece_factory("knight_b1", "B4", PieceType.knight, Color.black),
+      piece_factory("rook_w1", "C1", PieceType.rook, Color.white, RookType.long_rook)
+    ]
+  };
+};
+var blind_swine_mate = function() {
+  return {
+    title: "Blind Swine Mate",
+    board: [
+      piece_factory("king_w", "B1", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("rook_w1", "C1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("rook_b1", "A2", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("rook_b2", "B2", PieceType.rook, Color.black, RookType.short_rook)
+    ]
+  };
+};
+var bodens_mate = function() {
+  return {
+    title: "Bodens Mate",
+    board: [
+      piece_factory("king_w", "C1", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "D2", PieceType.pawn, Color.white),
+      piece_factory("rook_w1", "D1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("bishop_b1", "A3", PieceType.bishop, Color.black),
+      piece_factory("bishop_b2", "E4", PieceType.bishop, Color.black)
+    ]
+  };
+};
+var corner_mate = function() {
+  return {
+    title: "Corner Mate",
+    board: [
+      piece_factory("king_w", "A1", PieceType.king, Color.white),
+      piece_factory("king_b", "A8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("rook_b1", "B8", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("knight_b1", "C2", PieceType.knight, Color.black)
+    ]
+  };
+};
+var corridor_mate = function() {
+  return {
+    title: "Corridor Mate",
+    board: [
+      piece_factory("king_w", "C2", PieceType.king, Color.white),
+      piece_factory("king_b", "G8", PieceType.king, Color.black),
+      piece_factory("rook_b1", "B8", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("rook_b2", "D8", PieceType.rook, Color.black, RookType.short_rook),
+      piece_factory("queen_b", "C4", PieceType.queen, Color.black)
+    ]
+  };
+};
+var diagonal_corridor_mate = function() {
+  return {
+    title: "Diagonal Corridor Mate",
+    board: [
+      piece_factory("king_w", "A1", PieceType.king, Color.white),
+      piece_factory("king_b", "G8", PieceType.king, Color.black),
+      piece_factory("bishop_w1", "B1", PieceType.bishop, Color.white),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("bishop_b1", "E5", PieceType.bishop, Color.black)
+    ]
+  };
+};
+var cozios_mate = function() {
+  return {
+    title: "Cozios Mate",
+    board: [
+      piece_factory("king_w", "B3", PieceType.king, Color.white),
+      piece_factory("king_b", "B5", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "B2", PieceType.pawn, Color.white),
+      piece_factory("queen_w", "C3", PieceType.queen, Color.white),
+      piece_factory("queen_b", "A4", PieceType.queen, Color.black)
+    ]
+  };
+};
+var damianos_mate = function() {
+  return {
+    title: "Damianos Mate",
+    board: [
+      piece_factory("king_w", "B1", PieceType.king, Color.white),
+      piece_factory("king_b", "B8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "B2", PieceType.pawn, Color.white),
+      piece_factory("rook_w1", "C1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("pawn_b1", "B3", PieceType.pawn, Color.black),
+      piece_factory("queen_b", "A2", PieceType.queen, Color.black)
+    ]
+  };
+};
+var david_and_goliath_mate = function() {
+  return {
+    title: "David and Goliath Mate",
+    board: [
+      piece_factory("king_w", "B3", PieceType.king, Color.white),
+      piece_factory("king_b", "C5", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A3", PieceType.pawn, Color.white),
+      piece_factory("pawn_w1", "C3", PieceType.pawn, Color.white),
+      piece_factory("pawn_b1", "A4", PieceType.pawn, Color.black),
+      piece_factory("pawn_b1", "B5", PieceType.pawn, Color.black),
+      piece_factory("rook_b1", "G2", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var epaulette_mate = function() {
+  return {
+    title: "Epaulette Mate",
+    board: [
+      piece_factory("king_w", "E1", PieceType.king, Color.white),
+      piece_factory("king_b", "B8", PieceType.king, Color.black),
+      piece_factory("rook_w1", "D1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("rook_w2", "F1", PieceType.rook, Color.white, RookType.short_rook),
+      piece_factory("queen_b", "E3", PieceType.queen, Color.black)
+    ]
+  };
+};
+var fools_mate = function() {
+  return {
+    title: "Fools Mate",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("king_w", "E1", PieceType.king, Color.white),
+      piece_factory("queen_b", "H4", PieceType.queen, Color.black),
+      piece_factory("queen_w", "D1", PieceType.queen, Color.white),
+      piece_factory("bishop_b1", "C8", PieceType.bishop, Color.black),
+      piece_factory("bishop_w1", "C1", PieceType.bishop, Color.white),
+      piece_factory("bishop_b2", "F8", PieceType.bishop, Color.black),
+      piece_factory("bishop_w2", "F1", PieceType.bishop, Color.white),
+      piece_factory("knight_w1", "B1", PieceType.knight, Color.white),
+      piece_factory("knight_b1", "B8", PieceType.knight, Color.black),
+      piece_factory("knight_b2", "G8", PieceType.knight, Color.black),
+      piece_factory("knight_w2", "G1", PieceType.knight, Color.white),
+      piece_factory("rook_b1", "A8", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("rook_w1", "A1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("rook_b2", "H8", PieceType.rook, Color.black, RookType.short_rook),
+      piece_factory("rook_w2", "H1", PieceType.rook, Color.white, RookType.short_rook),
+      piece_factory("pawn_b1", "A7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b2", "B7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w2", "B2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b3", "C7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w3", "C2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b4", "D7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w4", "D2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b5", "E5", PieceType.pawn, Color.black),
+      piece_factory("pawn_w5", "E2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b6", "F7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w6", "F3", PieceType.pawn, Color.white),
+      piece_factory("pawn_b7", "G7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w7", "G4", PieceType.pawn, Color.white),
+      piece_factory("pawn_b8", "H7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w8", "H2", PieceType.pawn, Color.white)
+    ]
+  };
+};
+var grecos_mate = function() {
+  return {
+    title: "Grecos Mate",
+    board: [
+      piece_factory("king_w", "A1", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "B2", PieceType.pawn, Color.white),
+      piece_factory("rook_b1", "A8", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("bishop_b1", "F5", PieceType.bishop, Color.black)
+    ]
+  };
+};
+var h_file_mate = function() {
+  return {
+    title: "H-File Mate",
+    board: [
+      piece_factory("king_w", "B1", PieceType.king, Color.white),
+      piece_factory("king_b", "C3", PieceType.king, Color.black),
+      piece_factory("pawn_b1", "B2", PieceType.pawn, Color.black),
+      piece_factory("rook_b1", "A1", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var hook_mate = function() {
+  return {
+    title: "Hook Mate",
+    board: [
+      piece_factory("king_w", "A2", PieceType.king, Color.white),
+      piece_factory("king_b", "B8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "B2", PieceType.pawn, Color.white),
+      piece_factory("knight_b1", "B3", PieceType.knight, Color.black),
+      piece_factory("pawn_b1", "C4", PieceType.pawn, Color.black),
+      piece_factory("rook_b1", "A1", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var kill_box_mate = function() {
+  return {
+    title: "Kill Box Mate",
+    board: [
+      piece_factory("king_w", "B1", PieceType.king, Color.white),
+      piece_factory("king_b", "G8", PieceType.king, Color.black),
+      piece_factory("queen_b", "A3", PieceType.queen, Color.black),
+      piece_factory("rook_b1", "C1", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var lawn_mower_mate = function() {
+  return {
+    title: "Lawn Mower Mate",
+    board: [
+      piece_factory("king_w", "A1", PieceType.king, Color.white),
+      piece_factory("king_b", "B8", PieceType.king, Color.black),
+      piece_factory("rook_b2", "G2", PieceType.rook, Color.black, RookType.short_rook),
+      piece_factory("rook_b1", "H1", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var legals_mate = function() {
+  return {
+    title: "Legals Mate",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("king_w", "E2", PieceType.king, Color.white),
+      piece_factory("queen_w", "D1", PieceType.queen, Color.white),
+      piece_factory("bishop_b1", "C8", PieceType.bishop, Color.black),
+      piece_factory("bishop_w1", "D8", PieceType.bishop, Color.white),
+      piece_factory("bishop_b2", "F2", PieceType.bishop, Color.black),
+      piece_factory("bishop_w2", "F1", PieceType.bishop, Color.white),
+      piece_factory("knight_w1", "C3", PieceType.knight, Color.white),
+      piece_factory("knight_b1", "D4", PieceType.knight, Color.black),
+      piece_factory("knight_b2", "E4", PieceType.knight, Color.black),
+      piece_factory("knight_w2", "G1", PieceType.knight, Color.white),
+      piece_factory("rook_b1", "A8", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("rook_w1", "A1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("rook_b2", "H8", PieceType.rook, Color.black, RookType.short_rook),
+      piece_factory("rook_w2", "H1", PieceType.rook, Color.white, RookType.short_rook),
+      piece_factory("pawn_b1", "A7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b2", "B7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w2", "B2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b3", "C7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w3", "C2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w4", "D3", PieceType.pawn, Color.white),
+      piece_factory("pawn_b6", "F7", PieceType.pawn, Color.black),
+      piece_factory("pawn_b7", "G7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w7", "G2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b8", "H7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w8", "H2", PieceType.pawn, Color.white)
+    ]
+  };
+};
+var lollis_mate = function() {
+  return {
+    title: "Lollis Mate",
+    board: [
+      piece_factory("king_w", "B1", PieceType.king, Color.white),
+      piece_factory("king_b", "B8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w2", "B3", PieceType.pawn, Color.white),
+      piece_factory("pawn_w3", "C2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b1", "C3", PieceType.pawn, Color.black),
+      piece_factory("queen_b", "B2", PieceType.queen, Color.black)
+    ]
+  };
+};
+var max_langes_mate = function() {
+  return {
+    title: "Max Langes Mate",
+    board: [
+      piece_factory("king_w", "A2", PieceType.king, Color.white),
+      piece_factory("king_b", "C8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A3", PieceType.pawn, Color.white),
+      piece_factory("pawn_w2", "B2", PieceType.pawn, Color.white),
+      piece_factory("queen_b", "B1", PieceType.queen, Color.black),
+      piece_factory("bishop_b1", "C2", PieceType.bishop, Color.black)
+    ]
+  };
+};
+var mayets_mate = function() {
+  return {
+    title: "Mayets Mate",
+    board: [
+      piece_factory("king_w", "D1", PieceType.king, Color.white),
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "C2", PieceType.pawn, Color.white),
+      piece_factory("bishop_b1", "B4", PieceType.bishop, Color.black),
+      piece_factory("rook_b1", "E1", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var morphys_mate = function() {
+  return {
+    title: "Morphys Mate",
+    board: [
+      piece_factory("king_w", "D1", PieceType.king, Color.white),
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "C2", PieceType.pawn, Color.white),
+      piece_factory("bishop_b1", "B4", PieceType.bishop, Color.black),
+      piece_factory("rook_b1", "E1", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var opera_mate = function() {
+  return {
+    title: "Opera Mate",
+    board: [
+      piece_factory("king_b", "C8", PieceType.king, Color.black),
+      piece_factory("king_w", "E1", PieceType.king, Color.white),
+      piece_factory("queen_w", "E3", PieceType.queen, Color.white),
+      piece_factory("bishop_b1", "G4", PieceType.bishop, Color.black),
+      piece_factory("bishop_w1", "F1", PieceType.bishop, Color.white),
+      piece_factory("knight_w1", "B1", PieceType.knight, Color.white),
+      piece_factory("rook_b1", "D1", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("rook_w2", "H1", PieceType.rook, Color.white, RookType.short_rook),
+      piece_factory("pawn_b1", "A7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b2", "B7", PieceType.pawn, Color.black),
+      piece_factory("pawn_b3", "C7", PieceType.pawn, Color.black),
+      piece_factory("pawn_b6", "F7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w6", "F2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b7", "G7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w7", "G2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b8", "H7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w8", "H2", PieceType.pawn, Color.white)
+    ]
+  };
+};
+var pillsburys_mate = function() {
+  return {
+    title: "Pillsburys Mate",
+    board: [
+      piece_factory("king_w", "B1", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w2", "C2", PieceType.pawn, Color.white),
+      piece_factory("bishop_b1", "F6", PieceType.bishop, Color.black),
+      piece_factory("rook_b1", "B8", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("rook_w1", "C1", PieceType.rook, Color.white, RookType.long_rook)
+    ]
+  };
+};
+var retis_mate = function() {
+  return {
+    title: "Retis Mate",
+    board: [
+      piece_factory("king_w", "F2", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "H2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w2", "G2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w3", "F3", PieceType.pawn, Color.white),
+      piece_factory("bishop_b1", "E1", PieceType.bishop, Color.black),
+      piece_factory("bishop_w1", "F1", PieceType.bishop, Color.white),
+      piece_factory("rook_b1", "E8", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("rook_w1", "H1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("knight_w1", "G1", PieceType.knight, Color.white)
+    ]
+  };
+};
+var scholars_mate = function() {
+  return {
+    title: "Scholars Mate",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("king_w", "E1", PieceType.king, Color.white),
+      piece_factory("queen_b", "F2", PieceType.queen, Color.black),
+      piece_factory("queen_w", "D1", PieceType.queen, Color.white),
+      piece_factory("bishop_b1", "C8", PieceType.bishop, Color.black),
+      piece_factory("bishop_w1", "C1", PieceType.bishop, Color.white),
+      piece_factory("bishop_b2", "C5", PieceType.bishop, Color.black),
+      piece_factory("bishop_w2", "F1", PieceType.bishop, Color.white),
+      piece_factory("knight_w1", "C3", PieceType.knight, Color.white),
+      piece_factory("knight_b1", "B8", PieceType.knight, Color.black),
+      piece_factory("knight_b2", "F8", PieceType.knight, Color.black),
+      piece_factory("knight_w2", "F3", PieceType.knight, Color.white),
+      piece_factory("rook_b1", "A8", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("rook_w1", "A1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("rook_b2", "H8", PieceType.rook, Color.black, RookType.short_rook),
+      piece_factory("rook_w2", "H1", PieceType.rook, Color.white, RookType.short_rook),
+      piece_factory("pawn_b1", "A7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b2", "B7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w2", "B2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b3", "C7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w3", "C2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b4", "D7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w4", "D2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b5", "E5", PieceType.pawn, Color.black),
+      piece_factory("pawn_w5", "E4", PieceType.pawn, Color.white),
+      piece_factory("pawn_b6", "F7", PieceType.pawn, Color.black),
+      piece_factory("pawn_b7", "G7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w7", "G2", PieceType.pawn, Color.white),
+      piece_factory("pawn_b8", "H7", PieceType.pawn, Color.black),
+      piece_factory("pawn_w8", "H2", PieceType.pawn, Color.white)
+    ]
+  };
+};
+var smothered_mate = function() {
+  return {
+    title: "Smothered Mate",
+    board: [
+      piece_factory("king_w", "A1", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w2", "B2", PieceType.pawn, Color.white),
+      piece_factory("rook_w1", "B1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("knight_b1", "C2", PieceType.knight, Color.black)
+    ]
+  };
+};
+var suffocation_mate = function() {
+  return {
+    title: "Smothered Mate",
+    board: [
+      piece_factory("king_w", "A1", PieceType.king, Color.white),
+      piece_factory("king_b", "F8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w2", "B2", PieceType.pawn, Color.white),
+      piece_factory("rook_w1", "B1", PieceType.rook, Color.white, RookType.long_rook),
+      piece_factory("knight_b1", "C2", PieceType.knight, Color.black)
+    ]
+  };
+};
+var swallows_tail_mate = function() {
+  return {
+    title: "Swallows Tail Mate",
+    board: [
+      piece_factory("king_w", "B3", PieceType.king, Color.white),
+      piece_factory("king_b", "B5", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("pawn_w2", "C2", PieceType.pawn, Color.white),
+      piece_factory("queen_b", "B4", PieceType.queen, Color.black)
+    ]
+  };
+};
+var triangle_mate = function() {
+  return {
+    title: "Triangle Mate",
+    board: [
+      piece_factory("king_w", "B3", PieceType.king, Color.white),
+      piece_factory("king_b", "B8", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "B2", PieceType.pawn, Color.white),
+      piece_factory("queen_b", "C4", PieceType.queen, Color.black),
+      piece_factory("rook_b1", "A4", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var vukovic_mate = function() {
+  return {
+    title: "Vukovic Mate",
+    board: [
+      piece_factory("king_w", "C1", PieceType.king, Color.white),
+      piece_factory("king_b", "B8", PieceType.king, Color.black),
+      piece_factory("pawn_b1", "D3", PieceType.pawn, Color.black),
+      piece_factory("rook_b1", "C2", PieceType.rook, Color.black, RookType.long_rook),
+      piece_factory("knight_b1", "C3", PieceType.knight, Color.black)
+    ]
+  };
+};
+var list_of_checkmate_boards = [
+  anastasias_mate(),
+  anderssens_mate(),
+  arabian_mate(),
+  backrank_mate(),
+  belstra_mate(),
+  blackburns_mate(),
+  blind_swine_mate(),
+  bodens_mate(),
+  corner_mate(),
+  corridor_mate(),
+  diagonal_corridor_mate(),
+  cozios_mate(),
+  damianos_mate(),
+  david_and_goliath_mate(),
+  epaulette_mate(),
+  fools_mate(),
+  grecos_mate(),
+  h_file_mate(),
+  hook_mate(),
+  kill_box_mate(),
+  lawn_mower_mate(),
+  legals_mate(),
+  lollis_mate(),
+  max_langes_mate(),
+  mayets_mate(),
+  morphys_mate(),
+  opera_mate(),
+  pillsburys_mate(),
+  retis_mate(),
+  scholars_mate(),
+  smothered_mate(),
+  suffocation_mate(),
+  swallows_tail_mate(),
+  triangle_mate(),
+  vukovic_mate()
+];
+var checkmate_boards_default = list_of_checkmate_boards;
+
+// src/tests/test_boards/end_of_game/stalemate_boards.ts
+var stalemate_one = function() {
+  return {
+    title: "Stalemate One",
+    board: [
+      piece_factory("king_w", "C1", PieceType.king, Color.white),
+      piece_factory("king_b", "C3", PieceType.king, Color.black),
+      piece_factory("pawn_b1", "C2", PieceType.pawn, Color.black)
+    ]
+  };
+};
+var stalemate_two = function() {
+  return {
+    title: "Stalemate Two",
+    board: [
+      piece_factory("king_w", "H1", PieceType.king, Color.white),
+      piece_factory("king_b", "G3", PieceType.king, Color.black),
+      piece_factory("bishop_w1", "G1", PieceType.bishop, Color.white),
+      piece_factory("rook_b1", "A1", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var stalemate_three = function() {
+  return {
+    title: "Stalemate Three",
+    board: [
+      piece_factory("king_w", "A1", PieceType.king, Color.white),
+      piece_factory("king_b", "G6", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A2", PieceType.pawn, Color.white),
+      piece_factory("queen_b1", "B3", PieceType.queen, Color.black),
+      piece_factory("rook_b1", "A3", PieceType.rook, Color.black, RookType.long_rook)
+    ]
+  };
+};
+var anand_v_kramnik = function() {
+  return {
+    title: "Anand VS Kramnik 2007",
+    board: [
+      piece_factory("king_w", "H5", PieceType.king, Color.white),
+      piece_factory("king_b", "F5", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "H4", PieceType.pawn, Color.white),
+      piece_factory("pawn_b1", "F6", PieceType.pawn, Color.black),
+      piece_factory("pawn_b2", "G7", PieceType.pawn, Color.black)
+    ]
+  };
+};
+var korchnoi_v_karpov = function() {
+  return {
+    title: "Korchnoi VS Karpov 1978",
+    board: [
+      piece_factory("king_w", "H7", PieceType.king, Color.white),
+      piece_factory("king_b", "F7", PieceType.king, Color.black),
+      piece_factory("pawn_w1", "A3", PieceType.pawn, Color.white),
+      piece_factory("pawn_b1", "A4", PieceType.pawn, Color.black),
+      piece_factory("bishop_b1", "G7", PieceType.bishop, Color.black)
+    ]
+  };
+};
+var bernstein_v_smyslov = function() {
+  return {
+    title: "Bernstein VS Smylov",
+    board: [
+      piece_factory("king_w", "F3", PieceType.king, Color.white),
+      piece_factory("king_b", "F5", PieceType.king, Color.black),
+      piece_factory("pawn_b1", "F4", PieceType.pawn, Color.black),
+      piece_factory("rook_b1", "B2", PieceType.rook, Color.black, RookType.short_rook)
+    ]
+  };
+};
+var matulovic_v_minev = function() {
+  return {
+    title: "Matulovic VS Minev",
+    board: [
+      piece_factory("king_w", "H3", PieceType.king, Color.white),
+      piece_factory("king_b", "H5", PieceType.king, Color.black),
+      piece_factory("pawn_b1", "F4", PieceType.pawn, Color.black),
+      piece_factory("rook_b1", "B2", PieceType.rook, Color.black, RookType.short_rook)
+    ]
+  };
+};
+var list_of_stalemates = [
+  stalemate_one(),
+  stalemate_two(),
+  stalemate_three(),
+  anand_v_kramnik(),
+  korchnoi_v_karpov(),
+  bernstein_v_smyslov(),
+  matulovic_v_minev()
+];
+var stalemate_boards_default = list_of_stalemates;
+
+// src/tests/test_boards/setup_board.ts
+function setup_board(title, subject, white_king_pos, black_queen_pos, expected_result) {
+  return {
+    title,
+    board: [
+      subject,
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("king_w", white_king_pos, PieceType.king, Color.white),
+      piece_factory("queen_b", black_queen_pos, PieceType.queen, Color.black)
+    ],
+    subject,
+    expected_result
+  };
+}
+
+// src/tests/test_boards/subject_piece.ts
+function subject_piece(piece_type) {
+  return piece_type === PieceType.rook ? piece_factory("rook_w1", "E2", PieceType.rook, Color.white, RookType.short_rook) : piece_factory("moch_w1", "E2", piece_type, Color.white);
+}
+
+// src/tests/test_boards/results_board.ts
+function results_board(piece_type, test_inputs) {
+  return test_inputs.map((input) => {
+    const { title, white_king_pos, black_queen_pos, expected_result } = input;
+    return setup_board(title, subject_piece(piece_type), white_king_pos, black_queen_pos, expected_result);
+  });
+}
+
+// src/tests/test_boards/pin_boards/pawn_pin_boards.ts
+var test_inputs = [
+  {
+    title: "Pawn Pin from North",
+    white_king_pos: "E1",
+    black_queen_pos: "E5",
+    expected_result: ["E3", "E4"]
+  },
+  {
+    title: "Pawn Pin from North East",
+    white_king_pos: "D1",
+    black_queen_pos: "G4",
+    expected_result: []
+  },
+  {
+    title: "Pawn Pin from East",
+    white_king_pos: "C2",
+    black_queen_pos: "G2",
+    expected_result: []
+  },
+  {
+    title: "Pawn Pin from South East",
+    white_king_pos: "C4",
+    black_queen_pos: "F1",
+    expected_result: []
+  },
+  {
+    title: "Pawn Pin from South",
+    white_king_pos: "E5",
+    black_queen_pos: "E1",
+    expected_result: ["E3", "E4"]
+  },
+  {
+    title: "Pawn Pin from South West",
+    white_king_pos: "G4",
+    black_queen_pos: "D1",
+    expected_result: []
+  },
+  {
+    title: "Pawn Pin from West",
+    white_king_pos: "G2",
+    black_queen_pos: "C2",
+    expected_result: []
+  },
+  {
+    title: "Pawn Pin from North West",
+    white_king_pos: "F1",
+    black_queen_pos: "C4",
+    expected_result: []
+  }
+];
+var pawn_pin_boards = results_board(PieceType.pawn, test_inputs);
+var pawn_pin_boards_default = pawn_pin_boards;
+
+// src/tests/test_boards/pin_boards/rook_pin_boards.ts
+var test_inputs2 = [
+  {
+    title: "Rook from North",
+    white_king_pos: "E1",
+    black_queen_pos: "E5",
+    expected_result: ["E3", "E4", "E5"]
+  },
+  {
+    title: "Rook from North East",
+    white_king_pos: "D1",
+    black_queen_pos: "G4",
+    expected_result: []
+  },
+  {
+    title: "Rook from East",
+    white_king_pos: "C2",
+    black_queen_pos: "G2",
+    expected_result: ["F2", "G2", "D2"]
+  },
+  {
+    title: "Rook from South East",
+    white_king_pos: "C4",
+    black_queen_pos: "F1",
+    expected_result: []
+  },
+  {
+    title: "Rook from South",
+    white_king_pos: "E5",
+    black_queen_pos: "E1",
+    expected_result: ["E3", "E4", "E1"]
+  },
+  {
+    title: "Rook from South West",
+    white_king_pos: "G4",
+    black_queen_pos: "D1",
+    expected_result: []
+  },
+  {
+    title: "Rook from West",
+    white_king_pos: "G2",
+    black_queen_pos: "C2",
+    expected_result: ["F2", "D2", "C2"]
+  },
+  {
+    title: "Rook from North West",
+    white_king_pos: "F1",
+    black_queen_pos: "C4",
+    expected_result: []
+  }
+];
+var rook_pin_boards = results_board(PieceType.rook, test_inputs2);
+var rook_pin_boards_default = rook_pin_boards;
+
+// src/tests/test_boards/pin_boards/bishop_pin_boards.ts
+var test_inputs3 = [
+  {
+    title: "Bishop Pin from North",
+    white_king_pos: "E1",
+    black_queen_pos: "E5",
+    expected_result: []
+  },
+  {
+    title: "Bishop Pin from North East",
+    white_king_pos: "D1",
+    black_queen_pos: "G4",
+    expected_result: ["F3", "G4"]
+  },
+  {
+    title: "Bishop Pin from East",
+    white_king_pos: "C2",
+    black_queen_pos: "G2",
+    expected_result: []
+  },
+  {
+    title: "Bishop Pin from South East",
+    white_king_pos: "C4",
+    black_queen_pos: "F1",
+    expected_result: ["F1", "D3"]
+  },
+  {
+    title: "Bishop Pin from South",
+    white_king_pos: "E5",
+    black_queen_pos: "E1",
+    expected_result: []
+  },
+  {
+    title: "Bishop Pin from South West",
+    white_king_pos: "G4",
+    black_queen_pos: "D1",
+    expected_result: ["F3", "D1"]
+  },
+  {
+    title: "Bishop Pin from West",
+    white_king_pos: "G2",
+    black_queen_pos: "C2",
+    expected_result: []
+  },
+  {
+    title: "Bishop Pin from North West",
+    white_king_pos: "F1",
+    black_queen_pos: "C4",
+    expected_result: ["D3", "C4"]
+  }
+];
+var bishop_pin_boards = results_board(PieceType.bishop, test_inputs3);
+var bishop_pin_boards_default = bishop_pin_boards;
+
+// src/tests/test_boards/pin_boards/knight_pin_boards.ts
+var test_inputs4 = [
+  {
+    title: "Knight Pin from North",
+    white_king_pos: "E1",
+    black_queen_pos: "E5",
+    expected_result: []
+  },
+  {
+    title: "Knight Pin from North East",
+    white_king_pos: "D1",
+    black_queen_pos: "G4",
+    expected_result: []
+  },
+  {
+    title: "Knight Pin from East",
+    white_king_pos: "C2",
+    black_queen_pos: "G2",
+    expected_result: []
+  },
+  {
+    title: "Knight Pin from South East",
+    white_king_pos: "C4",
+    black_queen_pos: "F1",
+    expected_result: []
+  },
+  {
+    title: "Knight Pin from South",
+    white_king_pos: "E5",
+    black_queen_pos: "E1",
+    expected_result: []
+  },
+  {
+    title: "Knight Pin from South West",
+    white_king_pos: "G4",
+    black_queen_pos: "D1",
+    expected_result: []
+  },
+  {
+    title: "Knight Pin from West",
+    white_king_pos: "G2",
+    black_queen_pos: "C2",
+    expected_result: []
+  },
+  {
+    title: "Knight Pin from North West",
+    white_king_pos: "F1",
+    black_queen_pos: "C4",
+    expected_result: []
+  }
+];
+var knight_pin_boards = results_board(PieceType.knight, test_inputs4);
+var knight_pin_boards_default = knight_pin_boards;
+
+// src/tests/test_boards/pin_boards/queen_pin_boards.ts
+var test_inputs5 = [
+  {
+    title: "Queen Pin from North",
+    white_king_pos: "E1",
+    black_queen_pos: "E5",
+    expected_result: ["E3", "E4", "E5"]
+  },
+  {
+    title: "Queen Pin from North East",
+    white_king_pos: "D1",
+    black_queen_pos: "G4",
+    expected_result: ["F3", "G4"]
+  },
+  {
+    title: "Queen Pin from East",
+    white_king_pos: "C2",
+    black_queen_pos: "G2",
+    expected_result: ["F2", "G2", "D2"]
+  },
+  {
+    title: "Queen Pin from South East",
+    white_king_pos: "C4",
+    black_queen_pos: "F1",
+    expected_result: ["F1", "D3"]
+  },
+  {
+    title: "Queen Pin from South",
+    white_king_pos: "E5",
+    black_queen_pos: "E1",
+    expected_result: ["E3", "E4", "E1"]
+  },
+  {
+    title: "Queen Pin from South West",
+    white_king_pos: "G4",
+    black_queen_pos: "D1",
+    expected_result: ["F3", "D1"]
+  },
+  {
+    title: "Queen Pin from West",
+    white_king_pos: "G2",
+    black_queen_pos: "C2",
+    expected_result: ["F2", "D2", "C2"]
+  },
+  {
+    title: "Queen Pin from North West",
+    white_king_pos: "F1",
+    black_queen_pos: "C4",
+    expected_result: ["D3", "C4"]
+  }
+];
+var queen_pin_boards = results_board(PieceType.queen, test_inputs5);
+var queen_pin_boards_default = queen_pin_boards;
+
+// src/tests/test_boards/pin_boards/pawn_pin_with_attack.ts
+var pawn_pin_with_attack_from_west = function() {
+  const subject = piece_factory("pawn_w1", "C2", PieceType.pawn, Color.white);
+  return {
+    title: "Pawn Pin Attack",
+    board: [
+      piece_factory("king_w", "D2", PieceType.king, Color.white),
+      piece_factory("king_b", "C8", PieceType.king, Color.black),
+      subject,
+      piece_factory("rook_b1", "D3", PieceType.rook, Color.black, RookType.short_rook),
+      piece_factory("queen_b1", "B2", PieceType.queen, Color.black)
+    ],
+    subject,
+    expected_result: []
+  };
+};
+var pawn_pin_attack_boards = [
+  pawn_pin_with_attack_from_west()
+];
+var pawn_pin_with_attack_default = pawn_pin_attack_boards;
+
+// src/tests/test_boards/check_boards/pawn_check_board.ts
+var test_inputs6 = [
+  {
+    title: "Pawn check from North",
+    white_king_pos: "F1",
+    black_queen_pos: "F5",
+    expected_result: []
+  },
+  {
+    title: "Pawn check from North East",
+    white_king_pos: "C1",
+    black_queen_pos: "G5",
+    expected_result: ["E3"]
+  },
+  {
+    title: "Pawn check from East",
+    white_king_pos: "C3",
+    black_queen_pos: "G3",
+    expected_result: ["E3"]
+  },
+  {
+    title: "Pawn check from South East",
+    white_king_pos: "C6",
+    black_queen_pos: "H1",
+    expected_result: ["E4"]
+  },
+  {
+    title: "Pawn check from South",
+    white_king_pos: "F6",
+    black_queen_pos: "F3",
+    expected_result: ["F3"]
+  },
+  {
+    title: "Pawn check from South West",
+    white_king_pos: "G8",
+    black_queen_pos: "A2",
+    expected_result: []
+  },
+  {
+    title: "Pawn check from West",
+    white_king_pos: "G3",
+    black_queen_pos: "D3",
+    expected_result: ["E3", "D3"]
+  },
+  {
+    title: "Pawn check from North West",
+    white_king_pos: "H1",
+    black_queen_pos: "A8",
+    expected_result: ["E4"]
+  }
+];
+var bishop_check_boards = results_board(PieceType.pawn, test_inputs6);
+var pawn_check_board_default = bishop_check_boards;
+
+// src/tests/test_boards/check_boards/bishop_check_board.ts
+var test_inputs7 = [
+  {
+    title: "Bishop check from North",
+    white_king_pos: "F1",
+    black_queen_pos: "F5",
+    expected_result: ["F3"]
+  },
+  {
+    title: "Bishop check from North East",
+    white_king_pos: "C1",
+    black_queen_pos: "G5",
+    expected_result: []
+  },
+  {
+    title: "Bishop check from East",
+    white_king_pos: "C3",
+    black_queen_pos: "G3",
+    expected_result: ["F3", "D3"]
+  },
+  {
+    title: "Bishop check from South East",
+    white_king_pos: "C6",
+    black_queen_pos: "H1",
+    expected_result: ["F3"]
+  },
+  {
+    title: "Bishop check from South",
+    white_king_pos: "F6",
+    black_queen_pos: "F3",
+    expected_result: ["F3"]
+  },
+  {
+    title: "Bishop check from South West",
+    white_king_pos: "G8",
+    black_queen_pos: "A2",
+    expected_result: ["C4"]
+  },
+  {
+    title: "Bishop check from West",
+    white_king_pos: "G3",
+    black_queen_pos: "C3",
+    expected_result: ["F3", "D3"]
+  },
+  {
+    title: "Bishop check from North West",
+    white_king_pos: "G1",
+    black_queen_pos: "B6",
+    expected_result: []
+  }
+];
+var bishop_check_boards2 = results_board(PieceType.bishop, test_inputs7);
+var bishop_check_board_default = bishop_check_boards2;
+
+// src/tests/test_boards/check_boards/rook_check_board.ts
+var test_inputs8 = [
+  {
+    title: "Rook check from North",
+    white_king_pos: "F1",
+    black_queen_pos: "F5",
+    expected_result: ["F2"]
+  },
+  {
+    title: "Rook check from North East",
+    white_king_pos: "C1",
+    black_queen_pos: "G5",
+    expected_result: ["E3", "D2"]
+  },
+  {
+    title: "Rook check from East",
+    white_king_pos: "C3",
+    black_queen_pos: "G3",
+    expected_result: ["E3"]
+  },
+  {
+    title: "Rook check from South East",
+    white_king_pos: "C6",
+    black_queen_pos: "H1",
+    expected_result: ["E4", "G2"]
+  },
+  {
+    title: "Rook check from South",
+    white_king_pos: "F6",
+    black_queen_pos: "F3",
+    expected_result: []
+  },
+  {
+    title: "Rook check from South West",
+    white_king_pos: "H8",
+    black_queen_pos: "A1",
+    expected_result: ["E5", "B2"]
+  },
+  {
+    title: "Rook check from West",
+    white_king_pos: "G3",
+    black_queen_pos: "C3",
+    expected_result: ["E3"]
+  },
+  {
+    title: "Rook check from North West",
+    white_king_pos: "G1",
+    black_queen_pos: "C5",
+    expected_result: ["E3", "F2"]
+  }
+];
+var rook_check_boards = results_board(PieceType.rook, test_inputs8);
+var rook_check_board_default = rook_check_boards;
+
+// src/tests/test_boards/check_boards/knight_check_board.ts
+var test_inputs9 = [
+  {
+    title: "Knight check from North",
+    white_king_pos: "F1",
+    black_queen_pos: "F5",
+    expected_result: ["F4"]
+  },
+  {
+    title: "Knight check from North East",
+    white_king_pos: "C1",
+    black_queen_pos: "G5",
+    expected_result: ["F4"]
+  },
+  {
+    title: "Knight check from East",
+    white_king_pos: "C3",
+    black_queen_pos: "G3",
+    expected_result: ["G3"]
+  },
+  {
+    title: "Knight check from South East",
+    white_king_pos: "C6",
+    black_queen_pos: "H1",
+    expected_result: []
+  },
+  {
+    title: "Knight check from South",
+    white_king_pos: "F6",
+    black_queen_pos: "F3",
+    expected_result: ["F4"]
+  },
+  {
+    title: "Knight check from South West",
+    white_king_pos: "H8",
+    black_queen_pos: "A1",
+    expected_result: ["C3", "D4"]
+  },
+  {
+    title: "Knight check from West",
+    white_king_pos: "H3",
+    black_queen_pos: "B3",
+    expected_result: ["G3", "C3"]
+  },
+  {
+    title: "Knight check from North West",
+    white_king_pos: "G1",
+    black_queen_pos: "B6",
+    expected_result: ["D4"]
+  }
+];
+var knight_check_boards = results_board(PieceType.knight, test_inputs9);
+var knight_check_board_default = knight_check_boards;
+
+// src/tests/test_boards/check_boards/queen_check_board.ts
+var test_inputs10 = [
+  {
+    title: "Queen check from North",
+    white_king_pos: "F1",
+    black_queen_pos: "F5",
+    expected_result: ["F3", "F2"]
+  },
+  {
+    title: "Queen check from North East",
+    white_king_pos: "C1",
+    black_queen_pos: "G5",
+    expected_result: ["E3", "D2"]
+  },
+  {
+    title: "Queen check from East",
+    white_king_pos: "C3",
+    black_queen_pos: "G3",
+    expected_result: ["E3", "F3", "D3"]
+  },
+  {
+    title: "Queen check from South East",
+    white_king_pos: "C6",
+    black_queen_pos: "H1",
+    expected_result: ["E4", "F3", "G2"]
+  },
+  {
+    title: "Queen check from South",
+    white_king_pos: "F6",
+    black_queen_pos: "F3",
+    expected_result: ["F3"]
+  },
+  {
+    title: "Queen check from South West",
+    white_king_pos: "G8",
+    black_queen_pos: "A2",
+    expected_result: ["E6", "A2", "C4"]
+  },
+  {
+    title: "Queen check from West",
+    white_king_pos: "G3",
+    black_queen_pos: "C3",
+    expected_result: ["E3", "F3", "D3"]
+  },
+  {
+    title: "Queen check from North West",
+    white_king_pos: "G1",
+    black_queen_pos: "B6",
+    expected_result: ["E3", "F2"]
+  }
+];
+var queen_check_boards = results_board(PieceType.queen, test_inputs10);
+var queen_check_board_default = queen_check_boards;
+
+// src/tests/test_boards/special_moves/promotion_boards.ts
+var should_promote = function() {
+  const pawn2 = piece_factory("pawn_w", "A8", PieceType.pawn, Color.white);
+  return {
+    title: "Should Promote",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("king_w", "E1", PieceType.king, Color.white),
+      pawn2
+    ],
+    subject: pawn2,
+    expected_result: true
+  };
+};
+var should_not_promote = function() {
+  const pawn2 = piece_factory("pawn_w", "A7", PieceType.pawn, Color.white);
+  return {
+    title: "Should Promote",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("king_w", "E1", PieceType.king, Color.white),
+      pawn2
+    ],
+    subject: pawn2,
+    expected_result: false
+  };
+};
+var promotion_boards = [
+  should_promote(),
+  should_not_promote()
+];
+var promotion_boards_default = promotion_boards;
+
+// src/tests/test_boards/special_moves/en_passant_boards.ts
+var should_en_passant = function() {
+  const black_pawn = piece_factory("pawn_b", "D5", PieceType.pawn, Color.black);
+  const white_pawn = piece_factory("pawn_w", "E5", PieceType.pawn, Color.white);
+  const move = { piece: black_pawn, from: "D7", to: "D5" };
+  return {
+    title: "Should En Passant",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("king_w", "E1", PieceType.king, Color.white),
+      white_pawn
+    ],
+    subject: { white_pawn, black_pawn, move },
+    expected_result: true
+  };
+};
+var pawn_moved_one_square = function() {
+  const black_pawn = piece_factory("pawn_b", "D5", PieceType.pawn, Color.black);
+  const white_pawn = piece_factory("pawn_w", "E5", PieceType.pawn, Color.white);
+  const move = { piece: black_pawn, from: "D6", to: "D5" };
+  return {
+    title: "Should Not En Passant 1",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("king_w", "E1", PieceType.king, Color.white),
+      white_pawn
+    ],
+    subject: { white_pawn, black_pawn, move },
+    expected_result: false
+  };
+};
+var pawn_wasnt_last_move = function() {
+  const black_pawn = piece_factory("pawn_b", "D5", PieceType.pawn, Color.black);
+  const white_pawn = piece_factory("pawn_w", "E5", PieceType.pawn, Color.white);
+  const rando_pawn = piece_factory("pawn_w1", "A5", PieceType.pawn, Color.white);
+  const move = { piece: rando_pawn, from: "A5", to: "A7" };
+  return {
+    title: "Should Not En Passant 2",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      piece_factory("king_w", "E1", PieceType.king, Color.white),
+      white_pawn
+    ],
+    subject: { white_pawn, black_pawn, move },
+    expected_result: false
+  };
+};
+var en_passant_boards = [
+  should_en_passant(),
+  pawn_moved_one_square(),
+  pawn_wasnt_last_move()
+];
+var en_passant_boards_default = en_passant_boards;
+
+// src/tests/test_boards/special_moves/castle_boards.ts
+var should_short_castle = function() {
+  const king2 = piece_factory("king_w", "E1", PieceType.king, Color.white);
+  const rook9 = piece_factory("rook_w1", "H1", PieceType.rook, Color.white, RookType.short_rook);
+  return {
+    title: "Should Short Castle",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      king2,
+      rook9
+    ],
+    subject: [king2, rook9],
+    expected_result: true
+  };
+};
+var should_long_castle = function() {
+  const king2 = piece_factory("king_w", "E1", PieceType.king, Color.white);
+  const rook9 = piece_factory("rook_w1", "A1", PieceType.rook, Color.white, RookType.long_rook);
+  return {
+    title: "Should Short Castle",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      king2,
+      rook9
+    ],
+    subject: [king2, rook9],
+    expected_result: true
+  };
+};
+var piece_blocking_short_castle = function() {
+  const bishop2 = piece_factory("bishop_w", "F1", PieceType.bishop, Color.white);
+  const king2 = piece_factory("king_w", "E1", PieceType.king, Color.white);
+  const rook9 = piece_factory("rook_w1", "H1", PieceType.rook, Color.white, RookType.short_rook);
+  return {
+    title: "Piece Blocking Short Castle",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      bishop2,
+      king2,
+      rook9
+    ],
+    subject: [king2, rook9],
+    expected_result: true
+  };
+};
+var piece_blocking_long_castle = function() {
+  const bishop2 = piece_factory("bishop_w", "C1", PieceType.bishop, Color.white);
+  const king2 = piece_factory("king_w", "E1", PieceType.king, Color.white);
+  const rook9 = piece_factory("rook_w1", "A1", PieceType.rook, Color.white, RookType.long_rook);
+  return {
+    title: "Piece Blocking Long Castle",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      bishop2,
+      king2,
+      rook9
+    ],
+    subject: [king2, rook9],
+    expected_result: true
+  };
+};
+var piece_attacking_short_castle = function() {
+  const attacking_rook = piece_factory("rook_w", "G2", PieceType.rook, Color.black, RookType.short_rook);
+  const king2 = piece_factory("king_w", "E1", PieceType.king, Color.white);
+  const rook9 = piece_factory("rook_w1", "H1", PieceType.rook, Color.white, RookType.short_rook);
+  return {
+    title: "Piece Attacking Short Castle",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      attacking_rook,
+      king2,
+      rook9
+    ],
+    subject: [king2, rook9],
+    expected_result: false
+  };
+};
+var piece_attacking_long_castle = function() {
+  const attacking_rook = piece_factory("rook_w", "C2", PieceType.rook, Color.black, RookType.short_rook);
+  const king2 = piece_factory("king_w", "E1", PieceType.king, Color.white);
+  const rook9 = piece_factory("rook_w1", "A1", PieceType.rook, Color.white, RookType.long_rook);
+  return {
+    title: "Piece Attacking Long Castle",
+    board: [
+      piece_factory("king_b", "E8", PieceType.king, Color.black),
+      attacking_rook,
+      king2,
+      rook9
+    ],
+    subject: [king2, rook9],
+    expected_result: false
+  };
+};
+var castle_boards = [
+  should_short_castle(),
+  should_long_castle(),
+  piece_blocking_short_castle(),
+  piece_blocking_long_castle(),
+  piece_attacking_short_castle(),
+  piece_attacking_long_castle()
+];
+var castle_boards_default = castle_boards;
+
+// src/tests/test.ts
+class Test extends HTMLElement {
+  title;
+  assert;
+  constructor(title, assert) {
+    super();
+    this.title = title;
+    this.assert = assert;
+    this.render();
+  }
+  render() {
+    this.append_children();
+  }
+  append_children() {
+    return new Promise(async (resolve) => {
+      let div_node = document.createElement("div");
+      let title_node = document.createElement("p");
+      title_node.className = this.assert.result;
+      title_node.innerHTML = `${this.title}`;
+      div_node.appendChild(title_node);
+      this.appendChild(div_node);
+      resolve();
+    });
+  }
+}
+customElements.define("custom-test-element", Test);
+
+// src/tests/assert.ts
+class Assert {
+  assert_type;
+  result;
+  constructor(assert_type, lhs, rhs) {
+    this.assert_type = assert_type;
+    this.result = this.assert_result(assert_type, lhs, rhs);
+  }
+  assert_result(assert_type, lhs, rhs) {
+    return this.run_assert(assert_type, lhs, rhs) ? AssertResult.passed : AssertResult.failed;
+  }
+  run_assert(assert_type, lhs, rhs) {
+    switch (assert_type) {
+      case AssertType.equals:
+        return this.equals(lhs, rhs);
+      case AssertType.not_equals:
+        return this.not_equals(lhs, rhs);
+    }
+  }
+  equals(lhs, rhs) {
+    if (!are_equal(lhs, rhs)) {
+      console.log("Actual", lhs, "Expected", rhs);
+    }
+    return are_equal(lhs, rhs);
+  }
+  not_equals(lhs, rhs) {
+    return !are_equal(lhs, rhs);
+  }
+}
+var AssertType;
+(function(AssertType2) {
+  AssertType2[AssertType2["equals"] = 0] = "equals";
+  AssertType2[AssertType2["not_equals"] = 1] = "not_equals";
+})(AssertType || (AssertType = {}));
+var AssertResult;
+(function(AssertResult2) {
+  AssertResult2["passed"] = "passed";
+  AssertResult2["failed"] = "failed";
+})(AssertResult || (AssertResult = {}));
+
+// src/tests/test_runner.ts
+class TestRunner {
+  constructor() {
+  }
+  before_each(test_position) {
+    PieceList.piece_list = test_position.board;
+    MoveController.load_possible_moves_lists();
+  }
+  build_checkmate_board_list() {
+    const test_list = [];
+    checkmate_boards_default.forEach((board) => {
+      this.before_each(board);
+      const white_king = PieceList.king_by_color(Color.white);
+      const assert2 = new Assert(AssertType.equals, white_king.check_for_checkmate(), "Game Over: Checkmate");
+      test_list.push(new Test(board.title, assert2));
+    });
+    return test_list;
+  }
+  build_stalemate_board_list() {
+    const test_list = [];
+    stalemate_boards_default.forEach((board) => {
+      this.before_each(board);
+      const white_king = PieceList.king_by_color(Color.white);
+      const assert2 = new Assert(AssertType.equals, white_king.check_for_checkmate(), "Game Over: Stalemate");
+      test_list.push(new Test(board.title, assert2));
+    });
+    return test_list;
+  }
+  build_pin_boards() {
+    const test_list = [];
+    const pin_boards = [
+      ...pawn_pin_boards_default,
+      ...rook_pin_boards_default,
+      ...bishop_pin_boards_default,
+      ...knight_pin_boards_default,
+      ...queen_pin_boards_default
+    ];
+    pin_boards.forEach((board) => {
+      this.before_each(board);
+      const assert2 = new Assert(AssertType.equals, board.subject.possible_moves, board.expected_result);
+      test_list.push(new Test(board.title, assert2));
+    });
+    return test_list;
+  }
+  build_check_boards() {
+    const test_list = [];
+    const check_boards = [
+      ...pawn_check_board_default,
+      ...rook_check_board_default,
+      ...bishop_check_board_default,
+      ...knight_check_board_default,
+      ...queen_check_board_default
+    ];
+    check_boards.forEach((board) => {
+      this.before_each(board);
+      const assert2 = new Assert(AssertType.equals, board.subject.possible_moves, board.expected_result);
+      test_list.push(new Test(board.title, assert2));
+    });
+    return test_list;
+  }
+  build_castle_boards() {
+    const test_list = [];
+    castle_boards_default.forEach((board) => {
+      this.before_each(board);
+      const king_square = SquareGrid.square_by_board_position(board.subject[0].pos);
+      const rook_square = SquareGrid.square_by_board_position(board.subject[1].pos);
+      const assert2 = new Assert(AssertType.equals, MoveController.conditions_for_castle(king_square, rook_square), board.expected_result);
+      test_list.push(new Test(board.title, assert2));
+    });
+    return test_list;
+  }
+  build_promotion_boards() {
+    const test_list = [];
+    promotion_boards_default.forEach((board) => {
+      this.before_each(board);
+      const pawn_row = SquareGrid.point_at_board_position(board.subject.pos).row;
+      const assert2 = new Assert(AssertType.equals, board.subject.should_make_queen(pawn_row), board.expected_result);
+      test_list.push(new Test(board.title, assert2));
+    });
+    return test_list;
+  }
+  build_en_passant_boards() {
+    const test_list = [];
+    en_passant_boards_default.forEach((board) => {
+      this.before_each(board);
+      GameController.move_list = new MoveList;
+      GameController.move_list.add_move(board.subject.move);
+      const res = board.subject.white_pawn.conditions_for_en_passant(board.subject.black_pawn);
+      const assert2 = new Assert(AssertType.equals, res, board.expected_result);
+      test_list.push(new Test(board.title, assert2));
+    });
+    return test_list;
+  }
+  build_pawn_pin_attack_boards() {
+    const test_list = [];
+    pawn_pin_with_attack_default.forEach((board) => {
+      this.before_each(board);
+      const assert2 = new Assert(AssertType.equals, board.subject.possible_moves, board.expected_result);
+      test_list.push(new Test(board.title, assert2));
+    });
+    return test_list;
+  }
+}
+
+// src/tests/styles.ts
+class TestStyles {
+  static test_style() {
+    let style = document.createElement("style");
+    style.innerHTML = `
+      .passed {
+        width: 230px;
+        height: 50px;
+        background-color: #73BE73;
+        color: white;
+        text-align: center;
+        line-height: 50px;
+        font-size: 18px;
+      }
+      
+      .failed {
+        width: 250px;
+        height: 50px;
+        background-color: red;
+        color: white;
+        text-align: center;
+        line-height: 50px;
+        font-size: 18px;
+      }
+
+      .test_list {
+        width: calc(20% - 10px); /* Adjust width based on the number of columns you want */
+        margin-bottom: 20px; /* Adjust margin between items */
+        text-align: center;
+      }
+
+      .test_view {
+        display: flex;
+        justify-content: space-between; /* or space-evenly */
+        flex-wrap: wrap;
+      }
+      `;
+    return style;
+  }
+}
+
+// src/tests/test_view.ts
+class TestView extends HTMLElement {
+  constructor() {
+    super();
+    this.render();
+  }
+  render() {
+    this.build_square_grid();
+    MoveController.load_possible_moves_lists();
+    this.append_children();
+  }
+  append_children() {
+    return new Promise(async (resolve) => {
+      this.appendChild(TestStyles.test_style());
+      let test_view = document.createElement("div");
+      test_view.className = "test_view";
+      this.appendChild(test_view);
+      this.className = "test_view";
+      const test_runner2 = new TestRunner;
+      this.render_board_list(test_runner2.build_checkmate_board_list(), test_view, "Checkmate Tests");
+      this.render_board_list(test_runner2.build_stalemate_board_list(), test_view, "Stalemate Tests");
+      this.render_board_list(test_runner2.build_check_boards(), test_view, "Block Check Tests");
+      const special_tests = [
+        ...test_runner2.build_castle_boards(),
+        ...test_runner2.build_promotion_boards(),
+        ...test_runner2.build_en_passant_boards()
+      ];
+      this.render_board_list(special_tests, test_view, "Special Moves Tests");
+      const pin_tests = [
+        ...test_runner2.build_pin_boards(),
+        ...test_runner2.build_pawn_pin_attack_boards()
+      ];
+      this.render_board_list(pin_tests, test_view, "Pin Tests");
+      resolve();
+    });
+  }
+  render_board_list(tests, test_view, title) {
+    let test_node = document.createElement("div");
+    test_node.className = "test_list";
+    this.add_title(test_node, title);
+    tests.forEach((test2) => {
+      test_node.appendChild(test2);
+    });
+    test_view.appendChild(test_node);
+  }
+  add_title(el, content) {
+    let title = document.createElement("p");
+    title.textContent = content;
+    el.appendChild(title);
+  }
+  build_square_grid() {
+    let next_square;
+    let row_array = [];
+    for (let col = board_start_index;col < Board.board_size; col++) {
+      next_square = this.instantiate_square(col);
+      row_array.push(next_square);
+      if (row_array.length === row_and_column_size) {
+        SquareGrid.square_grid.push(row_array);
+        row_array = [];
+      }
+    }
+  }
+  instantiate_square(index) {
+    let color20 = SquareColor.black;
+    if (index % 2 === this.current_row(index)) {
+      color20 = SquareColor.white;
+    }
+    let square3 = new Square(color20, index);
+    return square3;
+  }
+  current_row(i) {
+    let mod = board_start_index;
+    if (i > 7 && i < 16) {
+      mod = 1;
+    } else if (i > 23 && i < 32) {
+      mod = 1;
+    } else if (i > 39 && i < 48) {
+      mod = 1;
+    } else if (i > 55) {
+      mod = 1;
+    }
+    return mod;
+  }
+}
+customElements.define("test-element", TestView);
+
 // src/index.ts
 class Index extends HTMLElement {
+  static test_view = new TestView;
   static board = new Board;
   constructor() {
     super();

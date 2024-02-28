@@ -40,6 +40,10 @@ app.get('/online_game', (req, res) => {
     res.sendFile(__dirname + '/public/pages/online_game.html');
 });
 
+app.get('/tests', (req, res) => {
+    res.sendFile(__dirname + '/public/pages/tests.html');
+});
+
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     const id = uuidv4()
