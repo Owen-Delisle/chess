@@ -36,6 +36,10 @@ app.get('/otb', (req, res) => {
     res.sendFile(__dirname + '/public/pages/otb.html');
 });
 
+app.get('/online_game', (req, res) => {
+    res.sendFile(__dirname + '/public/pages/online_game.html');
+});
+
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     const id = uuidv4()
@@ -68,6 +72,7 @@ app.post('/login', async (req, res) => {
 			const passwordMatch = await bcrypt.compare(password, user.password);
 			if(passwordMatch) {
 				if(secretKey !== undefined) {
+                    console.log("Made it to token")
 					const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
 					res.json({ token });
 				} else {

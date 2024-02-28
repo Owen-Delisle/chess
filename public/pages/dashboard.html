@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" />
+	<script src="index.js" type="module"></script>
+	<title>Dashboard</title>
+</head>
+
+<body>
+
+	<button id="play_online_button">Play Online</button>
+	<button id="otb_button">Play Over The Board</button>
+
+
+	<script>
+		const otb_button = document.getElementById('otb_button');
+
+		otb_button.addEventListener('click', async function(event) {
+			console.log('clicked')
+			window.location.href = '/otb';
+		})
+
+		const play_online_button = document.getElementById('otb_button');
+
+		play_online_button.addEventListener('click', async function(event) {
+			console.log('clicked')
+			window.location.href = '/online_game';
+		})
+	</script>
+</body>
+
+</html>
