@@ -23,7 +23,7 @@
 		const token = localStorage.getItem('jwtToken')
 
 		if(token) {
-			window.location.href = '/index';
+			window.location.href = '/dashboard';
 		}
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -61,7 +61,7 @@
                     localStorage.setItem('jwtToken', token);
 
                     // Redirect user to dashboard or another page
-                    window.location.href = '/index';
+                    window.location.href = '/dashboard';
                 } catch (error) {
                     console.error('Error:', error.message);
                     alert('Failed to login');

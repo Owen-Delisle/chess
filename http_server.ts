@@ -28,8 +28,12 @@ app.get('/login', (req, res) => {
     res.sendFile(__dirname + '/public/pages/login.html');
 });
 
-app.get('/index', (req, res) => {
-    res.sendFile(__dirname + '/public/pages/index.html');
+app.get('/dashboard', (req, res) => {
+    res.sendFile(__dirname + '/public/pages/dashboard.html');
+});
+
+app.get('/otb', (req, res) => {
+    res.sendFile(__dirname + '/public/pages/otb.html');
 });
 
 app.post('/signup', async (req, res) => {
