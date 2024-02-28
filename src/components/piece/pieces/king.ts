@@ -22,6 +22,13 @@ import { surrounding_points } from '../../../utils/grid'
 import { not_color } from '../color'
 import { every_direction } from '../piece_directions'
 import Pawn from './pawn'
+import { GameEndType } from '../../../controllers/game_controller'
+import { WinOrLose } from '../../../controllers/game_controller'
+
+import King_W_Win_SVG from '../piece_factory/assets/king-w-win.svg'
+import King_B_Win_SVG from '../piece_factory/assets/king-b-win.svg'
+import King_W_Loss_SVG from '../piece_factory/assets/king-w-loss.svg'
+import King_B_Loss_SVG from '../piece_factory/assets/king-b-loss.svg'
 
 export default class King extends Piece implements Piece_Interface {
 	move_distance: number = 1
@@ -282,7 +289,7 @@ export default class King extends Piece implements Piece_Interface {
 
 		// In Check
 		if (this.piece_in_path_conditions(first_piece, path.direction)) {
-			this.in_check = true
+			this.king_in_check()
 			if (path.direction < index_of_knight_directions) {
 				Piece.update_global_movement_restrictions([
 					...SquareID.pos_between_points(
@@ -295,6 +302,11 @@ export default class King extends Piece implements Piece_Interface {
 				Piece.update_global_movement_restrictions([attacking_knight_position])
 			}
 		}
+	}
+
+	private king_in_check(): void {
+		this.in_check = true
+		SquareGrid.square_by_board_position(this.pos)?.add_check_border()
 	}
 
 	// Refactor
@@ -498,6 +510,27 @@ export default class King extends Piece implements Piece_Interface {
 						index_modifier: -1,
 					}
 			}
+		}
+	}
+
+	public switch_image_with_endgame_image(game_end_type: GameEndType, win_or_lose: WinOrLose): void {
+		if(game_end_type === GameEndType.checkmate) {
+			switch (this.color) {
+				case Color.black:
+					this.svg = win_or_lose === WinOrLose.win ? King_B_Win_SVG: King_B_Loss_SVG
+					break
+				case Color.white:
+					this.svg = win_or_lose === WinOrLose.win ? King_W_Win_SVG : King_W_Loss_SVG
+					break
+			}
+		} else {
+			this.svg = King_B_Loss_SVG
+			this.svg = King_W_Loss_SVG
+		}
+
+		const square = SquareGrid.square_by_board_position(this.pos)
+		if(square !== undefined) {
+			square.update_image(this.image_builder())
 		}
 	}
 }

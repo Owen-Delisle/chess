@@ -35,7 +35,7 @@ export default abstract class Piece {
 		this.color = color
 	}
 
-	private image_builder(): HTMLImageElement {
+	public image_builder(): HTMLImageElement {
 		let image: HTMLImageElement = new Image()
 		image.src = this.svg
 		image.id = this.title

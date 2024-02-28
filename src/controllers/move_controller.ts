@@ -125,10 +125,16 @@ export default class MoveController {
 
 	private static setup_values_for_move(clicked_square: Square): void {
 		if (this.conditions_to_setup_values(clicked_square)) {
-			this.clear_focused_square_visuals()
-			this.focused_square = clicked_square
-			this.focused_square.add_border()
-			this.add_visuals_to_possible_moves_for(this.focused_square.piece_attached_to_square())
+			if(this.focused_square !== clicked_square) {
+				this.clear_focused_square_visuals()
+				this.focused_square = clicked_square
+				this.focused_square.add_border()
+				this.add_visuals_to_possible_moves_for(this.focused_square.piece_attached_to_square())
+			} else {
+				this.remove_visuals_from_possible_moves(this.focused_square.piece_attached_to_square())
+				this.focused_square.remove_border()
+				this.focused_square = undefined
+			}
 		}
 	}
 
@@ -170,6 +176,7 @@ export default class MoveController {
 		GameController.should_game_end(king_of_color)
 	}
 
+	// Move to Piece
 	public static clear_possible_moves_lists(): void {
 		PieceList.piece_list.forEach((piece) => {
 			if (piece != undefined) {
@@ -211,7 +218,10 @@ export default class MoveController {
 		})
 	}
 
-	private static remove_visuals_from_possible_moves(piece: Piece): void {
+	private static remove_visuals_from_possible_moves(piece: Piece | undefined): void {
+		if(piece === undefined) {
+			throw Error("Piece is undefined")
+		} 
 		piece.possible_moves.forEach((possible_move) => {
 			let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
 			if (square != undefined) {

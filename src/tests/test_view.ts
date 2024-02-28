@@ -33,7 +33,6 @@ export default class TestView extends HTMLElement {
 
             this.render_board_list(test_runner.build_checkmate_board_list(), test_view, "Checkmate Tests")
             this.render_board_list(test_runner.build_stalemate_board_list(), test_view, "Stalemate Tests")
-            this.render_board_list(test_runner.build_pin_boards(), test_view, "Pin Tests")
             this.render_board_list(test_runner.build_check_boards(), test_view, "Block Check Tests")
 
             const special_tests: Test[] = [
@@ -43,6 +42,13 @@ export default class TestView extends HTMLElement {
             ]
 
             this.render_board_list(special_tests, test_view, "Special Moves Tests")
+
+            const pin_tests: Test[] = [
+                ...test_runner.build_pin_boards(),
+                ...test_runner.build_pawn_pin_attack_boards()
+            ]
+
+            this.render_board_list(pin_tests, test_view, "Pin Tests")
 
             resolve()
         })

@@ -89,6 +89,9 @@ export default class Pawn extends Piece implements Piece_Interface {
 	}
 
 	private any_restrictions_include_position(position: string): boolean {
+		if(Piece.position_restrictions.length > 0 && this.position_restrictions.length > 0) {
+			return Piece.position_restrictions.includes(position) && this.position_restrictions.includes(position)
+		}
 		if(Piece.position_restrictions.length > 0) {
 			return Piece.position_restrictions.includes(position)
 		}
@@ -157,17 +160,13 @@ export default class Pawn extends Piece implements Piece_Interface {
 		})
 	}
 
-	private make_queen() {
-		PieceList.swap_with_queen(this.title, this.pos, this.color)
-	}
-
 	// Public for testing
 	public should_make_queen(new_square_row: number): boolean {
-		if(this.color === Color.white) {
-			return new_square_row === board_start_index
-		} else {
-			return new_square_row === row_and_column_size-1
-		}
+		return new_square_row === board_start_index
+	}
+
+	private make_queen() {
+		PieceList.swap_with_queen(this.title, this.pos, this.color)
 	}
 
 	private should_en_passant(square_id: string): boolean {
