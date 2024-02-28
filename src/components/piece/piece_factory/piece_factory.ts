@@ -22,12 +22,6 @@ import Queen_W_SVG from './assets/queen-w.svg'
 import Rook_B_SVG from './assets/rook-b.svg'
 import Rook_W_SVG from './assets/rook-w.svg'
 
-import King_W_Win_SVG from './assets/king-w-win.svg'
-import King_B_Win_SVG from './assets/king-b-win.svg'
-
-import King_W_Loss_SVG from './assets/king-w-loss.svg'
-import King_B_Loss_SVG from './assets/king-b-loss.svg'
-
 export default function piece_factory(id: string, position: string, type: PieceType, color: Color, rook_type?: RookType): Piece {
         switch (type) {
             case PieceType.bishop:
