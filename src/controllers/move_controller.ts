@@ -52,7 +52,7 @@ export default class MoveController {
 		let piece_attached_to_focused_square: Piece | undefined =
 			this.focused_square?.piece_attached_to_square()
 		if (piece_attached_to_focused_square != undefined) {
-			this.move_piece_to(clicked_square, piece_attached_to_focused_square)
+			this.move_piece_to(clicked_square.square_id, piece_attached_to_focused_square)
 		}
 	}
 
@@ -107,10 +107,10 @@ export default class MoveController {
 			king_piece.possible_moves.push(SquareID.pos_at_point(next_king_point))
 			rook_piece.possible_moves.push(SquareID.pos_at_point(next_rook_point))
 
-			let new_king_square = SquareGrid.square_by_grid_point(next_king_point)
-			let new_rook_square = SquareGrid.square_by_grid_point(next_rook_point)
+			const new_king_pos = SquareID.pos_at_point(next_king_point)
+			const new_rook_pos = SquareID.pos_at_point(next_king_point)
 
-			this.move_castle_pieces(new_king_square, king_piece, new_rook_square, rook_piece)
+			this.move_castle_pieces(new_king_pos, king_piece, new_rook_pos, rook_piece)
 		}
 	}
 
@@ -231,21 +231,33 @@ export default class MoveController {
 		})
 	}
 
-	private static async move_piece_to(selected_square: Square, piece: Piece): Promise<void> {
-		if (this.remove_piece_conditions(selected_square)) {
-			selected_square.remove_piece()
+	public static async move_piece_to(selected_pos: string, piece: Piece): Promise<void> {
+		console.log(selected_pos)
+		const new_square = SquareGrid.square_by_board_position(selected_pos)
+
+		if(!new_square) {
+			throw new Error("New Square Not Found in Move Piece To")
+		}
+		if (this.remove_piece_conditions(selected_pos)) {
+			new_square.remove_piece()
 		}
 
-		GameController.add_move_to_list({piece: piece, from: piece.pos, to: selected_square.square_id})
-		await piece.move_to(selected_square)
+		GameController.add_move_to_list({ piece: piece, from: piece.pos, to: selected_pos })
+		await piece.move_to(selected_pos)
 
 		this.redraw()
 	}
 
-	private static remove_piece_conditions(selected_square: Square): boolean {
+	private static remove_piece_conditions(selected_pos: string): boolean {
+		const new_square: Square | undefined = SquareGrid.square_by_board_position(selected_pos)
+
+		if(!new_square) {
+			throw new Error("Square not found in Remove Piece Conditions")
+		}
+
 		let should_remove_piece: boolean = false
-		if (!selected_square.is_empty()) {
-			if (selected_square.piece_attached_to_square()!.color != GameController.turn) {
+		if (!new_square.is_empty()) {
+			if (new_square.piece_attached_to_square()!.color !== GameController.turn) {
 				should_remove_piece = true
 			}
 		}
@@ -253,13 +265,13 @@ export default class MoveController {
 	}
 
 	private static async move_castle_pieces(
-		new_king_square: Square,
+		new_king_pos: string,
 		king_piece: Piece,
-		new_rook_square: Square,
+		new_rook_pos: string,
 		rook_piece: Piece,
 	): Promise<void> {
-		await king_piece.move_to(new_king_square)
-		await rook_piece.move_to(new_rook_square)
+		await king_piece.move_to(new_king_pos)
+		await rook_piece.move_to(new_rook_pos)
 		this.redraw()
 	}
 

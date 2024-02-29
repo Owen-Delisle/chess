@@ -36,7 +36,7 @@ app.get('/otb', (req, res) => {
     res.sendFile(__dirname + '/public/pages/otb.html');
 });
 
-app.get('/online_game', (req, res) => {
+app.get('/online', (req, res) => {
     res.sendFile(__dirname + '/public/pages/online_game.html');
 });
 

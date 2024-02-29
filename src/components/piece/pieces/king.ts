@@ -392,9 +392,9 @@ export default class King extends Piece implements Piece_Interface {
 		return pieces_in_path
 	}
 
-	public move_to(new_square: Square): Promise<void> {
+	public move_to(new_pos: string): Promise<void> {
 		return new Promise(async (resolve) => {
-			this.pos = new_square.square_id as string
+			this.pos = new_pos
 			this.has_moved = true
 			this.possible_moves = []
 			resolve()

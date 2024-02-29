@@ -140,18 +140,18 @@ export default class Pawn extends Piece implements Piece_Interface {
 		return false
 	}
 
-	public move_to(new_square: Square): Promise<void> {
+	public move_to(new_pos: string): Promise<void> {
 		return new Promise(async (resolve) => {
 
-			if(this.should_en_passant(new_square.square_id)) {
+			if(this.should_en_passant(new_pos)) {
 				this.en_passant()
 			}
 			
-			this.pos = new_square.square_id
+			this.pos = new_pos
 			this.move_distance = this.minimum_move_distance
 			this.possible_moves = []
 
-			const point: GridPoint = SquareGrid.point_at_board_position(new_square.square_id)
+			const point: GridPoint = SquareGrid.point_at_board_position(new_pos)
 			if (this.should_make_queen(point.row)) {
 				this.make_queen()
 			}

@@ -44,9 +44,9 @@ export default abstract class Piece {
 		return image
 	}
 
-	public move_to(new_square: Square): Promise<void> {
+	public move_to(new_pos: string): Promise<void> {
 		return new Promise(async (resolve) => {
-			this.pos = new_square.square_id as string
+			this.pos = new_pos
 			this.possible_moves = []
 			resolve()
 		})
@@ -248,7 +248,6 @@ export default abstract class Piece {
 				col: new_col,
 			})!
 			// Pawn has its own attacking logic
-			//TODO -- Move PieceType.pawn down an if statement
 			if (piece_at_square.color !== this.color) {
 				if (this.type !== PieceType.king && this.type !== PieceType.pawn) {
 					moves_in_direction.push(SquareID.pos_at_point({ row: new_row, col: new_col }))
@@ -256,10 +255,10 @@ export default abstract class Piece {
 			}
 			return false
 		}
-
 		return true
 	}
 
+	// REFACTOR
 	private add_moves_in_direction_to_all_possible_moves(
 		moves_in_direction: string[],
 		possible_moves: string[],
