@@ -1,4 +1,5 @@
-import { GameController } from '../../controllers/game_controller'
+import { GameController, GameType } from '../../controllers/game_controller'
+import OnlineController from '../../controllers/online_controller'
 import type { GridPoint } from '../../global_types/grid_point'
 import { Color } from '../piece/color'
 
@@ -139,9 +140,15 @@ export default class SquareID {
 	]
 
 	private static board_positions(): string[] {
-		return GameController.turn == Color.white
+		if(GameController.game_type === GameType.offline) {
+			return GameController.turn == Color.white
 			? SquareID.white_board_positions
 			: SquareID.black_board_positions
+		} else {
+			return OnlineController.player_color == Color.white
+			? SquareID.white_board_positions
+			: SquareID.black_board_positions
+		}
 	}
 
 	public static pos_at_index(index: number): string {
