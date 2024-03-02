@@ -1,8 +1,11 @@
+import LoginMessage from '../components/login_message'
+import TokenController from './token_controller'
 import WSSController from './wss_controller'
 
 export default class LoginController {
     static token = localStorage.getItem('jwtToken')
 
+    // REFACTOR
     public static add_login_submit_listener() {
         console.log('Oh index, you shouldnt have!')
         if(LoginController.token) {
@@ -46,13 +49,11 @@ export default class LoginController {
 
                     const { token } = await response.json()
 
-                    const poo = {
-                        type: 'login',
-                        userID: 'b6cd9167-479f-40f5-a24d-dc594c27963b',
-                    }
+                    const login_message: LoginMessage = new LoginMessage('b6cd9167-479f-40f5-a24d-dc594c27963b')
+                    WSSController.send_message(login_message)
 
                     // Store token in local storage
-                    localStorage.setItem('jwtToken', token)
+                    TokenController.add_token_to_storage(token)
 
                     // Redirect user to dashboard or another page
                     window.location.href = '/dashboard'

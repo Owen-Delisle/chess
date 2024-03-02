@@ -1,8 +1,8 @@
 import { Server } from 'ws';
 import http from 'http';
-import { app, PORT } from './http_server.ts';
+import { http_server, PORT } from './http_server.ts';
 
-const server = http.createServer(app)
+const server = http.createServer(http_server)
 
 const wss = new Server({ server })
 
@@ -24,11 +24,13 @@ wss.on('connection', function connection(ws) {
 
         const data = JSON.parse(message.toString())
 
-        if(data.type === 'login') {
-            active_users.add(data.userID)
+        if(data.message_type === 0) {
+            active_users.add(data.recipient_id)
         }
 
-        console.log("ACTIVE USERS", active_users)
+        active_users.forEach(user => {
+            console.log(user)
+        })
     });
 
     client_connection.on('close', function() {

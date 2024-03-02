@@ -1,6 +1,46 @@
 import {
+Message,
+MessageType,
 WSSController
-} from "./chunk-3f9b25b69bf8ad8f.js";
+} from "./chunk-4105888b8a932930.js";
+
+// src/server/components/login_message.ts
+class LoginMessage extends Message {
+  recipient_id;
+  constructor(recipient_id) {
+    super(MessageType.login);
+    this.recipient_id = recipient_id;
+  }
+}
+
+// src/server/controllers/token_controller.ts
+class TokenController {
+  static jwt_token_id = "jwtToken";
+  static async retrieve_token_from_storage() {
+    const token = localStorage.getItem(this.jwt_token_id);
+    return token;
+  }
+  static async add_token_to_storage(token) {
+    localStorage.setItem(this.jwt_token_id, token);
+  }
+  static async verify_jwt_token(token) {
+    console.log("TEEHEE YOOHOO");
+    try {
+      const response = await fetch("/verify_jwt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: token
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error:", error);
+      return false;
+    }
+  }
+}
 
 // src/server/controllers/login_controller.ts
 class LoginController {
@@ -39,11 +79,9 @@ class LoginController {
             throw new Error("Failed to login");
           }
           const { token } = await response.json();
-          const poo = {
-            type: "login",
-            userID: "b6cd9167-479f-40f5-a24d-dc594c27963b"
-          };
-          localStorage.setItem("jwtToken", token);
+          const login_message2 = new LoginMessage("b6cd9167-479f-40f5-a24d-dc594c27963b");
+          WSSController.send_message(login_message2);
+          TokenController.add_token_to_storage(token);
           window.location.href = "/dashboard";
         } catch (error) {
           console.error("Error:", error.message);

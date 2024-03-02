@@ -250,12 +250,11 @@ export default class MoveController {
 		GameController.add_move_to_list(move)
 
 		const move_message = new MoveMessage(
-			MessageType.move, 
 			MessageTargetType.direct, 
 			'95060f6e-d760-11ee-b370-b7a76f3304f1', 
 			move)
 
-		WSSController.send_move_message(move_message)
+		WSSController.send_message(move_message)
 		await piece.move_to(selected_pos)
 
 		this.redraw()

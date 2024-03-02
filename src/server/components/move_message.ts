@@ -7,8 +7,8 @@ export default class MoveMessage extends Message {
     target_type: MessageTargetType
     recipient_id: UUID
     move: Move
-    constructor(message_type: MessageType, target_type: MessageTargetType, recipient_id: UUID, move: Move) {
-        super(message_type)
+    constructor(target_type: MessageTargetType, recipient_id: UUID, move: Move) {
+        super(MessageType.move)
         this.target_type = target_type
         this.recipient_id = recipient_id
         this.move = move

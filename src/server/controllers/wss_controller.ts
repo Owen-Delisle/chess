@@ -1,4 +1,4 @@
-import MoveMessage from '../components/move_message'
+import Message from '../components/message';
 
 export default class WSSController {
     static web_socket: WebSocket = new WebSocket('ws://localhost:3000');
@@ -13,8 +13,8 @@ export default class WSSController {
         });
     }
 
-    public static send_move_message(move_message: MoveMessage) {
-        const message_to_send = JSON.stringify(move_message)
+    public static send_message(message: Message) {
+        const message_to_send = JSON.stringify(message)
         WSSController.web_socket.send(message_to_send);
     }
 }
