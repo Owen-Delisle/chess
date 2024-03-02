@@ -2,7 +2,6 @@ import type Square from '../components/square/square'
 import type Piece from '../components/piece/piece'
 import type { GridPoint } from '../global_types/grid_point'
 import SquareGrid from '../models/square_grid'
-import Index from '../index'
 import type King from '../components/piece/pieces/king'
 import { PieceType } from '../components/piece/piece_types'
 import type Rook from '../components/piece/pieces/rook'
@@ -14,6 +13,7 @@ import type Pawn from '../components/piece/pieces/pawn'
 import WSSController from '../server/controllers/wss_controller'
 import { Move } from '../global_types/move'
 import { MessageStyle, MoveMessage } from '../server/types/move_message'
+import Board from '../components/board/board'
 
 export default class MoveController {
 	private static focused_square: Square | undefined
@@ -288,6 +288,6 @@ export default class MoveController {
 	private static async redraw(): Promise<void> {
 		this.focused_square = undefined
 		GameController.switch_turn()
-		Index.board.redraw()
+		Board.singleton.redraw()
 	}
 }

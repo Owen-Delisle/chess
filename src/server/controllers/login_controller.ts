@@ -1,16 +1,15 @@
 
-
 export default class LoginController {
     static token = localStorage.getItem('jwtToken')
 
     public static add_login_submit_listener() {
         console.log('Oh index, you shouldnt have!')
         if(LoginController.token) {
-            window.location.href = '/dashboard';
+            window.location.href = '/dashboard'
             return
         }
         document.addEventListener('DOMContentLoaded', function () {
-            const loginForm = document.getElementById('login_form') as HTMLFormElement;
+            const loginForm = document.getElementById('login_form') as HTMLFormElement
             console.log('OH THE HUMANITY')
 
             if (!loginForm) {
@@ -19,7 +18,7 @@ export default class LoginController {
 
             loginForm.addEventListener('submit', async function (event) {
                 console.log('Hi, Mom!')
-                event.preventDefault();
+                event.preventDefault()
 
                 const username = (document.getElementById('username') as HTMLInputElement).value
                 const password = (document.getElementById('password') as HTMLInputElement).value
@@ -27,7 +26,7 @@ export default class LoginController {
                 const formData = {
                     username,
                     password
-                };
+                }
 
                 console.log(formData)
 
@@ -38,13 +37,13 @@ export default class LoginController {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(formData)
-                    });
+                    })
 
                     if (!response.ok) {
-                        throw new Error('Failed to login');
+                        throw new Error('Failed to login')
                     }
 
-                    const { token } = await response.json();
+                    const { token } = await response.json()
 
                     const poo = {
                         type: 'login',
@@ -52,15 +51,15 @@ export default class LoginController {
                     }
 
                     // Store token in local storage
-                    localStorage.setItem('jwtToken', token);
+                    localStorage.setItem('jwtToken', token)
 
                     // Redirect user to dashboard or another page
-                    window.location.href = '/dashboard';
+                    window.location.href = '/dashboard'
                 } catch (error) {
-                    console.error('Error:', error.message);
-                    alert('Thrown from Client - Failed to login on');
+                    console.error('Error:', error.message)
+                    alert('Thrown from Client - Failed to login on')
                 }
-            });
-        });
+            })
+        })
     }
 }

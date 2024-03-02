@@ -1,5 +1,5 @@
 import { GameController, GameType } from '../../controllers/game_controller'
-import OnlineController from '../../server/controllers/wss_controller'
+import WSSController from '../../server/controllers/wss_controller'
 import type { GridPoint } from '../../global_types/grid_point'
 import { Color } from '../piece/color'
 
@@ -145,9 +145,10 @@ export default class SquareID {
 			? SquareID.white_board_positions
 			: SquareID.black_board_positions
 		} else {
-			return OnlineController.player_color == Color.white
-			? SquareID.white_board_positions
-			: SquareID.black_board_positions
+			// return WSSController.player_color == Color.white
+			// ? SquareID.white_board_positions
+			// : SquareID.black_board_positions
+			return SquareID.white_board_positions
 		}
 	}
 

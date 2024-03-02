@@ -12,13 +12,11 @@ export class GameController {
 	public static move_list: MoveList = new MoveList()
 	
 	private static insufficient_material_value: number = 3
-	private static count: number = 0
 
 	public static switch_turn(): void {
 		switch(this.game_type) {
 			case GameType.online:
 				this.online_turn_switch()
-				// this.offline_turn_switch()
 				break
 			case GameType.offline:
 				this.offline_turn_switch()
@@ -38,17 +36,6 @@ export class GameController {
 	}
 
 	public static online_turn_switch() {
-		// TODO
-		// Send last move
-		// Wait for next move
-		// Update move controller with new move
-
-		// if(this.count <=0 ) {
-		// 	const piece: Piece = PieceList.piece_by_position('E7')!
-		// 	MoveController.move_piece_to('E5', piece)
-		// 	this.count++
-		// }
-		
 	}
 
 	public static add_move_to_list(move: Move) {

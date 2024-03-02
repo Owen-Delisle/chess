@@ -5,20 +5,40 @@ import SquareStyles from '../square/styles'
 import SquareGrid from '../../models/square_grid'
 import MoveController from '../../controllers/move_controller'
 import { board_start_index, row_and_column_size } from '../../utils/bounds'
+import { GameController, GameType } from '../../controllers/game_controller'
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement('div')
 	static board_size: number = Math.pow(row_and_column_size,2)
 
+	static singleton: Board
+
 	constructor() {
 		super()
+		const container = document.createElement('div');
+        const board_props = document.createElement('p');
+        board_props.id = 'board_props';
+        container.appendChild(board_props);
+		
 		this.render()
 	}
 
 	render(): void {
+		const prop = this.getAttribute('board_props');
+		if(!prop) {
+			throw new Error("Prop from board is undefined")
+		}
+		if(!GameType[prop]) {
+			throw new Error("Gametype of Prop does not exist")
+		}
+		GameController.game_type = GameType[prop]
+		console.log("GAME TYPE", GameController.game_type)
+		
 		this.add_styles_to_dom()
 		this.board_generator()
 		MoveController.load_possible_moves_lists()
+
+		Board.singleton = this
 	}
 
 	private add_styles_to_dom() {
