@@ -1,5 +1,5 @@
 import { GameController, GameType } from '../../controllers/game_controller'
-import OnlineController from '../../controllers/online_controller'
+import OnlineController from '../../server/controllers/wss_controller'
 import type { GridPoint } from '../../global_types/grid_point'
 import { Color } from '../piece/color'
 

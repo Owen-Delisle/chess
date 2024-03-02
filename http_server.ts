@@ -49,14 +49,14 @@ app.post('/signup', async (req, res) => {
     const id = uuidv4()
     try {
         const db = await dbPromise;
-		const saltRounds = 10;
+        const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
 
-		console.log("Password:", password, "Salt:", salt)
-		const hashedPassword = await bcrypt.hash(password, salt);
+        console.log("Password:", password, "Salt:", salt)
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         await db.run('INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)', [id, username, email, hashedPassword]);
-        
+
         res.send('User signed up successfully!');
     } catch (error) {
         console.error('Error signing up user:', error);
@@ -66,25 +66,25 @@ app.post('/signup', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-	console.log("Login Called", req.body)
+    console.log("Login Called", req.body)
     try {
         // Query database to check if user exists
         const db = await dbPromise;
         const user = await db.get('SELECT * FROM users WHERE username = ?', [username]);
 
         if (user) {
-			const passwordMatch = await bcrypt.compare(password, user.password);
-			if(passwordMatch) {
-				if(secretKey !== undefined) {
+            const passwordMatch = await bcrypt.compare(password, user.password);
+            if (passwordMatch) {
+                if (secretKey !== undefined) {
                     console.log("Made it to token")
-					const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
-					res.json({ token });
-				} else {
-					throw new Error("Secret Key was undefined")
-				}
-			} else {
-				res.status(401).send('Invalid Password')
-			}
+                    const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
+                    res.json({ token });
+                } else {
+                    throw new Error("Secret Key was undefined")
+                }
+            } else {
+                res.status(401).send('Invalid Password')
+            }
         } else {
             res.status(401).send('Invalid Username');
         }
@@ -94,6 +94,14 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+app.post('/users', async(req, res) => {
+    // Query database to check if user exists
+    const db = await dbPromise
+    const users = await db.all('SELECT * FROM users')
+    
+    if(users) {
+        console.log(users)
+    }
+})
+
+export { app, PORT }

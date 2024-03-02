@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Login</title>
+    <script src="index.js" type="module"></script>
 </head>
 
 <!-- page -->
 <main class="mx-auto flex min-h-screen w-full items-center justify-center bg-gray-900 text-white">
     <!-- component -->
-    <form id="loginForm" action="/login" method="post" enctype="application/x-www-form-urlencoded">
+    <form id="login_form" action="/login" method="post" enctype="application/x-www-form-urlencoded">
     <section class="flex w-[30rem] flex-col space-y-10">
             <div class="text-center text-4xl font-medium">Log In</div>
             <div class="w-full transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-indigo-500">
@@ -49,7 +50,8 @@
     </section>
 </form>
 
-    <script>
+    <!-- <script>
+        
         const token = localStorage.getItem('jwtToken')
 
         if (token) {
@@ -70,8 +72,6 @@
                     password
                 };
 
-                console.log("formData", formData)
-
                 try {
                     const response = await fetch('/login', {
                         method: 'POST',
@@ -87,6 +87,12 @@
 
                     const { token } = await response.json();
 
+                    const poo = {
+                        type: 'login',
+                        userID: 'b6cd9167-479f-40f5-a24d-dc594c27963b',
+                    }
+                    console.log(board_start_index)
+
                     // Store token in local storage
                     localStorage.setItem('jwtToken', token);
 
@@ -98,5 +104,7 @@
                 }
             });
         });
-    </script>
+    </script> -->
 </main>
+
+<index-element></index-element>

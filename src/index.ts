@@ -2,10 +2,12 @@ import Board from './components/board/board'
 import TestView from './tests/test_view'
 import { GameType } from './controllers/game_controller'
 import { GameController } from './controllers/game_controller'
+import WSSController from './server/controllers/wss_controller'
+import LoginController from './server/controllers/login_controller'
 
 export default class Index extends HTMLElement {
 	// private static test_view: TestView = new TestView()
-	public static board: Board = new Board()
+	// public static board: Board = new Board()
 
 	constructor() {
 		super()
@@ -17,6 +19,7 @@ export default class Index extends HTMLElement {
 	}
 
 	connectedCallback() {
+		LoginController.add_login_submit_listener()
 		this.render()
 	}
 
@@ -30,7 +33,9 @@ export default class Index extends HTMLElement {
 		}
 		GameController.game_type = GameType[prop]
 		console.log(GameController.game_type)
-		this.appendChild(Index.board)
+		// this.appendChild(Index.board)
+
+		WSSController.open_coneection()
 	}
 }
 

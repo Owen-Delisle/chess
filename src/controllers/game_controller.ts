@@ -43,11 +43,11 @@ export class GameController {
 		// Wait for next move
 		// Update move controller with new move
 
-		if(this.count <=0 ) {
-			const piece: Piece = PieceList.piece_by_position('E7')!
-			MoveController.move_piece_to('E5', piece)
-			this.count++
-		}
+		// if(this.count <=0 ) {
+		// 	const piece: Piece = PieceList.piece_by_position('E7')!
+		// 	MoveController.move_piece_to('E5', piece)
+		// 	this.count++
+		// }
 		
 	}
 

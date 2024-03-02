@@ -11,6 +11,9 @@ import SquareID from '../components/square/square_id'
 import { GameController } from './game_controller'
 import PieceList from '../models/piece_list'
 import type Pawn from '../components/piece/pieces/pawn'
+import WSSController from '../server/controllers/wss_controller'
+import { Move } from '../global_types/move'
+import { MessageStyle, MoveMessage } from '../server/types/move_message'
 
 export default class MoveController {
 	private static focused_square: Square | undefined
@@ -232,7 +235,6 @@ export default class MoveController {
 	}
 
 	public static async move_piece_to(selected_pos: string, piece: Piece): Promise<void> {
-		console.log(selected_pos)
 		const new_square = SquareGrid.square_by_board_position(selected_pos)
 
 		if(!new_square) {
@@ -242,7 +244,15 @@ export default class MoveController {
 			new_square.remove_piece()
 		}
 
-		GameController.add_move_to_list({ piece: piece, from: piece.pos, to: selected_pos })
+		const move: Move = { piece: piece, from: piece.pos, to: selected_pos }
+		GameController.add_move_to_list(move)
+
+		const move_message: MoveMessage = {
+			type: MessageStyle.direct, 
+			recipient_id: '95060f6e-d760-11ee-b370-b7a76f3304f1', 
+			move: move
+		}
+		WSSController.send_move_message(move_message)
 		await piece.move_to(selected_pos)
 
 		this.redraw()
