@@ -12,8 +12,10 @@ import PieceList from '../models/piece_list'
 import type Pawn from '../components/piece/pieces/pawn'
 import WSSController from '../server/controllers/wss_controller'
 import { Move } from '../global_types/move'
-import { MessageStyle, MoveMessage } from '../server/types/move_message'
+import MoveMessage from '../server/components/move_message'
 import Board from '../components/board/board'
+import { MessageType } from '../server/components/message'
+import { MessageTargetType } from '../server/types/message_target_type'
 
 export default class MoveController {
 	private static focused_square: Square | undefined
@@ -247,11 +249,12 @@ export default class MoveController {
 		const move: Move = { piece: piece, from: piece.pos, to: selected_pos }
 		GameController.add_move_to_list(move)
 
-		const move_message: MoveMessage = {
-			type: MessageStyle.direct, 
-			recipient_id: '95060f6e-d760-11ee-b370-b7a76f3304f1', 
-			move: move
-		}
+		const move_message = new MoveMessage(
+			MessageType.move, 
+			MessageTargetType.direct, 
+			'95060f6e-d760-11ee-b370-b7a76f3304f1', 
+			move)
+
 		WSSController.send_move_message(move_message)
 		await piece.move_to(selected_pos)
 

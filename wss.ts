@@ -24,12 +24,11 @@ wss.on('connection', function connection(ws) {
 
         const data = JSON.parse(message.toString())
 
-        console.log("DATA", data)
         if(data.type === 'login') {
             active_users.add(data.userID)
         }
 
-        console.log(active_users)
+        console.log("ACTIVE USERS", active_users)
     });
 
     client_connection.on('close', function() {

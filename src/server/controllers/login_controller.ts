@@ -1,3 +1,4 @@
+import WSSController from './wss_controller'
 
 export default class LoginController {
     static token = localStorage.getItem('jwtToken')

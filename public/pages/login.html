@@ -49,62 +49,6 @@
             </p>
     </section>
 </form>
-
-    <!-- <script>
-        
-        const token = localStorage.getItem('jwtToken')
-
-        if (token) {
-            window.location.href = '/dashboard';
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const loginForm = document.getElementById('loginForm');
-
-            loginForm.addEventListener('submit', async function (event) {
-                event.preventDefault();
-
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-
-                const formData = {
-                    username,
-                    password
-                };
-
-                try {
-                    const response = await fetch('/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to login');
-                    }
-
-                    const { token } = await response.json();
-
-                    const poo = {
-                        type: 'login',
-                        userID: 'b6cd9167-479f-40f5-a24d-dc594c27963b',
-                    }
-                    console.log(board_start_index)
-
-                    // Store token in local storage
-                    localStorage.setItem('jwtToken', token);
-
-                    // Redirect user to dashboard or another page
-                    window.location.href = '/dashboard';
-                } catch (error) {
-                    console.error('Error:', error.message);
-                    alert('Thrown from Client - Failed to login on');
-                }
-            });
-        });
-    </script> -->
 </main>
 
 <index-element></index-element>

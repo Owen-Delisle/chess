@@ -1,4 +1,4 @@
-import { MoveMessage } from "../types/move_message";
+import MoveMessage from '../components/move_message'
 
 export default class WSSController {
     static web_socket: WebSocket = new WebSocket('ws://localhost:3000');
