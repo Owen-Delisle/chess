@@ -1,17 +1,6 @@
 import {
-Message,
-MessageType,
 WSSController
-} from "./chunk-37635884a0d50d73.js";
-
-// src/server/components/login_message.ts
-class LoginMessage extends Message {
-  recipient_id;
-  constructor(recipient_id) {
-    super(MessageType.login);
-    this.recipient_id = recipient_id;
-  }
-}
+} from "./chunk-44ec22b73a10e2b6.js";
 
 // src/server/controllers/token_controller.ts
 class TokenController {
@@ -108,8 +97,6 @@ class LoginController {
           }
           const { token } = await response.json();
           TokenController.add_token_to_storage(token);
-          const login_message2 = new LoginMessage("b6cd9167-479f-40f5-a24d-dc594c27963b");
-          WSSController.send_message(login_message2);
         } catch (error) {
           console.error("Error:", error.message);
           alert("Thrown from Client - Failed to login on");
@@ -129,7 +116,8 @@ class Index extends HTMLElement {
     this.render();
   }
   render() {
-    WSSController.open_coneection();
+    console.log("INDEXXICLE");
+    WSSController.open_connection();
   }
 }
 customElements.define("index-element", Index);

@@ -1,6 +1,4 @@
 import TestView from './tests/test_view'
-import { GameType } from './controllers/game_controller'
-import { GameController } from './controllers/game_controller'
 import WSSController from './server/controllers/wss_controller'
 import LoginController from './server/controllers/login_controller'
 
@@ -17,7 +15,8 @@ export default class Index extends HTMLElement {
 	}
 
 	render() {
-		WSSController.open_coneection()
+		console.log("INDEXXICLE")
+		WSSController.open_connection()
 	}
 }
 

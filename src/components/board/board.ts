@@ -6,6 +6,7 @@ import SquareGrid from '../../models/square_grid'
 import MoveController from '../../controllers/move_controller'
 import { board_start_index, row_and_column_size } from '../../utils/bounds'
 import { GameController, GameType } from '../../controllers/game_controller'
+import WSSController from '../../server/controllers/wss_controller'
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement('div')
@@ -39,6 +40,9 @@ export default class Board extends HTMLElement {
 		MoveController.load_possible_moves_lists()
 
 		Board.singleton = this
+
+		console.log("BOARZZZZD")
+		WSSController.open_connection()
 	}
 
 	private add_styles_to_dom() {

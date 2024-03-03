@@ -5,6 +5,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="description" />
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
 	<script src="components/board/board.js" type="module"></script>
 	<title>Online Game</title>
 </head>
@@ -13,32 +14,49 @@
     <h1>Online Game</h1>
     <board-element board_props="online"></board-element>
 
-    <button id="test_button" type="submit">Fetch Usersz</button>
+    <div id="user_list" hx-get="/active_users" hx-trigger="load">
+        <!-- List items will be populated here -->
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const test_button = document.getElementById('test_button');
 
-            test_button.addEventListener('click', async function (event) {
-                event.preventDefault();
-                try {
-                    const response = await fetch('/users', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                    });
+    document.addEventListener('DOMContentLoaded', async () => {
+        const listContainer = document.getElementById('user_list');
+        if (!listContainer) {
+            console.error('List container not found');
+            return;
+        }
 
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch Users');
-                    }
-					console.log(response.json())
-                } catch (error) {
-                    console.error('Error:', error.message);
-                    alert('Thrown from Client - Failed to Fetch Users');
-                }
-            });
+        listContainer.addEventListener('load.hx', async (event) => {
+            const response = event.detail.xhr.response;
+            const items = JSON.parse(response);
+            renderListItems(items);
         });
+    });
+
+    function renderListItems(items) {
+        const listContainer = document.getElementById('user_list');
+        if (!listContainer) {
+            console.error('List container not found');
+            return;
+        }
+
+        const listFragment = document.createDocumentFragment();
+        items.forEach(item => {
+            const listItem = document.createElement('div');
+            listItem.classList.add('list-item');
+            const itemName = document.createElement('span');
+            itemName.classList.add('item-name');
+            itemName.textContent = item.name;
+            listItem.appendChild(itemName);
+            listFragment.appendChild(listItem);
+        });
+
+        // Clear existing list items before adding new ones
+        listContainer.innerHTML = '';
+        listContainer.appendChild(listFragment);
+    }
+
     </script>
 
 </body>

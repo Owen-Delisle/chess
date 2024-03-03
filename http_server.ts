@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 import path from 'path'
 require('dotenv').config()
 import bcrypt from 'bcrypt'
-import helmet from 'helmet'
+// import { active_users } from './wss'
 
 const http_server = express()
 const PORT = 3000
@@ -17,31 +17,30 @@ const dbPromise = open({
     driver: sqlite3.Database
 })
 
-// http_server.use(helmet())
 
-// http_server.use((req, res, next) => {
-//     // Content Security Policy (CSP) header
-//     res.setHeader(
-//         'Content-Security-Policy',
-//         `default-src 'self'; 
-//         script-src 'self' https://trusted-scripts.com; 
-//         style-src 'self' https://trusted-styles.com;`)
+http_server.use((req, res, next) => {
+    // Content Security Policy (CSP) header
+    res.setHeader(
+        'Content-Security-Policy',
+        `default-src 'self'; 
+        script-src 'self' https://trusted-scripts.com; 
+        style-src 'self' https://trusted-styles.com;`)
 
-//     // X-XSS-Protection header
-//     res.setHeader('X-XSS-Protection', '1 mode=block')
+    // X-XSS-Protection header
+    res.setHeader('X-XSS-Protection', '1 mode=block')
 
-//     // X-Content-Type-Options header
-//     res.setHeader('X-Content-Type-Options', 'nosniff')
+    // X-Content-Type-Options header
+    res.setHeader('X-Content-Type-Options', 'nosniff')
 
-//     // Strict Transport Security (HSTS) header
-//     res.setHeader('Strict-Transport-Security', 'max-age=31536000 includeSubDomains')
+    // Strict Transport Security (HSTS) header
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000 includeSubDomains')
 
-//     // Referrer Policy header
-//     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+    // Referrer Policy header
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
 
-//     // Call the next middleware in the chain
-//     next()
-// })
+    // Call the next middleware in the chain
+    next()
+})
 
 http_server.use(express.json())
 
@@ -164,14 +163,18 @@ http_server.post('userID_from_token', async (req, res) => {
     }
 })
 
-http_server.post('/users', async (req, res) => {
+http_server.get('/users', async (req, res) => {
     // Query database to check if user exists
     const db = await dbPromise
     const users = await db.all('SELECT * FROM users')
 
     if (users) {
-        console.log(users)
+        res.json({ users: users})
     }
 })
+
+// http_server.get('/active_users', (req, res) => {
+//     res.json(Array.from(active_users));
+// });
 
 export { http_server, PORT }

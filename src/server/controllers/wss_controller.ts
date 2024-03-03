@@ -1,20 +1,26 @@
-import { UUID } from 'crypto';
 import Message from '../components/message';
-import TokenController from './token_controller';
+import htmx from 'htmx.org'
 
 export default class WSSController {
     static token = localStorage.getItem('jwtToken');
     //TODO:: MAKE LOCALHOST PORT A VAR
     static web_socket: WebSocket = new WebSocket(`ws://localhost:3000?token=${this.token}`);
-    static active_users: UUID[] = []
 
-    public static open_coneection(): void {
+    public static open_connection(): void {
         WSSController.web_socket.addEventListener('open', function (event) {
             console.log('WebSocket connection established');
         });
         
         WSSController.web_socket.addEventListener('message', function (event) {
-            console.log('Event from WSSController:', event.data);
+            console.log('Event from WSS:', event.data);
+            const message = JSON.parse(event.data);
+            if (message.type === 'active_users') {
+                console.log('ACTIVE USERS MESSAGE RECIEVED')
+                console.log("MESSAGE", message)
+                const activeUsers = message.users;
+                // Update UI with the updated active user list
+                WSSController.updateActiveUsersUI(activeUsers);
+            }
         });
     }
 
@@ -23,15 +29,21 @@ export default class WSSController {
         WSSController.web_socket.send(message_to_send);
     }
 
-    // public static async add_new_connection_to_active_users() {
-    //     const client_token: string | null = await TokenController.retrieve_token_from_storage()
+    private static updateActiveUsersUI(activeUsers: string[]) {
+        const user_list_element: HTMLElement | null = document.getElementById('user_list');
+        if(!user_list_element) {
+            throw new Error('USERS LIST NOT FOUND')
+        }
 
-    //     if(client_token !== null) {
-    //         const user_id_from_token: UUID | null = await TokenController.userID_from_token(client_token)
-    //         if(user_id_from_token !== null) {
-    //             this.active_users.push(user_id_from_token)
-    //         }
-    //     }
-    //     console.log(this.active_users)
-    // }
+        user_list_element.innerHTML = ''; // Clear existing user list
+    
+        activeUsers.forEach(user => {
+            const listItem = document.createElement('li');
+            listItem.textContent = user;
+            user_list_element.appendChild(listItem);
+        });
+    
+        // Trigger htmx to process any new elements added to the user list
+        htmx.trigger(user_list_element, 'htmx:afterSwap', {detail:undefined});
+    }
 }

@@ -47,9 +47,6 @@ export default class LoginController {
                     // Store token in local storage
                     TokenController.add_token_to_storage(token)
 
-                    const login_message: LoginMessage = new LoginMessage('b6cd9167-479f-40f5-a24d-dc594c27963b')
-                    WSSController.send_message(login_message)
-
                     // Redirect user to dashboard or another page
                     // window.location.href = '/dashboard'
                 } catch (error) {
