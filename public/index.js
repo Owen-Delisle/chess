@@ -21,20 +21,34 @@ class TokenController {
     return token;
   }
   static async add_token_to_storage(token) {
-    localStorage.setItem(this.jwt_token_id, token);
+    try {
+      const is_valid_token = await TokenController.verify_jwt_token(token);
+      console.log("BAAALALLALBALABLBALA");
+      console.log(is_valid_token);
+      if (is_valid_token) {
+        localStorage.setItem(this.jwt_token_id, token);
+      }
+    } catch (error) {
+      console.error("Verification error:", error.message);
+      throw error;
+    }
   }
   static async verify_jwt_token(token) {
-    console.log("TEEHEE YOOHOO");
     try {
       const response = await fetch("/verify_jwt", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: token
+        body: JSON.stringify({ token })
       });
-      const data = await response.json();
-      return data;
+      console.log(response);
+      if (response.ok) {
+        const data = await response.json();
+        return data.success === true;
+      } else {
+        throw new Error("Failed to fetch");
+      }
     } catch (error) {
       console.error("Error:", error);
       return false;
@@ -48,7 +62,6 @@ class LoginController {
   static add_login_submit_listener() {
     console.log("Oh index, you shouldnt have!");
     if (LoginController.token) {
-      window.location.href = "/dashboard";
       return;
     }
     document.addEventListener("DOMContentLoaded", function() {
@@ -82,7 +95,6 @@ class LoginController {
           const login_message2 = new LoginMessage("b6cd9167-479f-40f5-a24d-dc594c27963b");
           WSSController.send_message(login_message2);
           TokenController.add_token_to_storage(token);
-          window.location.href = "/dashboard";
         } catch (error) {
           console.error("Error:", error.message);
           alert("Thrown from Client - Failed to login on");

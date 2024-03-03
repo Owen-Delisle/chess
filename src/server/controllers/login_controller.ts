@@ -9,7 +9,7 @@ export default class LoginController {
     public static add_login_submit_listener() {
         console.log('Oh index, you shouldnt have!')
         if(LoginController.token) {
-            window.location.href = '/dashboard'
+            // window.location.href = '/dashboard'
             return
         }
         document.addEventListener('DOMContentLoaded', function () {
@@ -56,7 +56,7 @@ export default class LoginController {
                     TokenController.add_token_to_storage(token)
 
                     // Redirect user to dashboard or another page
-                    window.location.href = '/dashboard'
+                    // window.location.href = '/dashboard'
                 } catch (error) {
                     console.error('Error:', error.message)
                     alert('Thrown from Client - Failed to login on')
