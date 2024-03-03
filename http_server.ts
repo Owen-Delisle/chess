@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 import path from 'path'
 require('dotenv').config()
 import bcrypt from 'bcrypt'
+import helmet from 'helmet'
 
 const http_server = express()
 const PORT = 3000
@@ -15,6 +16,32 @@ const dbPromise = open({
     filename: './database/database.db',
     driver: sqlite3.Database
 })
+
+// http_server.use(helmet())
+
+// http_server.use((req, res, next) => {
+//     // Content Security Policy (CSP) header
+//     res.setHeader(
+//         'Content-Security-Policy',
+//         `default-src 'self'; 
+//         script-src 'self' https://trusted-scripts.com; 
+//         style-src 'self' https://trusted-styles.com;`)
+
+//     // X-XSS-Protection header
+//     res.setHeader('X-XSS-Protection', '1 mode=block')
+
+//     // X-Content-Type-Options header
+//     res.setHeader('X-Content-Type-Options', 'nosniff')
+
+//     // Strict Transport Security (HSTS) header
+//     res.setHeader('Strict-Transport-Security', 'max-age=31536000 includeSubDomains')
+
+//     // Referrer Policy header
+//     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+
+//     // Call the next middleware in the chain
+//     next()
+// })
 
 http_server.use(express.json())
 
@@ -52,7 +79,6 @@ http_server.post('/signup', async (req, res) => {
         const saltRounds = 10
         const salt = await bcrypt.genSalt(saltRounds)
 
-        console.log("Password:", password, "Salt:", salt)
         const hashedPassword = await bcrypt.hash(password, salt)
 
         await db.run('INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)', [id, username, email, hashedPassword])
@@ -66,7 +92,6 @@ http_server.post('/signup', async (req, res) => {
 
 http_server.post('/login', async (req, res) => {
     const { username, password } = req.body
-    console.log("Login Called", req.body)
     try {
         // Query database to check if user exists
         const db = await dbPromise
@@ -77,7 +102,7 @@ http_server.post('/login', async (req, res) => {
             if (passwordMatch) {
                 if (secretKey !== undefined) {
                     const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' })
-                    if(jwt.verify(token, secretKey)) {
+                    if (jwt.verify(token, secretKey)) {
                         res.json({ token })
                     } else {
                         throw new Error("Could not verify JWT Token")
@@ -98,54 +123,53 @@ http_server.post('/login', async (req, res) => {
 })
 
 http_server.post('/verify_jwt', async (req, res) => {
-    console.log("TOKEN:", req.body.token)
-    const token = req.body.token
     if (!secretKey) {
         throw new Error("JWT Environment variable is null")
     }
     try {
+        const token = req.body.token
         jwt.verify(token, secretKey) as { [key: string]: any }
-        console.log("SENDING")
-        res.json({ success: true });
+        res.json({ success: true })
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
             // TODO: HANDLE EXPIRED TOKEN
             console.log("EXPIRED TOKEN")
-            res.json({ success: false });
+            res.json({ success: false })
         } else if (error instanceof jwt.JsonWebTokenError) {
             // TODO: HANDLE INVALID TOKEN
             console.log("INVALID TOKEN")
-            res.json({ success: false });
+            res.json({ success: false })
         } else {
             // TODO: HANDLE ALL OTHER CASES
             console.log("DEFAULT TOKEN ERROR")
-            res.json({ success: false });
+            res.json({ success: false })
         }
     }
 })
 
-http_server.post('userID_from_token', async(req, res) => {
+http_server.post('userID_from_token', async (req, res) => {
+    if (!secretKey) {
+        throw new Error("JWT Environment variable is null")
+    }
     try {
         const token: string = JSON.stringify(req.body)
-        if(token && secretKey) {
-            const decoded: any = jwt.verify(req.body, secretKey)
-            if (decoded && typeof decoded === 'object' && decoded.hasOwnProperty('userId')) {
-                return decoded.userId
-            }
-            return null
+        const decoded: any = jwt.verify(token, secretKey)
+        if (decoded && typeof decoded === 'object' && decoded.hasOwnProperty('userId')) {
+            res.json({ userId: decoded.userId }) 
         }
+        return res.json({ userId: null })
     } catch (error) {
         console.error('Error decoding token:', error)
         return null
     }
 })
 
-http_server.post('/users', async(req, res) => {
+http_server.post('/users', async (req, res) => {
     // Query database to check if user exists
     const db = await dbPromise
     const users = await db.all('SELECT * FROM users')
-    
-    if(users) {
+
+    if (users) {
         console.log(users)
     }
 })

@@ -16,6 +16,7 @@
     "bun-types": "^1.0.29",
     "canvas-confetti": "^1.2.0",
     "dotenv": "^16.4.5",
+    "helmet": "^7.1.0",
     "hono": "^4.0.7",
     "jsonwebtoken": "^9.0.2",
     "sqlite": "^5.1.1",
