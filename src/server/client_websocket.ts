@@ -28,7 +28,7 @@ export default class ClientWebSocket {
             }
 
             if(message_type === MessageType.game_request.toString()) {
-                ClientWebSocket.update_request_list_ui(message.requesting_user)
+                ClientWebSocket.update_request_list_ui(message.requesting_user, message.recieving_user)
             }
 
             if(message_type === MessageType.game_accepted.toString()) {
@@ -64,7 +64,7 @@ export default class ClientWebSocket {
         htmx.trigger(user_list_element, 'htmx:afterSwap', {detail:undefined})
     }
 
-    private static update_request_list_ui(user_id_of_requester: UUID) {
+    private static update_request_list_ui(user_id_of_requester: UUID, this_client_user_id: UUID) {
         console.log("UPDATING REQUEST LIST")
         const game_request_list_element: HTMLElement | null = document.getElementById('game_request_list')
         if(!game_request_list_element) {
@@ -76,7 +76,7 @@ export default class ClientWebSocket {
         const list_item = document.createElement('li')
         list_item.textContent = user_id_of_requester
         list_item.addEventListener('click', function() {
-            ClientWebSocket.send_message(new GameAcceptedMessage(user_id_of_requester))
+            ClientWebSocket.send_message(new GameAcceptedMessage(user_id_of_requester, this_client_user_id))
         })
         game_request_list_element.appendChild(list_item)
     
