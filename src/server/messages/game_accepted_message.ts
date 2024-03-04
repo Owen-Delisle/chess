@@ -2,12 +2,12 @@ import { UUID } from "crypto";
 import Message, { MessageType } from "./message";
 
 export default class GameAcceptedMessage extends Message {
-    recipient_id: UUID
-    receiver_id: UUID
-    constructor(recipient_id: UUID, receiver_id: UUID) {
+    sender: UUID
+    receiver: UUID
+    constructor(sender: UUID, receiver: UUID) {
         super(MessageType.game_accepted)
 
-        this.recipient_id = recipient_id
-        this.receiver_id = receiver_id
+        this.receiver = receiver
+        this.sender = sender
     }
 }

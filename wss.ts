@@ -54,7 +54,7 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             break
             case MessageType.game_accepted:
                 console.log('GAME ACCEPTED!')
-                send_game_accepted_to_recipient(data.recipient_id, data.receiver_id)
+                send_game_accepted_to_recipient(data.sender, data.receiver)
             break
         }
     })
@@ -86,11 +86,11 @@ function send_game_request_to_recipient(recipient_id: UUID) {
     active_clients[recipient_id].send(json_data)
 }
 
-function send_game_accepted_to_recipient(recipient_id: UUID, receiver_id:UUID) {
-    const data = {type: MessageType.game_accepted.toString(), accepting_user: receiver_id}
+function send_game_accepted_to_recipient(sender: UUID, receiver: UUID) {
+    const data = {type: MessageType.game_accepted.toString(), accepting_user: sender}
     const json_data = JSON.stringify(data)
 
-    active_clients[recipient_id].send(json_data)
+    active_clients[receiver].send(json_data)
 }
 
 server.listen(PORT, () => {
