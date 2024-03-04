@@ -1,8 +1,8 @@
 import { UUID } from 'crypto'
-import ActiveUsersMessage from './messages/active_users_message'
 import GameRequestMessage from './messages/game_request_message'
 import Message, { MessageType } from './messages/message'
 import htmx from 'htmx.org'
+import GameAcceptedMessage from './messages/game_accepted_message'
 
 export default class ClientWebSocket {
     static token = localStorage.getItem('jwtToken')
@@ -28,8 +28,11 @@ export default class ClientWebSocket {
             }
 
             if(message_type === MessageType.game_request.toString()) {
-                console.log("WHO DARES:", message.requesting_user)
                 ClientWebSocket.update_request_list_ui(message.requesting_user)
+            }
+
+            if(message_type === MessageType.game_accepted.toString()) {
+                console.log("GAME WAS ACCEPTED MUFUKA")
             }
         })
     }
@@ -71,9 +74,9 @@ export default class ClientWebSocket {
 
         const list_item = document.createElement('li')
         list_item.textContent = user_id_of_requester
-        // list_item.addEventListener('click', function() {
-        //     ClientWebSocket.send_message(new GameRequestMessage(typed_user_id))
-        // })
+        list_item.addEventListener('click', function() {
+            ClientWebSocket.send_message(new GameAcceptedMessage(user_id_of_requester))
+        })
         game_request_list_element.appendChild(list_item)
     
         htmx.trigger(game_request_list_element, 'htmx:afterSwap', {detail:undefined})
