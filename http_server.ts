@@ -173,8 +173,4 @@ http_server.get('/users', async (req, res) => {
     }
 })
 
-// http_server.get('/active_users', (req, res) => {
-//     res.json(Array.from(active_users));
-// });
-
 export { http_server, PORT }

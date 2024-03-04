@@ -26,6 +26,11 @@ export default class ClientWebSocket {
 
                 ClientWebSocket.update_active_users_list_ui(active_users)
             }
+
+            if(message_type === '69') {
+                console.log("WHO DARES:", message.requesting_user)
+                console.log("AND WHAT DOTH HE PROTEST:", message.request)
+            }
         })
     }
 
