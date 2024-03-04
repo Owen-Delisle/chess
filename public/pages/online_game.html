@@ -12,11 +12,20 @@
 
 <body>
     <h1>Online Game</h1>
-    <board-element board_props="online"></board-element>
 
-    <div id="user_list" hx-trigger="load">
-        <!-- List items will be populated here -->
+        <p>ACTIVE USER LIST</p>
+        <div id="user_list" hx-trigger="load">
+            <!-- List items will be populated here -->
+        </div>   
+
+    <div>
+        <p>GAME REQUEST LIST</p>
+        <div id="game_request_list" hx-trigger="load">
+            <!-- List items will be populated here -->
+        </div>
     </div>
+
+    <board-element board_props="online"></board-element>
 
     <script>
 
