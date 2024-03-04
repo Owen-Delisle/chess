@@ -33,6 +33,7 @@ export default class ClientWebSocket {
 
             if(message_type === MessageType.game_accepted.toString()) {
                 console.log("GAME WAS ACCEPTED MUFUKA")
+                ClientWebSocket.update_current_game_ui(message.accepting_user)
             }
         })
     }
@@ -80,5 +81,19 @@ export default class ClientWebSocket {
         game_request_list_element.appendChild(list_item)
     
         htmx.trigger(game_request_list_element, 'htmx:afterSwap', {detail:undefined})
+    }
+
+    private static update_current_game_ui(user_id_of_opponent: UUID) {
+        console.log("UPDATING REQUEST LIST")
+        const current_game_element: HTMLElement | null = document.getElementById('current_game')
+
+        if(!current_game_element) {
+            throw new Error('CURRENT GAME ELEMENT NOT FOUND')
+        }
+
+        const oponent_id_item = document.createElement('p')
+        oponent_id_item.textContent = user_id_of_opponent
+
+        current_game_element.appendChild(oponent_id_item)
     }
 }

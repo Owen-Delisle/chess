@@ -100,7 +100,7 @@ http_server.post('/login', async (req, res) => {
             const passwordMatch = await bcrypt.compare(password, user.password)
             if (passwordMatch) {
                 if (secretKey !== undefined) {
-                    const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' })
+                    const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '5h' })
                     if (jwt.verify(token, secretKey)) {
                         res.json({ token })
                     } else {

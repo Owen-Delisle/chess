@@ -87,7 +87,7 @@ function send_game_request_to_recipient(recipient_id: UUID) {
 }
 
 function send_game_accepted_to_recipient(recipient_id: UUID) {
-    const data = {type: MessageType.game_accepted.toString(), requesting_user: current_client_user_id}
+    const data = {type: MessageType.game_accepted.toString(), accepting_user: "test123"}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)
