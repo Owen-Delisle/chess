@@ -1,7 +1,7 @@
 import { UUID } from 'crypto'
 import ActiveUsersMessage from './messages/active_users_message'
 import GameRequestMessage from './messages/game_request_message'
-import Message from './messages/message'
+import Message, { MessageType } from './messages/message'
 import htmx from 'htmx.org'
 
 export default class ClientWebSocket {
@@ -20,16 +20,15 @@ export default class ClientWebSocket {
             const message = JSON.parse(event.data)
             const message_type: string = message.type
 
-            if (message_type === ActiveUsersMessage.json_key) {
+            if (message_type === MessageType.active_users.toString()) {
                 console.log('ACTIVE USERS MESSAGE RECIEVED')
                 const active_users = message.users
 
                 ClientWebSocket.update_active_users_list_ui(active_users)
             }
 
-            if(message_type === '69') {
+            if(message_type === MessageType.game_request.toString()) {
                 console.log("WHO DARES:", message.requesting_user)
-                console.log("AND WHAT DOTH HE PROTEST:", message.request)
                 ClientWebSocket.update_request_list_ui(message.requesting_user)
             }
         })
