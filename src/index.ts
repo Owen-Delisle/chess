@@ -1,5 +1,5 @@
 import TestView from './tests/test_view'
-import WSSController from './server/controllers/wss_controller'
+import ClientWebSocket from './server/client_websocket'
 import LoginController from './server/controllers/login_controller'
 
 export default class Index extends HTMLElement {
@@ -16,7 +16,7 @@ export default class Index extends HTMLElement {
 
 	render() {
 		console.log("INDEXXICLE")
-		WSSController.open_connection()
+		ClientWebSocket.open_connection()
 	}
 }
 

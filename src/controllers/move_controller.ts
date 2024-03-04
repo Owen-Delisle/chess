@@ -10,11 +10,10 @@ import SquareID from '../components/square/square_id'
 import { GameController } from './game_controller'
 import PieceList from '../models/piece_list'
 import type Pawn from '../components/piece/pieces/pawn'
-import WSSController from '../server/controllers/wss_controller'
+import ClientWebSocket from '../server/client_websocket'
 import { Move } from '../global_types/move'
-import MoveMessage from '../server/components/move_message'
+import MoveMessage from '../server/messages/move_message'
 import Board from '../components/board/board'
-import { MessageType } from '../server/components/message'
 import { MessageTargetType } from '../server/types/message_target_type'
 
 export default class MoveController {
@@ -254,7 +253,7 @@ export default class MoveController {
 			'95060f6e-d760-11ee-b370-b7a76f3304f1', 
 			move)
 
-		WSSController.send_message(move_message)
+		ClientWebSocket.send_message(move_message)
 		await piece.move_to(selected_pos)
 
 		this.redraw()

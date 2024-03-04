@@ -7,4 +7,4 @@ await Bun.build({
 //   await Bun.build({
 //     entrypoints: ['./src/components/board/board.ts'],
 //     outdir: './public'
-//   });
+//   })

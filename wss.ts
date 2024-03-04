@@ -4,6 +4,7 @@ import { http_server, PORT } from './http_server.ts'
 import jwt, { VerifyErrors } from 'jsonwebtoken'
 import { parse } from 'url'
 import { UUID } from 'crypto'
+import ActiveUsersMessage from './src/server/messages/active_users_message.ts'
 require('dotenv').config()
 
 const server = http.createServer(http_server)
@@ -11,6 +12,7 @@ const wss = new Server({ server })
 const clients: Set<WebSocket> = new Set()
 const secretKey = process.env.JWT_SECRET
 const active_users: Set<UUID> = new Set()
+import { MessageType } from './src/server/messages/message.ts'
 
 wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOptions & { url?: string }) {
     const query = req.url ? parse(req.url, true).query : {}
@@ -42,10 +44,18 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
     const client_connection: WebSocket = ws as WebSocket
     clients.add(client_connection)
 
-    // Handle messages from clients
+    // // Handle messages from clients
     ws.on('message', function incoming(message) {
-        // console.log('received: %s', message)
+        console.log('received: %s', message)
         const data = JSON.parse(message.toString())
+
+        console.log("TEEHEE", data.message_type === MessageType.game_request)
+
+        switch(data.message_type) {
+            case MessageType.game_request:
+                console.log("SERVER RECEIVED GAME REQUEST")
+            break
+        }
         console.log("DATERS", data)
     })
 
@@ -59,16 +69,20 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
 function send_active_users_to_clients(active_users: Set<UUID>) {
     console.log("SERVER ACTIVE USERS", active_users)
     const active_users_array: Array<UUID> = Array.from(active_users)
-    const message: string = JSON.stringify({ type: 'active_users', users: active_users_array })
+
+    const message: ActiveUsersMessage = new ActiveUsersMessage(active_users_array)
 
     // Iterate over all connected clients and send the message to each one
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
             console.log("SERVER SENDING MESSAGE")
-            console.log('MESSAGE SENT FROM SERVER', message)
-            client.send(message)
+            client.send(message.json_string())
         }
     })
+}
+
+function send_game_request_to_recipient(recipient_id: UUID) {
+
 }
 
 http_server.get('/active_users', (req, res) => {

@@ -1,6 +1,6 @@
 import {
-WSSController
-} from "./chunk-44ec22b73a10e2b6.js";
+ClientWebSocket
+} from "./chunk-ab34c5408c7dc033.js";
 
 // src/server/controllers/token_controller.ts
 class TokenController {
@@ -117,7 +117,7 @@ class Index extends HTMLElement {
   }
   render() {
     console.log("INDEXXICLE");
-    WSSController.open_connection();
+    ClientWebSocket.open_connection();
   }
 }
 customElements.define("index-element", Index);

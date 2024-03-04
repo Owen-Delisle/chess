@@ -10,5 +10,7 @@ export default abstract class Message {
 export enum MessageType {
     login,
     move,
-    logout
+    logout,
+    active_users,
+    game_request
 }

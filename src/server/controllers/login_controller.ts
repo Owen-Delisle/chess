@@ -1,6 +1,4 @@
-import LoginMessage from '../components/login_message'
 import TokenController from './token_controller'
-import WSSController from './wss_controller'
 
 export default class LoginController {
     static token = localStorage.getItem('jwtToken')
