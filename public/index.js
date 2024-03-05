@@ -1,6 +1,6 @@
 import {
 ClientWebSocket
-} from "./chunk-5c2d757e562bd583.js";
+} from "components/board/board.js";
 
 // src/server/controllers/token_controller.ts
 class TokenController {

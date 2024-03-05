@@ -1,5 +1,5 @@
 import Square from '../square/square'
-import { SquareColor } from '../square/color'
+import { BlackOrWhite } from '../square/color'
 import PieceStyles from '../piece/styles'
 import SquareStyles from '../square/styles'
 import SquareGrid from '../../models/square_grid'
@@ -8,6 +8,7 @@ import { board_start_index, row_and_column_size } from '../../utils/bounds'
 import { GameController, GameType } from '../../controllers/game_controller'
 import ClientWebSocket from '../../server/client_websocket'
 import PlayerController from '../../server/controllers/player_controller'
+import { UUID } from 'crypto'
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement('div')
@@ -39,12 +40,13 @@ export default class Board extends HTMLElement {
 		if(!GameType[game_type_prop]) {
 			throw new Error("Gametype of Prop does not exist")
 		}
-		if(!SquareColor[player_color_prop]) {
-			throw new Error("Color of prop does not exits")
+		if(!BlackOrWhite[player_color_prop]) {
+			throw new Error("BlackOrWhite of prop does not exits")
 		}
 
 		GameController.game_type = GameType[game_type_prop]
-		PlayerController.player_color = SquareColor[player_color_prop]
+		PlayerController.player_color = BlackOrWhite[player_color_prop]
+		PlayerController.opponent_user_id = opponent_user_id_prop as UUID
 
 		console.log("GAME TYPE", GameController.game_type)
 		
@@ -100,9 +102,9 @@ export default class Board extends HTMLElement {
 	}
 
 	private instantiate_square(index: number): Square {
-		let color: SquareColor = SquareColor.black
+		let color: BlackOrWhite = BlackOrWhite.black
 		if (index % 2 === this.current_row(index)) {
-			color = SquareColor.white
+			color = BlackOrWhite.white
 		}
 
 		let square: Square = new Square(color, index)

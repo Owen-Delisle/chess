@@ -3,6 +3,9 @@ import GameRequestMessage from './messages/game_request_message'
 import Message, { MessageType } from './messages/message'
 import htmx from 'htmx.org'
 import GameAcceptedMessage from './messages/game_accepted_message'
+import MoveController, { MoveInitiator } from '../controllers/move_controller'
+import { Move } from '../global_types/move'
+import Piece from '../components/piece/piece'
 
 export default class ClientWebSocket {
     static token = localStorage.getItem('jwtToken')
@@ -31,7 +34,12 @@ export default class ClientWebSocket {
             }
 
             if (message_type === MessageType.game_accepted.toString()) {
-                ClientWebSocket.update_current_game_ui(message.accepting_user)
+                ClientWebSocket.update_current_game_ui(message.accepting_user, "black")
+            }
+
+            if(message_type === MessageType.move.toString()) {
+                console.log("CLIENT RECEIVED MOVE")
+                ClientWebSocket.move_piece_with_server_move(message.move)
             }
         })
     }
@@ -74,13 +82,13 @@ export default class ClientWebSocket {
 
         list_item.addEventListener('click', function () {
             ClientWebSocket.send_message(new GameAcceptedMessage(this_client_user_id, user_id_of_requester))
-            ClientWebSocket.update_current_game_ui(user_id_of_requester)
+            ClientWebSocket.update_current_game_ui(user_id_of_requester, "white")
         })
 
         game_request_list_element.appendChild(list_item)
     }
 
-    private static update_current_game_ui(user_id_of_opponent: UUID) {
+    private static update_current_game_ui(user_id_of_opponent: UUID, color: string) {
         const current_game_element: HTMLElement | null = document.getElementById('current_game')
 
         if (!current_game_element) {
@@ -89,7 +97,6 @@ export default class ClientWebSocket {
 
         const oponent_id_item = document.createElement('p')
         oponent_id_item.textContent = user_id_of_opponent
-
         current_game_element.appendChild(oponent_id_item)
 
         const board_container_element: HTMLElement | null = document.getElementById('board_element_container')
@@ -98,7 +105,13 @@ export default class ClientWebSocket {
             throw new Error("BOARD CONTAINER ELEMENT NOT FOUND")
         }
 
-        board_container_element.innerHTML = `<board-element game_type="online" player_color="black" opponent_user_id="willybumbum"></board-element>`
+        board_container_element.innerHTML = `<board-element game_type="online" player_color="${color}" opponent_user_id="${user_id_of_opponent}"></board-element>`
+    }
 
+    private static move_piece_with_server_move(move: Move) {
+        const new_pos: string = move.to
+        const piece: Piece = move.piece
+        console.log("PIECE TO MOVE", move.piece)
+        MoveController.move_piece_to(new_pos, piece, MoveInitiator.server)
     }
 }

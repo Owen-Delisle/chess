@@ -15,6 +15,7 @@ import { Move } from '../global_types/move'
 import MoveMessage from '../server/messages/move_message'
 import Board from '../components/board/board'
 import { MessageTargetType } from '../server/types/message_target_type'
+import PlayerController from '../server/controllers/player_controller'
 
 export default class MoveController {
 	private static focused_square: Square | undefined
@@ -56,7 +57,7 @@ export default class MoveController {
 		let piece_attached_to_focused_square: Piece | undefined =
 			this.focused_square?.piece_attached_to_square()
 		if (piece_attached_to_focused_square != undefined) {
-			this.move_piece_to(clicked_square.square_id, piece_attached_to_focused_square)
+			this.move_piece_to(clicked_square.square_id, piece_attached_to_focused_square, MoveInitiator.player)
 		}
 	}
 
@@ -235,7 +236,7 @@ export default class MoveController {
 		})
 	}
 
-	public static async move_piece_to(selected_pos: string, piece: Piece): Promise<void> {
+	public static async move_piece_to(selected_pos: string, piece: Piece, mover: MoveInitiator): Promise<void> {
 		const new_square = SquareGrid.square_by_board_position(selected_pos)
 
 		if(!new_square) {
@@ -248,13 +249,19 @@ export default class MoveController {
 		const move: Move = { piece: piece, from: piece.pos, to: selected_pos }
 		GameController.add_move_to_list(move)
 
-		const move_message = new MoveMessage(
-			MessageTargetType.direct, 
-			'95060f6e-d760-11ee-b370-b7a76f3304f1', 
-			move)
+		if(mover === MoveInitiator.player) {
+			const move_message = new MoveMessage(
+				MessageTargetType.direct, 
+				PlayerController.opponent_user_id, 
+				move)
 
-		ClientWebSocket.send_message(move_message)
-		await piece.move_to(selected_pos)
+			ClientWebSocket.send_message(move_message)
+			await piece.move_to(selected_pos)
+		}
+		if(mover === MoveInitiator.server) {
+			const p = PieceList.piece_by_id(piece.title)
+			p!.move_to(selected_pos)
+		}
 
 		this.redraw()
 	}
@@ -291,4 +298,9 @@ export default class MoveController {
 		GameController.switch_turn()
 		Board.singleton.redraw()
 	}
+}
+
+export enum MoveInitiator {
+	player,
+	server
 }

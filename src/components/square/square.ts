@@ -1,4 +1,4 @@
-import type { SquareColor } from './color'
+import type { BlackOrWhite } from './color'
 import SquareID from './square_id'
 import type Piece from '../piece/piece'
 import MoveController from '../../controllers/move_controller'
@@ -6,10 +6,10 @@ import PieceList from '../../models/piece_list'
 
 export default class Square extends HTMLElement {
 	square_id: string
-	color: SquareColor
+	color: BlackOrWhite
 	element: HTMLElement | null = null
 
-	constructor(color: SquareColor, square_id: number) {
+	constructor(color: BlackOrWhite, square_id: number) {
 		super()
 		this.square_id = SquareID.pos_at_index(square_id)
 		this.color = color

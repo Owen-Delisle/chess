@@ -6,6 +6,7 @@ import { parse } from 'url'
 import { UUID } from 'crypto'
 import ActiveUsersMessage from './src/server/messages/active_users_message.ts'
 import { MessageType } from './src/server/messages/message.ts'
+import { Move } from './src/global_types/move.ts'
 require('dotenv').config()
 
 const server = http.createServer(http_server)
@@ -55,6 +56,10 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             case MessageType.game_accepted:
                 send_game_accepted_to_recipient(data.sender, data.receiver)
             break
+            case MessageType.move:
+                console.log("SERVER RECEIVED MOVE")
+                send_move_to_recipient(data.recipient_id, data.move)
+            break
         }
     })
 
@@ -90,6 +95,13 @@ function send_game_accepted_to_recipient(sender: UUID, receiver: UUID) {
     const json_data = JSON.stringify(data)
 
     active_clients[receiver].send(json_data)
+}
+
+function send_move_to_recipient(recipient_id: UUID, move: Move) {
+    const data = {type: MessageType.move.toString(), move}
+    const json_data = JSON.stringify(data)
+
+    active_clients[recipient_id].send(json_data)
 }
 
 server.listen(PORT, () => {

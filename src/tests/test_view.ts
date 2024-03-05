@@ -1,7 +1,7 @@
 import Square from '../components/square/square'
 import MoveController from '../controllers/move_controller'
 import Board from '../components/board/board'
-import { SquareColor } from '../components/square/color'
+import { BlackOrWhite } from '../components/square/color'
 import SquareGrid from '../models/square_grid'
 import { board_start_index, row_and_column_size } from '../utils/bounds'
 import TestRunner from './test_runner'
@@ -88,9 +88,9 @@ export default class TestView extends HTMLElement {
     }
 
     private instantiate_square(index: number): Square {
-        let color: SquareColor = SquareColor.black
+        let color: BlackOrWhite = BlackOrWhite.black
         if (index % 2 === this.current_row(index)) {
-            color = SquareColor.white
+            color = BlackOrWhite.white
         }
 
         let square: Square = new Square(color, index)
