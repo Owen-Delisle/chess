@@ -15,7 +15,6 @@ export default class Index extends HTMLElement {
 	}
 
 	render() {
-		console.log("INDEXXICLE")
 		ClientWebSocket.open_connection()
 	}
 }

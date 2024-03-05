@@ -7,6 +7,7 @@ import MoveController from '../../controllers/move_controller'
 import { board_start_index, row_and_column_size } from '../../utils/bounds'
 import { GameController, GameType } from '../../controllers/game_controller'
 import ClientWebSocket from '../../server/client_websocket'
+import PlayerController from '../../server/controllers/player_controller'
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement('div')
@@ -16,23 +17,35 @@ export default class Board extends HTMLElement {
 
 	constructor() {
 		super()
-		const container = document.createElement('div');
-        const board_props = document.createElement('p');
-        board_props.id = 'board_props';
-        container.appendChild(board_props);
-		
 		this.render()
 	}
 
 	render(): void {
-		const prop = this.getAttribute('board_props');
-		if(!prop) {
-			throw new Error("Prop from board is undefined")
+		const game_type_prop = this.getAttribute('game_type')
+		const player_color_prop = this.getAttribute('player_color')
+		const opponent_user_id_prop = this.getAttribute('opponent_user_id')
+
+		console.log("PROPS = ", "GAME TYPE:", game_type_prop, "PLAYER COLOR:", player_color_prop, "OPPONENT ID:", opponent_user_id_prop)
+
+		if(!game_type_prop) {
+			throw new Error("Game Type Prop is undefined")
 		}
-		if(!GameType[prop]) {
+		if(!player_color_prop) {
+			throw new Error("Player Color Prop is undefined")
+		}
+		if(!opponent_user_id_prop) {
+			throw new Error("Opponent USER_ID Prop is undefined")
+		}
+		if(!GameType[game_type_prop]) {
 			throw new Error("Gametype of Prop does not exist")
 		}
-		GameController.game_type = GameType[prop]
+		if(!SquareColor[player_color_prop]) {
+			throw new Error("Color of prop does not exits")
+		}
+
+		GameController.game_type = GameType[game_type_prop]
+		PlayerController.player_color = SquareColor[player_color_prop]
+
 		console.log("GAME TYPE", GameController.game_type)
 		
 		this.add_styles_to_dom()
@@ -41,7 +54,6 @@ export default class Board extends HTMLElement {
 
 		Board.singleton = this
 
-		console.log("BOARZZZZD")
 		ClientWebSocket.open_connection()
 	}
 

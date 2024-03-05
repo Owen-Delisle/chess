@@ -21,7 +21,6 @@ export default class ClientWebSocket {
             const message_type: string = message.type
 
             if (message_type === MessageType.active_users.toString()) {
-                console.log('ACTIVE USERS MESSAGE RECIEVED')
                 const active_users = message.users
 
                 ClientWebSocket.update_active_users_list_ui(active_users)
@@ -32,7 +31,6 @@ export default class ClientWebSocket {
             }
 
             if (message_type === MessageType.game_accepted.toString()) {
-                console.log("GAME WAS ACCEPTED MUFUKA")
                 ClientWebSocket.update_current_game_ui(message.accepting_user)
             }
         })
@@ -61,12 +59,9 @@ export default class ClientWebSocket {
             })
             user_list_element.appendChild(list_item)
         })
-
-        // htmx.trigger(user_list_element, 'htmx:afterSwap', {detail:undefined})
     }
 
     private static update_request_list_ui(user_id_of_requester: UUID, this_client_user_id: UUID) {
-        console.log("UPDATING REQUEST LIST")
         const game_request_list_element: HTMLElement | null = document.getElementById('game_request_list')
         if (!game_request_list_element) {
             throw new Error('GAME REQUEST ELEMENT LIST NOT FOUND')
@@ -83,12 +78,9 @@ export default class ClientWebSocket {
         })
 
         game_request_list_element.appendChild(list_item)
-
-        // htmx.trigger(game_request_list_element, 'htmx:afterSwap', {detail:undefined})
     }
 
     private static update_current_game_ui(user_id_of_opponent: UUID) {
-        console.log("UPDATING REQUEST LIST")
         const current_game_element: HTMLElement | null = document.getElementById('current_game')
 
         if (!current_game_element) {
@@ -99,5 +91,14 @@ export default class ClientWebSocket {
         oponent_id_item.textContent = user_id_of_opponent
 
         current_game_element.appendChild(oponent_id_item)
+
+        const board_container_element: HTMLElement | null = document.getElementById('board_element_container')
+
+        if(!board_container_element) {
+            throw new Error("BOARD CONTAINER ELEMENT NOT FOUND")
+        }
+
+        board_container_element.innerHTML = `<board-element game_type="online" player_color="black" opponent_user_id="willybumbum"></board-element>`
+
     }
 }

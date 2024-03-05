@@ -1,6 +1,6 @@
 import {
 ClientWebSocket
-} from "./chunk-ba446b6b3d8a0747.js";
+} from "./chunk-5c2d757e562bd583.js";
 
 // src/server/controllers/token_controller.ts
 class TokenController {
@@ -116,7 +116,6 @@ class Index extends HTMLElement {
     this.render();
   }
   render() {
-    console.log("INDEXXICLE");
     ClientWebSocket.open_connection();
   }
 }

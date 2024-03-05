@@ -53,7 +53,6 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
                 send_game_request_to_recipient(data.recipient_id)
             break
             case MessageType.game_accepted:
-                console.log('GAME ACCEPTED!')
                 send_game_accepted_to_recipient(data.sender, data.receiver)
             break
         }
