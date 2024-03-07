@@ -6,28 +6,19 @@ import GameAcceptedMessage from './messages/game_accepted_message'
 import MoveController, { MoveInitiator } from '../controllers/move_controller'
 import { Move } from '../global_types/move'
 import Piece from '../components/piece/piece'
-import { GameController } from '../controllers/game_controller'
-import MoveMessage from './messages/move_message'
-import { MessageTargetType } from './types/message_target_type'
-import Board from '../components/board/board'
-import PlayerController from './controllers/player_controller'
 import { BlackOrWhite } from '../components/square/color'
-import GameType from '../global_types/enums/game_type'
+import web_socket from './scripts/ws_connection'
 
 export default class ClientWebSocket {
     static token = localStorage.getItem('jwtToken')
 
     //TODO:: UPDATE WHEN DEPLOYED
     static web_socket: WebSocket = new WebSocket(`ws://localhost:3000?token=${this.token}`)
+    // static web_socket: WebSocket = web_socket
 
     public static open_connection(): void {
         ClientWebSocket.web_socket.addEventListener('open', function (event) {
             console.log('Client WebSocket connection established')
-
-            document.getElementById('moves_list')!.addEventListener('child_added', function(event) {
-                console.log("WERE MOVING")
-                ClientWebSocket.send_last_move_to_server()
-            });
         })
 
         ClientWebSocket.web_socket.addEventListener('message', function (event) {
@@ -41,7 +32,6 @@ export default class ClientWebSocket {
                     ClientWebSocket.update_active_users_list_ui(active_users)
                 break
                 case MessageType.game_request.toString():
-                    console.log('CLIENT RECEIVED BATTLE REQUEST')
                     ClientWebSocket.update_request_list_ui(message.requesting_user, message.recieving_user)
                 break
                 case MessageType.game_accepted.toString():
@@ -49,7 +39,7 @@ export default class ClientWebSocket {
                 break
                 case MessageType.move.toString():
                     console.log("CLIENT RECEIVED MOVE")
-                    // ClientWebSocket.move_piece_with_server_move(message.move)
+                    ClientWebSocket.move_piece_with_server_move(message.move)
                 break
             }
         })
@@ -109,9 +99,9 @@ export default class ClientWebSocket {
             throw new Error('CURRENT GAME ELEMENT NOT FOUND')
         }
 
-        const oponent_id_item = document.createElement('p')
-        oponent_id_item.textContent = user_id_of_opponent
-        current_game_element.appendChild(oponent_id_item)
+        const opponent_id_item = document.createElement('p')
+        opponent_id_item.textContent = user_id_of_opponent
+        current_game_element.appendChild(opponent_id_item)
 
         const board_container_element: HTMLElement | null = document.getElementById('board_element_container')
 
@@ -119,44 +109,13 @@ export default class ClientWebSocket {
             throw new Error("BOARD CONTAINER ELEMENT NOT FOUND")
         }
 
-        // board_container_element.innerHTML = ''
-        // board_container_element.innerHTML = `<board-element game_type="online" player_color="${color}" opponent_user_id="${user_id_of_opponent}"></board-element>`
-
-        if(!board_container_element.firstChild) {
-            throw new Error("Board Container should not be empty")
-        }
-
-        // const board_element: HTMLElement = document.createElement('board-element')
-        // board_element.setAttribute('game_type', 'online')
-        // board_element.setAttribute('player_color', `${color}`)
-        // board_element.setAttribute('opponent_user_id', `${user_id_of_opponent}`)
-
-        // board_container_element.replaceChild(board_element, board_container_element.getElementsByTagName('board-element')[0]);
-
-        const body = document.getElementById('body')
-
-        body!.removeChild(board_container_element)
-
-        const new_container = document.createElement('div')
-
-        body!.appendChild(new_container)
-
-        new_container.id = 'shit-cock-balls'
-
-        new_container.innerHTML = `<board-element game_type="online" player_color="${color}" opponent_user_id="${user_id_of_opponent}"></board-element>`
+        board_container_element.innerHTML = `<board-element game_type="online" player_color="${color}" opponent_user_id="${user_id_of_opponent}"></board-element>`
     }
 
     private static move_piece_with_server_move(move: Move) {
-        // const new_pos: string = move.to
-        // const piece: Piece = move.piece
-        // console.log("PIECE TO MOVE", move.piece)
-        // MoveController.move_piece_to(new_pos, piece, MoveInitiator.server)
-    }
-
-    public static send_last_move_to_server() {
-        
-        const move_message = new GameRequestMessage("482f8176-e673-4d80-9941-254399f0a400")
-
-        ClientWebSocket.send_message_to_server(move_message)
+        const new_pos: string = move.to
+        const piece: Piece = move.piece
+        console.log("PIECE TO MOVE", move.piece)
+        MoveController.move_piece_to(new_pos, piece, MoveInitiator.server)
     }
 }

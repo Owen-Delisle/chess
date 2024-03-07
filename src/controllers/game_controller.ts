@@ -22,19 +22,6 @@ export class GameController {
 
 	public static add_move_to_list(move: Move) {
 		this.move_list.add_move(move)
-		const ml_el: HTMLElement | null = document.getElementById('moves_list')
-
-		if(!ml_el) {
-			throw new Error("Could not find move_list element in document")
-		}
-
-		const p: HTMLElement = document.createElement('p')
-		p.textContent = move.to
-
-		ml_el.appendChild(p)
-
-		const child_added_event = new CustomEvent('child_added', { bubbles: true })
-		ml_el.dispatchEvent(child_added_event)
 	}
 
 	public static should_game_end(king: King): void {

@@ -236,54 +236,38 @@ export default class MoveController {
 		})
 	}
 
-	public static move_piece_to(selected_pos: string, piece: Piece, mover: MoveInitiator) {
+	public static async move_piece_to(selected_pos: string, piece: Piece, mover: MoveInitiator): Promise<void> {
+		const new_square = SquareGrid.square_by_board_position(selected_pos)
+
+		if(!new_square) {
+			throw new Error("New Square Not Found in Move Piece To")
+		}
+		if (this.remove_piece_conditions(selected_pos)) {
+			new_square.remove_piece()
+		}
+
 		const move: Move = { piece: piece, from: piece.pos, to: selected_pos }
-		
-		console.log("MOVE PIECE CALLED")
-
-		const move_message = new MoveMessage(
-			MessageTargetType.direct, 
-			PlayerController.opponent_user_id, 
-			move)
-
-
-		console.log("SENDING MESSAGE FROM MOVE CONTROLLER")
-		
 		GameController.add_move_to_list(move)
+
+		if(mover === MoveInitiator.player) {
+			const move_message = new MoveMessage(
+				MessageTargetType.direct, 
+				PlayerController.opponent_user_id, 
+				move)
+
+			ClientWebSocket.send_message_to_server(move_message)
+			await piece.move_to(selected_pos)
+		}
+		if(mover === MoveInitiator.server) {
+			const p = PieceList.piece_by_id(piece.title)
+			if(!p) {
+				throw new Error("Piece is not defined")
+			}
+			p!.move_to(selected_pos)
+		}
+
+		this.redraw()
 	}
-
-	// public static async move_piece_to(selected_pos: string, piece: Piece, mover: MoveInitiator): Promise<void> {
-	// 	const new_square = SquareGrid.square_by_board_position(selected_pos)
-
-	// 	if(!new_square) {
-	// 		throw new Error("New Square Not Found in Move Piece To")
-	// 	}
-	// 	if (this.remove_piece_conditions(selected_pos)) {
-	// 		new_square.remove_piece()
-	// 	}
-
-	// 	const move: Move = { piece: piece, from: piece.pos, to: selected_pos }
-	// 	GameController.add_move_to_list(move)
-
-	// 	if(mover === MoveInitiator.player) {
-	// 		const move_message = new MoveMessage(
-	// 			MessageTargetType.direct, 
-	// 			PlayerController.opponent_user_id, 
-	// 			move)
-
-	// 		ClientWebSocket.send_message(move_message)
-	// 		await piece.move_to(selected_pos)
-	// 	}
-	// 	if(mover === MoveInitiator.server) {
-	// 		const p = PieceList.piece_by_id(piece.title)
-	// 		if(!p) {
-	// 			throw new Error("Piece is not defined")
-	// 		}
-	// 		p!.move_to(selected_pos)
-	// 	}
-
-	// 	this.redraw()
-	// }
 
 	private static remove_piece_conditions(selected_pos: string): boolean {
 		const new_square: Square | undefined = SquareGrid.square_by_board_position(selected_pos)
