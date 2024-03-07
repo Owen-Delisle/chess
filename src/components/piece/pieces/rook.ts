@@ -3,7 +3,6 @@ import Piece from '../piece'
 import { PieceDirections } from '../piece_directions'
 import type Piece_Interface from '../piece_interface'
 import type { PieceType } from '../piece_types'
-import type Square from '../../../components/square/square'
 
 export default class Rook extends Piece implements Piece_Interface {
 	move_distance: number = 7

@@ -114,7 +114,7 @@ export default class MoveController {
 			rook_piece.possible_moves.push(SquareID.pos_at_point(next_rook_point))
 
 			const new_king_pos = SquareID.pos_at_point(next_king_point)
-			const new_rook_pos = SquareID.pos_at_point(next_king_point)
+			const new_rook_pos = SquareID.pos_at_point(next_rook_point)
 
 			this.move_castle_pieces(new_king_pos, king_piece, new_rook_pos, rook_piece)
 		}
@@ -249,47 +249,51 @@ export default class MoveController {
 		const move: Move = { piece: piece, from: piece.pos, to: selected_pos }
 		GameController.add_move_to_list(move)
 
-		this.handle_move(mover, move, piece, selected_pos)
+		this.handle_move(mover, move)
 
 		this.redraw()
 	}
 
-	private static handle_move(mover: MoveInitiator, move: Move, piece: Piece, selected_pos: string) {
+	private static handle_move(mover: MoveInitiator, move: Move) {
 		if(mover === MoveInitiator.server) {
-			this.server_move(piece, selected_pos)
+			this.move_sent_from_server(move)
 		} else if(mover === MoveInitiator.player) {
-			this.handle_player_move(move, piece, selected_pos)	
+			this.handle_player_move(move)	
 		}
 	}
 
-	private static handle_player_move(move: Move, piece: Piece, selected_pos: string) {
+	private static handle_player_move(move: Move) {
 		if(GameController.game_type === GameType.online) {
-			this.online_player_move(move, piece, selected_pos)
+			this.online_player_move(move)
 		} else if(GameController.game_type === GameType.offline) {
-			this.offline_player_move(piece, selected_pos)
+			this.offline_player_move(move)
 		}
 	}
 
-	private static async offline_player_move(piece: Piece, selected_pos: string) {
-		await piece.move_to(selected_pos)
+	private static async offline_player_move(move: Move) {
+		await move.piece.move_to(move.to)
 	}
 
-	private static async online_player_move(move: Move, piece: Piece, selected_pos: string) {
-		const move_message = new MoveMessage(
+	private static async online_player_move(move: Move) {
+		this.send_move_to_server(move)
+		await move.piece.move_to(move.to)
+	}
+
+	private static send_move_to_server(move: Move) {
+		const message = new MoveMessage(
 			MessageTargetType.direct, 
 			PlayerController.opponent_user_id, 
 			move)
 
-		ClientWebSocket.send_message_to_server(move_message)
-		await piece.move_to(selected_pos)
+		ClientWebSocket.send_message_to_server(message)
 	}
 
-	private static server_move(piece: Piece, selected_pos: string) {
-		const p = PieceList.piece_by_id(piece.title)
-		if(!p) {
+	private static move_sent_from_server(move: Move) {
+		const piece = PieceList.piece_by_id(move.piece.title)
+		if(!piece) {
 			throw new Error("Piece is not defined")
 		}
-		p!.move_to(selected_pos)
+		piece.move_to(move.to)
 	}
 
 	private static remove_piece_conditions(selected_pos: string): boolean {
@@ -314,8 +318,23 @@ export default class MoveController {
 		new_rook_pos: string,
 		rook_piece: Piece,
 	): Promise<void> {
+
+		const king_castle_move: Move = {
+			piece: king_piece, 
+			from: king_piece.pos, 
+			to: new_king_pos
+		}
+		this.send_move_to_server(king_castle_move)
 		await king_piece.move_to(new_king_pos)
+
+		const rook_castle_move: Move = {
+			piece: rook_piece, 
+			from: rook_piece.pos, 
+			to: new_rook_pos
+		}
+		this.send_move_to_server(rook_castle_move)
 		await rook_piece.move_to(new_rook_pos)
+		
 		this.redraw()
 	}
 
