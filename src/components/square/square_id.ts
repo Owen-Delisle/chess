@@ -1,8 +1,9 @@
-import { GameController, GameType } from '../../controllers/game_controller'
+import { GameController } from '../../controllers/game_controller'
 import type { GridPoint } from '../../global_types/grid_point'
 import PlayerController from '../../server/controllers/player_controller'
 import { Color } from '../piece/color'
 import { BlackOrWhite } from './color'
+import GameType from '../../global_types/enums/game_type'
 
 export default class SquareID {
 	// TODO -- Make One Board

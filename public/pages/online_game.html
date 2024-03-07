@@ -6,31 +6,37 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="description" />
     <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
-	<script src="components/board/board.js" type="module"></script>
+	<script src="board.js" type="module"></script>
+    <script src="index.js" type="module"></script>
 	<title>Online Game</title>
 </head>
 
-<body>
+<body id="body">
     <h1>Online Game</h1>
 
         <p>ACTIVE USER LIST</p>
-        <div id="user_list" hx-trigger="load">
+        <div id="user_list">
             <!-- List items will be populated here -->
         </div>   
 
         <p>GAME REQUEST LIST</p>
-        <div id="game_request_list" hx-trigger="load">
+        <div id="game_request_list">
             <!-- List items will be populated here -->
         </div>
 
         <p>Current Game</p>
-        <div id="current_game" hx-trigger="load">
+        <div id="current_game">
+            <!-- List items will be populated here -->
+        </div>
+
+        <p>Moves List</p>
+        <div id="moves_list">
             <!-- List items will be populated here -->
         </div>
 
     <div id="board_element_container">
-        <board-element game_type="offline" player_color="white" opponent_user_id="test123"></board-element>
+        <index-element></index-element>
+        <board-element id="default_board" game_type="offline" player_color="white" opponent_user_id="test123"></board-element>
     </div>
-
 </body>
 </html>

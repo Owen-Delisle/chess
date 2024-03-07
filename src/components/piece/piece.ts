@@ -243,11 +243,16 @@ export default abstract class Piece {
 
 		//If piece at square can be attacked
 		if (!square_is_empty({ row: new_row, col: new_col })) {
-			const piece_at_square: Piece = SquareGrid.piece_by_grid_point({
+			const piece_at_square: Piece | undefined = SquareGrid.piece_by_grid_point({
 				row: new_row,
 				col: new_col,
-			})!
-			// Pawn has its own attacking logic
+			})
+
+			if(!piece_at_square) {
+				throw new Error("Piece is undefined")
+			}
+
+			// Pawn and King have their own attacking logic
 			if (piece_at_square.color !== this.color) {
 				if (this.type !== PieceType.king && this.type !== PieceType.pawn) {
 					moves_in_direction.push(SquareID.pos_at_point({ row: new_row, col: new_col }))

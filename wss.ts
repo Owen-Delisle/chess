@@ -36,6 +36,7 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
         current_client_user_id = decoded.userId
 
         active_clients[current_client_user_id] = client_connection
+
         send_active_users_to_clients()
 
     } catch (error) {
@@ -102,6 +103,12 @@ function send_move_to_recipient(recipient_id: UUID, move: Move) {
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)
+}
+
+function print_all_active_clients() {
+    Object.keys(active_clients).forEach(user_id => {
+        console.log(user_id)
+    })
 }
 
 server.listen(PORT, () => {

@@ -3,8 +3,7 @@ import { Color, not_color } from '../components/piece/color'
 import { Move } from '../global_types/move'
 import King from '../components/piece/pieces/king'
 import PieceList from '../models/piece_list'
-import Piece from '../components/piece/piece'
-import MoveController from './move_controller'
+import GameType from 'src/global_types/enums/game_type'
 
 export class GameController {
 	public static game_type: GameType
@@ -14,20 +13,6 @@ export class GameController {
 	private static insufficient_material_value: number = 3
 
 	public static switch_turn(): void {
-		switch(this.game_type) {
-			case GameType.online:
-				this.online_turn_switch()
-				break
-			case GameType.offline:
-				this.offline_turn_switch()
-				break
-
-			default:
-				throw new Error("Gametype in switch_turn not recognized")
-		}
-	}
-
-	public static offline_turn_switch() {
 		if (GameController.turn == Color.white) {
 			GameController.turn = Color.black
 		} else {
@@ -35,11 +20,21 @@ export class GameController {
 		}
 	}
 
-	public static online_turn_switch() {
-	}
-
 	public static add_move_to_list(move: Move) {
 		this.move_list.add_move(move)
+		const ml_el: HTMLElement | null = document.getElementById('moves_list')
+
+		if(!ml_el) {
+			throw new Error("Could not find move_list element in document")
+		}
+
+		const p: HTMLElement = document.createElement('p')
+		p.textContent = move.to
+
+		ml_el.appendChild(p)
+
+		const child_added_event = new CustomEvent('child_added', { bubbles: true })
+		ml_el.dispatchEvent(child_added_event)
 	}
 
 	public static should_game_end(king: King): void {
@@ -69,9 +64,4 @@ export enum GameEndType {
 export enum WinOrLose {
 	win,
 	lose
-}
-
-export enum GameType {
-	online = "online",
-	offline = "offline"
 }

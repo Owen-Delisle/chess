@@ -5,9 +5,10 @@ import SquareStyles from '../square/styles'
 import SquareGrid from '../../models/square_grid'
 import MoveController from '../../controllers/move_controller'
 import { board_start_index, row_and_column_size } from '../../utils/bounds'
-import { GameController, GameType } from '../../controllers/game_controller'
+import { GameController } from '../../controllers/game_controller'
 import ClientWebSocket from '../../server/client_websocket'
 import PlayerController from '../../server/controllers/player_controller'
+import GameType from '../../global_types/enums/game_type'
 import { UUID } from 'crypto'
 
 export default class Board extends HTMLElement {
@@ -22,41 +23,21 @@ export default class Board extends HTMLElement {
 	}
 
 	render(): void {
-		const game_type_prop = this.getAttribute('game_type')
+		const game_type_prop: string | null = this.getAttribute('game_type')
 		const player_color_prop = this.getAttribute('player_color')
 		const opponent_user_id_prop = this.getAttribute('opponent_user_id')
 
 		console.log("PROPS = ", "GAME TYPE:", game_type_prop, "PLAYER COLOR:", player_color_prop, "OPPONENT ID:", opponent_user_id_prop)
 
-		if(!game_type_prop) {
-			throw new Error("Game Type Prop is undefined")
-		}
-		if(!player_color_prop) {
-			throw new Error("Player Color Prop is undefined")
-		}
-		if(!opponent_user_id_prop) {
-			throw new Error("Opponent USER_ID Prop is undefined")
-		}
-		if(!GameType[game_type_prop]) {
-			throw new Error("Gametype of Prop does not exist")
-		}
-		if(!BlackOrWhite[player_color_prop]) {
-			throw new Error("BlackOrWhite of prop does not exits")
-		}
-
-		GameController.game_type = GameType[game_type_prop]
-		PlayerController.player_color = BlackOrWhite[player_color_prop]
+		GameController.game_type = GameType[game_type_prop! as keyof typeof GameType];
+		PlayerController.player_color = BlackOrWhite[player_color_prop! as keyof typeof BlackOrWhite];
 		PlayerController.opponent_user_id = opponent_user_id_prop as UUID
-
-		console.log("GAME TYPE", GameController.game_type)
 		
 		this.add_styles_to_dom()
 		this.board_generator()
 		MoveController.load_possible_moves_lists()
 
 		Board.singleton = this
-
-		ClientWebSocket.open_connection()
 	}
 
 	private add_styles_to_dom() {
