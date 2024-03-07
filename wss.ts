@@ -12,7 +12,6 @@ require('dotenv').config()
 const server = http.createServer(http_server)
 const wss = new Server({ server })
 const secretKey = process.env.JWT_SECRET
-let current_client_user_id: UUID
 
 const active_clients: { [user_id: UUID]: WebSocket } = {};
 
@@ -33,10 +32,7 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             throw new Error("Secret Key was undefined")
         }
         const decoded = jwt.verify(token, secretKey) as { [key: string]: any }
-        current_client_user_id = decoded.userId
-
-        active_clients[current_client_user_id] = client_connection
-
+        active_clients[decoded.userId] = client_connection
         send_active_users_to_clients()
 
     } catch (error) {
@@ -52,7 +48,7 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
 
         switch(data.message_type) {
             case MessageType.game_request:
-                send_game_request_to_recipient(data.recipient_id)
+                send_game_request_to_recipient(data.sender, data.recipient_id)
             break
             case MessageType.game_accepted:
                 send_game_accepted_to_recipient(data.sender, data.receiver)
@@ -84,8 +80,9 @@ function send_active_users_to_clients() {
     })
 }
 
-function send_game_request_to_recipient(recipient_id: UUID) {
-    const data = {type: MessageType.game_request.toString(), requesting_user: current_client_user_id, recieving_user: recipient_id}
+function send_game_request_to_recipient(sender: UUID, recipient_id: UUID) {
+    console.log("SERVER SEND GAME REQUEST", "SENDER", sender, "RECEIVER", recipient_id)
+    const data = {type: MessageType.game_request.toString(), requesting_user: sender, recieving_user: recipient_id}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)
@@ -103,12 +100,6 @@ function send_move_to_recipient(recipient_id: UUID, move: Move) {
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)
-}
-
-function print_all_active_clients() {
-    Object.keys(active_clients).forEach(user_id => {
-        console.log(user_id)
-    })
 }
 
 server.listen(PORT, () => {

@@ -14,7 +14,7 @@ export default class TokenController {
         if (is_valid_token) {
             localStorage.setItem(this.jwt_token_id, token)
         }
-    } catch (error) {
+    } catch (error: any) {
         // Handle verification error
         console.error('Verification error:', error.message)
         // Optionally rethrow the error to propagate it to the caller
@@ -23,15 +23,16 @@ export default class TokenController {
 }
 
     static async userID_from_token(token: string): Promise<UUID | null> {
+        const token_data = {token: token}
+        console.log(token_data)
         try {
             const response = await fetch('/userID_from_token', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ token: token }),
+                body: JSON.stringify(token_data),
             })
-            console.log(response)
             if (response.ok) {
                 const data = await response.json()
                 return data.userId

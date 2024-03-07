@@ -1,68 +1,7 @@
 import {
-ClientWebSocket
-} from "components/board/board.js";
-
-// src/server/controllers/token_controller.ts
-class TokenController {
-  static jwt_token_id = "jwtToken";
-  static async retrieve_token_from_storage() {
-    const token = localStorage.getItem(this.jwt_token_id);
-    return token;
-  }
-  static async add_token_to_storage(token) {
-    try {
-      const is_valid_token = await TokenController.verify_jwt_token(token);
-      if (is_valid_token) {
-        localStorage.setItem(this.jwt_token_id, token);
-      }
-    } catch (error) {
-      console.error("Verification error:", error.message);
-      throw error;
-    }
-  }
-  static async userID_from_token(token) {
-    try {
-      const response = await fetch("/userID_from_token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ token })
-      });
-      console.log(response);
-      if (response.ok) {
-        const data = await response.json();
-        return data.userId;
-      } else {
-        throw new Error("Failed to fetch");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      return null;
-    }
-  }
-  static async verify_jwt_token(token) {
-    try {
-      const response = await fetch("/verify_jwt", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ token })
-      });
-      console.log(response);
-      if (response.ok) {
-        const data = await response.json();
-        return data.success === true;
-      } else {
-        throw new Error("Failed to fetch");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      return false;
-    }
-  }
-}
+ClientWebSocket,
+TokenController
+} from "/components/board/board.js";
 
 // src/server/controllers/login_controller.ts
 class LoginController {
@@ -80,7 +19,7 @@ class LoginController {
         event.preventDefault();
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
-        const formData = {
+        const form_data = {
           username,
           password
         };
@@ -90,7 +29,7 @@ class LoginController {
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(form_data)
           });
           if (!response.ok) {
             throw new Error("Failed to login");

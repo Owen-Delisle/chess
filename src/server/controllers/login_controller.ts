@@ -22,7 +22,7 @@ export default class LoginController {
                 const username = (document.getElementById('username') as HTMLInputElement).value
                 const password = (document.getElementById('password') as HTMLInputElement).value
                 
-                const formData = {
+                const form_data = {
                     username,
                     password
                 }
@@ -33,7 +33,7 @@ export default class LoginController {
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(formData)
+                        body: JSON.stringify(form_data)
                     })
 
                     if (!response.ok) {
@@ -47,7 +47,7 @@ export default class LoginController {
 
                     // Redirect user to dashboard or another page
                     // window.location.href = '/dashboard'
-                } catch (error) {
+                } catch (error: any) {
                     console.error('Error:', error.message)
                     alert('Thrown from Client - Failed to login on')
                 }

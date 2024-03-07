@@ -7,18 +7,19 @@ import MoveController, { MoveInitiator } from '../controllers/move_controller'
 import { Move } from '../global_types/move'
 import Piece from '../components/piece/piece'
 import { BlackOrWhite } from '../components/square/color'
-import web_socket from './scripts/ws_connection'
+import TokenController from './controllers/token_controller'
 
 export default class ClientWebSocket {
-    static token = localStorage.getItem('jwtToken')
+    static token: string | null = localStorage.getItem('jwtToken')
+    static id: Promise<UUID> = ClientWebSocket.user_id_of_client()
 
     //TODO:: UPDATE WHEN DEPLOYED
     static web_socket: WebSocket = new WebSocket(`ws://localhost:3000?token=${this.token}`)
-    // static web_socket: WebSocket = web_socket
 
     public static open_connection(): void {
         ClientWebSocket.web_socket.addEventListener('open', function (event) {
             console.log('Client WebSocket connection established')
+            
         })
 
         ClientWebSocket.web_socket.addEventListener('message', function (event) {
@@ -32,17 +33,31 @@ export default class ClientWebSocket {
                     ClientWebSocket.update_active_users_list_ui(active_users)
                 break
                 case MessageType.game_request.toString():
+                    console.log("CLIENT RECEIVED GAME REQUEST")
                     ClientWebSocket.update_request_list_ui(message.requesting_user, message.recieving_user)
                 break
                 case MessageType.game_accepted.toString():
                     ClientWebSocket.update_current_game_ui(message.accepting_user, BlackOrWhite.black)
                 break
                 case MessageType.move.toString():
-                    console.log("CLIENT RECEIVED MOVE")
                     ClientWebSocket.move_piece_with_server_move(message.move)
                 break
             }
         })
+    }
+
+    private static async user_id_of_client(): Promise<UUID> {
+        if(!ClientWebSocket.token) {
+            throw new Error('Invalid token')
+        }
+
+        const user_id: UUID | null = await TokenController.userID_from_token(ClientWebSocket.token)
+
+        if(!user_id) {
+            throw new Error("Could not decode UserID from token")
+        }
+
+        return user_id
     }
 
     public static send_message_to_server(message: Message) {
@@ -65,8 +80,8 @@ export default class ClientWebSocket {
             const list_item = document.createElement('li')
             const typed_user_id: UUID = user_id as UUID
             list_item.textContent = typed_user_id
-            list_item.addEventListener('click', function () {
-                ClientWebSocket.send_message_to_server(new GameRequestMessage(typed_user_id))
+            list_item.addEventListener('click', async function () {
+                ClientWebSocket.send_message_to_server(new GameRequestMessage(await ClientWebSocket.id, typed_user_id))
 
             })
             user_list_element.appendChild(list_item)

@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken'
 import path from 'path'
 require('dotenv').config()
 import bcrypt from 'bcrypt'
-// import { active_users } from './wss'
 
 const http_server = express()
 const PORT = 3000
@@ -100,7 +99,7 @@ http_server.post('/login', async (req, res) => {
             const passwordMatch = await bcrypt.compare(password, user.password)
             if (passwordMatch) {
                 if (secretKey !== undefined) {
-                    const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '5h' })
+                    const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '24h' })
                     if (jwt.verify(token, secretKey)) {
                         res.json({ token })
                     } else {
@@ -146,12 +145,12 @@ http_server.post('/verify_jwt', async (req, res) => {
     }
 })
 
-http_server.post('userID_from_token', async (req, res) => {
+http_server.post('/userID_from_token', async (req, res) => {
     if (!secretKey) {
         throw new Error("JWT Environment variable is null")
     }
     try {
-        const token: string = JSON.stringify(req.body)
+        const token: string = req.body.token
         const decoded: any = jwt.verify(token, secretKey)
         if (decoded && typeof decoded === 'object' && decoded.hasOwnProperty('userId')) {
             res.json({ userId: decoded.userId }) 
