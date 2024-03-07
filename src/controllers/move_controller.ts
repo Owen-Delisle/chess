@@ -17,6 +17,7 @@ import Board from '../components/board/board'
 import { MessageTargetType } from '../server/types/message_target_type'
 import PlayerController from '../server/controllers/player_controller'
 import GameRequestMessage from '../server/messages/game_request_message'
+import GameType from 'src/global_types/enums/game_type'
 
 export default class MoveController {
 	private static focused_square: Square | undefined
@@ -249,24 +250,47 @@ export default class MoveController {
 		const move: Move = { piece: piece, from: piece.pos, to: selected_pos }
 		GameController.add_move_to_list(move)
 
-		if(mover === MoveInitiator.player) {
-			const move_message = new MoveMessage(
-				MessageTargetType.direct, 
-				PlayerController.opponent_user_id, 
-				move)
-
-			ClientWebSocket.send_message_to_server(move_message)
-			await piece.move_to(selected_pos)
-		}
-		if(mover === MoveInitiator.server) {
-			const p = PieceList.piece_by_id(piece.title)
-			if(!p) {
-				throw new Error("Piece is not defined")
-			}
-			p!.move_to(selected_pos)
-		}
+		this.handle_move(mover, move, piece, selected_pos)
 
 		this.redraw()
+	}
+
+	private static handle_move(mover: MoveInitiator, move: Move, piece: Piece, selected_pos: string) {
+		if(mover === MoveInitiator.server) {
+			this.server_move(piece, selected_pos)
+		} else if(mover === MoveInitiator.player) {
+			this.handle_player_move(move, piece, selected_pos)	
+		}
+	}
+
+	private static handle_player_move(move: Move, piece: Piece, selected_pos: string) {
+		if(GameController.game_type === GameType.online) {
+			this.online_player_move(move, piece, selected_pos)
+		} else if(GameController.game_type === GameType.offline) {
+			this.offline_player_move(piece, selected_pos)
+		}
+	}
+
+	private static async offline_player_move(piece: Piece, selected_pos: string) {
+		await piece.move_to(selected_pos)
+	}
+
+	private static async online_player_move(move: Move, piece: Piece, selected_pos: string) {
+		const move_message = new MoveMessage(
+			MessageTargetType.direct, 
+			PlayerController.opponent_user_id, 
+			move)
+
+		ClientWebSocket.send_message_to_server(move_message)
+		await piece.move_to(selected_pos)
+	}
+
+	private static server_move(piece: Piece, selected_pos: string) {
+		const p = PieceList.piece_by_id(piece.title)
+		if(!p) {
+			throw new Error("Piece is not defined")
+		}
+		p!.move_to(selected_pos)
 	}
 
 	private static remove_piece_conditions(selected_pos: string): boolean {

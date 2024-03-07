@@ -11,7 +11,7 @@ import TokenController from './controllers/token_controller'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
-    static id: Promise<UUID> = ClientWebSocket.user_id_of_client()
+    static client_user_id: Promise<UUID> = ClientWebSocket.user_id_of_client()
 
     //TODO:: UPDATE WHEN DEPLOYED
     static web_socket: WebSocket = new WebSocket(`ws://localhost:3000?token=${this.token}`)
@@ -68,7 +68,8 @@ export default class ClientWebSocket {
         ClientWebSocket.web_socket.send(message_to_send)
     }
 
-    private static update_active_users_list_ui(active_users_id: string[]) {
+    private static async update_active_users_list_ui(active_users_id: string[]) {
+        const client_user_id: UUID = await ClientWebSocket.client_user_id
         const user_list_element: HTMLElement | null = document.getElementById('user_list')
         if (!user_list_element) {
             throw new Error('USERS LIST ELEMENT NOT FOUND')
@@ -77,14 +78,16 @@ export default class ClientWebSocket {
         user_list_element.innerHTML = ''
 
         active_users_id.forEach(user_id => {
-            const list_item = document.createElement('li')
-            const typed_user_id: UUID = user_id as UUID
-            list_item.textContent = typed_user_id
-            list_item.addEventListener('click', async function () {
-                ClientWebSocket.send_message_to_server(new GameRequestMessage(await ClientWebSocket.id, typed_user_id))
+            if(client_user_id !== user_id) {
+                const list_item = document.createElement('li')
+                const typed_user_id: UUID = user_id as UUID
+                list_item.textContent = typed_user_id
+                list_item.addEventListener('click', async function () {
+                    ClientWebSocket.send_message_to_server(new GameRequestMessage(await ClientWebSocket.client_user_id, typed_user_id))
 
-            })
-            user_list_element.appendChild(list_item)
+                })
+                user_list_element.appendChild(list_item)
+            }
         })
     }
 
