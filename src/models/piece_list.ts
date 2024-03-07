@@ -1,7 +1,6 @@
 import Piece from '../components/piece/piece'
 import { PieceType } from '../components/piece/piece_types'
-import { Color } from '../components/piece/color'
-import { RookType } from '../components/piece/pieces/rook'
+import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import { GridPoint } from '../global_types/grid_point'
 import SquareID from '../components/square/square_id'
 import SquareGrid from './square_grid'
@@ -16,12 +15,12 @@ export default class PieceList {
 
 	public static piece_list: Piece[] = default_piece_list
 
-	public static pieces_by_color(color: Color): Piece[] {
+	public static pieces_by_color(color: BlackOrWhite): Piece[] {
 		return this.piece_list.filter((piece) => piece.color === color)
 	}
 
-	public static pieces_by_other_color(color: Color): Piece[] {
-		const other_color: Color = color === Color.white ? Color.black : Color.white
+	public static pieces_by_other_color(color: BlackOrWhite): Piece[] {
+		const other_color: BlackOrWhite = color === BlackOrWhite.white ? BlackOrWhite.black : BlackOrWhite.white
 		return this.piece_list.filter((piece) => piece.color === other_color)
 	}
 
@@ -75,11 +74,11 @@ export default class PieceList {
         this.remove_piece_by_position(position)
     }
 
-	public static king_by_color(color: Color): King {
+	public static king_by_color(color: BlackOrWhite): King {
 		switch (color) {
-			case Color.black:
+			case BlackOrWhite.black:
 				return this.piece_by_id('king_b') as King
-			case Color.white:
+			case BlackOrWhite.white:
 				return this.piece_by_id('king_w') as King
 		}
 	}
@@ -91,7 +90,7 @@ export default class PieceList {
 		})
 	}
 
-	public static swap_with_queen(piece_id: string, position: string, color: Color) {
+	public static swap_with_queen(piece_id: string, position: string, color: BlackOrWhite) {
 		this.remove_piece_by_id(piece_id)
 		this.piece_list.push(
 			piece_factory(`queen_${++this.number_of_queens}`, position, PieceType.queen, color)

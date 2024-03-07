@@ -16,7 +16,6 @@ import MoveMessage from '../server/messages/move_message'
 import Board from '../components/board/board'
 import { MessageTargetType } from '../server/types/message_target_type'
 import PlayerController from '../server/controllers/player_controller'
-import GameRequestMessage from '../server/messages/game_request_message'
 import GameType from 'src/global_types/enums/game_type'
 
 export default class MoveController {

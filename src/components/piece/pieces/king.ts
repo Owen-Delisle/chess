@@ -1,5 +1,5 @@
 import type { GridPoint } from '../../../global_types/grid_point'
-import { Color } from '../color'
+import { BlackOrWhite, not_color } from '../../../global_types/enums/black_or_white'
 import Piece from '../piece'
 import {
 	PieceDirections,
@@ -19,7 +19,6 @@ import { are_coors_within_board_bounds } from '../../../utils/bounds'
 import { distance_between_aligned_points, is_within_one_knight_move } from '../../../utils/math'
 import are_equal from '../../../utils/types'
 import { surrounding_points } from '../../../utils/grid'
-import { not_color } from '../color'
 import { every_direction } from '../piece_directions'
 import Pawn from './pawn'
 import { GameEndType } from '../../../controllers/game_controller'
@@ -39,7 +38,7 @@ export default class King extends Piece implements Piece_Interface {
 	in_check: boolean = false
 	positions_to_be_blocked: string[] = []
 
-	constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
+	constructor(title: string, pos: string, svg: string, type: PieceType, color: BlackOrWhite) {
 		super(title, type, pos, svg, color)
 		this.type = type
 		this.directions = [
@@ -180,7 +179,7 @@ export default class King extends Piece implements Piece_Interface {
 		col_modifier: number,
 		direction: PieceDirections,
 		distance: number,
-		color: Color,
+		color: BlackOrWhite,
 	): boolean {
 		// If all squares in direction have been searched and no piece of other color that can attack king in this direction have been found
 		if (!are_coors_within_board_bounds(next_row, next_col)) {
@@ -476,7 +475,7 @@ export default class King extends Piece implements Piece_Interface {
 	}
 
 	public castle_vars_for_rook_type(rook_type: RookType): CastleVars {
-		if (this.color == Color.white) {
+		if (this.color == BlackOrWhite.white) {
 			switch (rook_type) {
 				case RookType.long_rook:
 					return {
@@ -516,10 +515,10 @@ export default class King extends Piece implements Piece_Interface {
 	public switch_image_with_endgame_image(game_end_type: GameEndType, win_or_lose: WinOrLose): void {
 		if(game_end_type === GameEndType.checkmate) {
 			switch (this.color) {
-				case Color.black:
+				case BlackOrWhite.black:
 					this.svg = win_or_lose === WinOrLose.win ? King_B_Win_SVG: King_B_Loss_SVG
 					break
-				case Color.white:
+				case BlackOrWhite.white:
 					this.svg = win_or_lose === WinOrLose.win ? King_W_Win_SVG : King_W_Loss_SVG
 					break
 			}

@@ -1,10 +1,5 @@
-import piece_factory from "../../../components/piece/piece_factory/piece_factory"
 import { PieceType } from "../../../components/piece/piece_types"
-import { Color } from "../../../components/piece/color"
-import { RookType } from "../../../components/piece/pieces/rook"
-import Piece from "../../../components/piece/piece"
 import VariableResultBoard from "../../types/subject_result_board"
-import setup_board from "../setup_board"
 import BoardSetupInput from "../../../tests/types/board_setup_input"
 import results_board from "../results_board"
 

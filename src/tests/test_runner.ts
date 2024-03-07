@@ -1,7 +1,7 @@
 import PieceList from "../models/piece_list"
 import MoveController from "../controllers/move_controller";
 import King from "../components/piece/pieces/king";
-import { Color } from "../components/piece/color";
+import { BlackOrWhite } from "../global_types/enums/black_or_white";
 import VariableResultBoard from "./types/subject_result_board";
 import CheckmateBoard from "./types/check_mate_board";
 
@@ -32,7 +32,7 @@ import Assert, { AssertType } from "./assert";
 import Square from "../components/square/square";
 import SquareGrid from "../models/square_grid";
 import { GameController } from "../controllers/game_controller";
-import MoveList from "../utils/classes/MoveList";
+import MoveList from "../utils/classes/move_list";
 
 export default class TestRunner {
     constructor() {
@@ -47,7 +47,7 @@ export default class TestRunner {
         const test_list: Test[] = []
         list_of_checkmate_boards.forEach(board => {
             this.before_each(board)
-            const white_king: King = PieceList.king_by_color(Color.white)
+            const white_king: King = PieceList.king_by_color(BlackOrWhite.white)
 
             const assert = new Assert(AssertType.equals, white_king!.check_for_checkmate(), 'Game Over: Checkmate')
             test_list.push(new Test(board.title, assert))
@@ -59,7 +59,7 @@ export default class TestRunner {
         const test_list: Test[] = []
         list_of_stalemates.forEach(board => {
             this.before_each(board)
-            const white_king: King = PieceList.king_by_color(Color.white)
+            const white_king: King = PieceList.king_by_color(BlackOrWhite.white)
 
             const assert = new Assert(AssertType.equals, white_king!.check_for_checkmate(), 'Game Over: Stalemate')
             test_list.push(new Test(board.title, assert))

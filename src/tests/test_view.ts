@@ -1,7 +1,7 @@
 import Square from '../components/square/square'
 import MoveController from '../controllers/move_controller'
 import Board from '../components/board/board'
-import { BlackOrWhite } from '../components/square/color'
+import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import SquareGrid from '../models/square_grid'
 import { board_start_index, row_and_column_size } from '../utils/bounds'
 import TestRunner from './test_runner'

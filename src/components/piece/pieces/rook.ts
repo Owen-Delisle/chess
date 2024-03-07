@@ -1,4 +1,4 @@
-import type { Color } from '../color'
+import type { BlackOrWhite } from '../../../global_types/enums/black_or_white'
 import Piece from '../piece'
 import { PieceDirections } from '../piece_directions'
 import type Piece_Interface from '../piece_interface'
@@ -17,7 +17,7 @@ export default class Rook extends Piece implements Piece_Interface {
 		pos: string,
 		svg: string,
 		type: PieceType,
-		color: Color,
+		color: BlackOrWhite,
 		rook_type: RookType,
 	) {
 		super(title, type, pos, svg, color)

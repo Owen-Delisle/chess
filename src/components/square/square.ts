@@ -1,4 +1,4 @@
-import type { BlackOrWhite } from './color'
+import type { BlackOrWhite } from '../../global_types/enums/black_or_white'
 import SquareID from './square_id'
 import type Piece from '../piece/piece'
 import MoveController from '../../controllers/move_controller'

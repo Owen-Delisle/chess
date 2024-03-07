@@ -3,8 +3,7 @@ import type Piece_Interface from '../piece_interface'
 import { PieceType } from '../piece_types'
 import SquareGrid from '../../../models/square_grid'
 import { PieceDirections, piece_direction_modifier } from '../piece_directions'
-import { Color } from '../color'
-import type Square from '../../square/square'
+import { BlackOrWhite } from '../../../global_types/enums/black_or_white'
 import SquareID from '../../../components/square/square_id'
 import PieceList from '../../../models/piece_list'
 import { board_start_index, row_and_column_size } from '../../../utils/bounds'
@@ -29,7 +28,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 	public move_distance: number = this.maximum_move_distance
 	public piece_value: number = 1
 
-	constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
+	constructor(title: string, pos: string, svg: string, type: PieceType, color: BlackOrWhite) {
 		super(title, type, pos, svg, color)
 		this.type = type
 

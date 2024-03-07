@@ -3,7 +3,7 @@ import type { GridPoint } from '../global_types/grid_point'
 import type Piece from '../components/piece/piece'
 import { are_coors_within_board_bounds } from '../utils/bounds'
 import { GameController } from '../controllers/game_controller'
-import { Color } from '../components/piece/color'
+import { BlackOrWhite } from '../global_types/enums/black_or_white'
 
 export default class SquareGrid {
 	public static square_grid: Array<Array<Square>> = []
@@ -53,7 +53,7 @@ export default class SquareGrid {
 	}
 
 	public static point_at_board_position(s: string): GridPoint {
-		if (GameController.turn === Color.white) {
+		if (GameController.turn === BlackOrWhite.white) {
 			return {
 				row: 8 - parseInt(`${s[1]}`),
 				col: s[0].charCodeAt(0) - 65,

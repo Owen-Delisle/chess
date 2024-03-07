@@ -1,5 +1,5 @@
 import Square from '../square/square'
-import { BlackOrWhite } from '../square/color'
+import { BlackOrWhite } from '../../global_types/enums/black_or_white'
 import PieceStyles from '../piece/styles'
 import SquareStyles from '../square/styles'
 import SquareGrid from '../../models/square_grid'

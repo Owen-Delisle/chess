@@ -19,7 +19,7 @@ export default class DOMElementObserver {
 		return new MutationObserver((mutation_list, observer) => {
 			mutation_list.forEach(mutation => {
 				if (mutation.type === 'childList') {
-					ClientWebSocket.send_last_move_to_server()
+					console.log('Youre just to pretty to delete Mr. Observer')
 				}
 			})
 		})

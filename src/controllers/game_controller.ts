@@ -1,5 +1,5 @@
-import MoveList from '../utils/classes/MoveList'
-import { Color, not_color } from '../components/piece/color'
+import MoveList from '../utils/classes/move_list'
+import { BlackOrWhite, not_color } from '../global_types/enums/black_or_white'
 import { Move } from '../global_types/move'
 import King from '../components/piece/pieces/king'
 import PieceList from '../models/piece_list'
@@ -7,16 +7,16 @@ import GameType from 'src/global_types/enums/game_type'
 
 export class GameController {
 	public static game_type: GameType
-	public static turn = Color.white
+	public static turn = BlackOrWhite.white
 	public static move_list: MoveList = new MoveList()
 	
 	private static insufficient_material_value: number = 3
 
 	public static switch_turn(): void {
-		if (GameController.turn == Color.white) {
-			GameController.turn = Color.black
+		if (GameController.turn == BlackOrWhite.white) {
+			GameController.turn = BlackOrWhite.black
 		} else {
-			GameController.turn = Color.white
+			GameController.turn = BlackOrWhite.white
 		}
 	}
 

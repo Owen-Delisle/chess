@@ -1,9 +1,8 @@
 import { PieceType } from './piece_types'
 import SquareGrid from '../../models/square_grid'
 import type { GridPoint } from '../../global_types/grid_point'
-import type { Color } from './color'
+import type { BlackOrWhite } from '../../global_types/enums/black_or_white'
 import { are_coors_within_board_bounds } from '../../utils/bounds'
-import type Square from '../square/square'
 import SquareID from '../square/square_id'
 import { PieceDirections, piece_direction_modifier } from './piece_directions'
 import { square_is_empty } from '../../utils/grid'
@@ -13,7 +12,7 @@ export default abstract class Piece {
 	type: PieceType
 	pos: string
 	svg: string
-	color: Color
+	color: BlackOrWhite
 	image: HTMLImageElement
 	possible_moves: string[] = []
 	directions: PieceDirections[] = []
@@ -26,7 +25,7 @@ export default abstract class Piece {
 	move_distance: number = 0
 	piece_value: number = 0
 
-	constructor(title: string, type: PieceType, pos: string, svg: string, color: Color) {
+	constructor(title: string, type: PieceType, pos: string, svg: string, color: BlackOrWhite) {
 		this.title = title
 		this.type = type
 		this.pos = pos

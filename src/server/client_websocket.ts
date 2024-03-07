@@ -6,7 +6,7 @@ import GameAcceptedMessage from './messages/game_accepted_message'
 import MoveController, { MoveInitiator } from '../controllers/move_controller'
 import { Move } from '../global_types/move'
 import Piece from '../components/piece/piece'
-import { BlackOrWhite } from '../components/square/color'
+import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import TokenController from './controllers/token_controller'
 
 export default class ClientWebSocket {

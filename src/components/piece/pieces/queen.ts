@@ -1,15 +1,15 @@
 import Piece from '../piece'
 import type Piece_Interface from '../piece_interface'
 import type { PieceType } from '../piece_types'
-import { PieceDirections, piece_direction_modifier } from '../piece_directions'
-import type { Color } from '../color'
+import { PieceDirections } from '../piece_directions'
+import type { BlackOrWhite } from '../../../global_types/enums/black_or_white'
 
 export default class Queen extends Piece implements Piece_Interface {
 	move_distance: number = 7
 	piece_value: number = 3
 	directions: PieceDirections[]
 
-	constructor(title: string, pos: string, svg: string, type: PieceType, color: Color) {
+	constructor(title: string, pos: string, svg: string, type: PieceType, color: BlackOrWhite) {
 		super(title, type, pos, svg, color)
 		this.type = type
 		this.directions = [
