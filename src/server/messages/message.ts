@@ -12,5 +12,6 @@ export enum MessageType {
     logout,
     active_users,
     game_request,
-    game_accepted
+    game_accepted,
+    castle_move
 }

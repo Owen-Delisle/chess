@@ -7,6 +7,7 @@ import { UUID } from 'crypto'
 import ActiveUsersMessage from './src/server/messages/active_users_message.ts'
 import { MessageType } from './src/server/messages/message.ts'
 import { Move } from './src/global_types/move.ts'
+import { CastleMove } from './src/global_types/castle_move.ts'
 require('dotenv').config()
 
 const server = http.createServer(http_server)
@@ -54,8 +55,12 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
                 send_game_accepted_to_recipient(data.sender, data.receiver)
             break
             case MessageType.move:
-                console.log("SERVER RECEIVED MOVE")
                 send_move_to_recipient(data.recipient_id, data.move)
+            break
+            case MessageType.castle_move:
+                console.log("CASTLE MOVE RECEIVED")
+                console.log(data.castle_move)
+                send_castle_move_to_recipient(data.recipient_id, data.castle_move)
             break
         }
     })
@@ -97,6 +102,13 @@ function send_game_accepted_to_recipient(sender: UUID, receiver: UUID) {
 
 function send_move_to_recipient(recipient_id: UUID, move: Move) {
     const data = {type: MessageType.move.toString(), move}
+    const json_data = JSON.stringify(data)
+
+    active_clients[recipient_id].send(json_data)
+}
+
+function send_castle_move_to_recipient(recipient_id: UUID, castle_move: CastleMove) {
+    const data = {type: MessageType.castle_move.toString(), castle_move}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)

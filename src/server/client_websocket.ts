@@ -8,6 +8,7 @@ import { Move } from '../global_types/move'
 import Piece from '../components/piece/piece'
 import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import TokenController from './controllers/token_controller'
+import { CastleMove } from '../global_types/castle_move'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -41,6 +42,9 @@ export default class ClientWebSocket {
                 break
                 case MessageType.move.toString():
                     ClientWebSocket.move_piece_with_server_move(message.move)
+                break
+                case MessageType.castle_move.toString():
+                    ClientWebSocket.castle_with_server_move(message.castle_move)
                 break
             }
         })
@@ -131,9 +135,11 @@ export default class ClientWebSocket {
     }
 
     private static move_piece_with_server_move(move: Move) {
-        const new_pos: string = move.to
-        const piece: Piece = move.piece
         console.log("PIECE TO MOVE", move.piece)
-        MoveController.move_piece_to(new_pos, piece, MoveInitiator.server)
+        MoveController.move_piece_to(move, MoveInitiator.server)
+    }
+
+    private static castle_with_server_move(castle_move: CastleMove) {
+        MoveController.move_castle_pieces(castle_move, MoveInitiator.server)
     }
 }

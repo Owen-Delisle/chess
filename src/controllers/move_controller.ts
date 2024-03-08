@@ -16,7 +16,9 @@ import MoveMessage from '../server/messages/move_message'
 import Board from '../components/board/board'
 import { MessageTargetType } from '../server/types/message_target_type'
 import PlayerController from '../server/controllers/player_controller'
-import GameType from 'src/global_types/enums/game_type'
+import GameType from '../global_types/enums/game_type'
+import { CastleMove } from '../global_types/castle_move'
+import CastleMoveMessage from '../server/messages/castle_move_message'
 
 export default class MoveController {
 	private static focused_square: Square | undefined
@@ -58,7 +60,12 @@ export default class MoveController {
 		let piece_attached_to_focused_square: Piece | undefined =
 			this.focused_square?.piece_attached_to_square()
 		if (piece_attached_to_focused_square != undefined) {
-			this.move_piece_to(clicked_square.square_id, piece_attached_to_focused_square, MoveInitiator.player)
+			const move: Move = {
+				piece: piece_attached_to_focused_square,
+				from: this.focused_square!.square_id,
+				to: clicked_square.square_id
+			}
+			this.move_piece_to(move, MoveInitiator.player)
 		}
 	}
 
@@ -116,7 +123,24 @@ export default class MoveController {
 			const new_king_pos = SquareID.pos_at_point(next_king_point)
 			const new_rook_pos = SquareID.pos_at_point(next_rook_point)
 
-			this.move_castle_pieces(new_king_pos, king_piece, new_rook_pos, rook_piece)
+			const king_move: Move = {
+				piece: king_piece,
+				from: king_piece.pos,
+				to: new_king_pos
+			}
+
+			const rook_move: Move = {
+				piece: rook_piece,
+				from: rook_piece.pos,
+				to: new_rook_pos
+			}
+
+			const castle_move: CastleMove = {
+				king_move: king_move,
+				rook_move: rook_move
+			}
+
+			this.move_castle_pieces(castle_move, MoveInitiator.player)
 		}
 	}
 
@@ -236,17 +260,16 @@ export default class MoveController {
 		})
 	}
 
-	public static async move_piece_to(selected_pos: string, piece: Piece, mover: MoveInitiator): Promise<void> {
-		const new_square = SquareGrid.square_by_board_position(selected_pos)
+	public static async move_piece_to(move: Move, mover: MoveInitiator): Promise<void> {
+		const new_square = SquareGrid.square_by_board_position(move.to)
 
 		if(!new_square) {
 			throw new Error("New Square Not Found in Move Piece To")
 		}
-		if (this.remove_piece_conditions(selected_pos)) {
+		if (this.remove_piece_conditions(move.to)) {
 			new_square.remove_piece()
 		}
 
-		const move: Move = { piece: piece, from: piece.pos, to: selected_pos }
 		GameController.add_move_to_list(move)
 
 		this.handle_move(mover, move)
@@ -312,30 +335,31 @@ export default class MoveController {
 		return should_remove_piece
 	}
 
-	private static async move_castle_pieces(
-		new_king_pos: string,
-		king_piece: Piece,
-		new_rook_pos: string,
-		rook_piece: Piece,
-	): Promise<void> {
+	public static async move_castle_pieces(castle_move: CastleMove, mover: MoveInitiator) {
+		const king_piece: Piece | undefined = PieceList.piece_by_id(castle_move.king_move.piece.title)
+		const rook_piece: Piece | undefined = PieceList.piece_by_id(castle_move.rook_move.piece.title)
 
-		const king_castle_move: Move = {
-			piece: king_piece, 
-			from: king_piece.pos, 
-			to: new_king_pos
+		if(!king_piece || !rook_piece) {
+			throw new Error("Couldnt find king or rook piece in piece list")
 		}
-		this.send_move_to_server(king_castle_move)
-		await king_piece.move_to(new_king_pos)
 
-		const rook_castle_move: Move = {
-			piece: rook_piece, 
-			from: rook_piece.pos, 
-			to: new_rook_pos
+		await king_piece.move_to(castle_move.king_move.to)
+		await rook_piece.move_to(castle_move.rook_move.to)
+
+		if(mover === MoveInitiator.player && GameController.game_type === GameType.online) {
+			this.send_castle_move_to_server(castle_move)
 		}
-		this.send_move_to_server(rook_castle_move)
-		await rook_piece.move_to(new_rook_pos)
-		
+
 		this.redraw()
+	}
+
+	private static send_castle_move_to_server(castle_move: CastleMove) {
+		const message = new CastleMoveMessage(
+			MessageTargetType.direct, 
+			PlayerController.opponent_user_id,
+			castle_move)
+
+		ClientWebSocket.send_message_to_server(message)
 	}
 
 	private static async redraw(): Promise<void> {
