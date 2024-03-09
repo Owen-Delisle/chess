@@ -11,6 +11,9 @@ import TokenController from './controllers/token_controller'
 import { CastleMove } from '../global_types/castle_move'
 import Square from '../components/square/square'
 import { CheckStatus } from './messages/king_check_message'
+import King from 'src/components/piece/pieces/king'
+import { GameEndType, WinOrLose } from 'src/controllers/game_controller'
+import PieceList from 'src/models/piece_list'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -36,7 +39,6 @@ export default class ClientWebSocket {
                     ClientWebSocket.update_active_users_list_ui(active_users)
                 break
                 case MessageType.game_request.toString():
-                    console.log("CLIENT RECEIVED GAME REQUEST")
                     ClientWebSocket.update_request_list_ui(message.requesting_user, message.recieving_user)
                 break
                 case MessageType.game_accepted.toString():
@@ -50,6 +52,9 @@ export default class ClientWebSocket {
                 break
                 case MessageType.king_check_status.toString():
                     ClientWebSocket.update_king_square_color_with_server(message.square, message.check_status)
+                break
+                case MessageType.checkmate.toString():
+                    ClientWebSocket.checkmate_from_server(message.losing_king_id, message.winning_king_id)
                 break
             }
         })
@@ -70,8 +75,6 @@ export default class ClientWebSocket {
     }
 
     public static send_message_to_server(message: Message) {
-        console.log("CLIENT SENDING MESSAGE")
-        console.log(message)
         const message_to_send = JSON.stringify(message)
         
         ClientWebSocket.web_socket.send(message_to_send)
@@ -140,7 +143,6 @@ export default class ClientWebSocket {
     }
 
     private static move_piece_with_server_move(move: Move) {
-        console.log("PIECE TO MOVE", move.piece)
         MoveController.move_piece_to(move, MoveInitiator.server)
     }
 
@@ -161,4 +163,16 @@ export default class ClientWebSocket {
             element.style.backgroundColor = square.default_background
         }
     } 
+
+    private static checkmate_from_server(losing_king_id: string, winning_king_id: string) {
+        const losing_king: King | undefined = PieceList.piece_by_id(losing_king_id) as King
+        const winning_king: King | undefined = PieceList.piece_by_id(winning_king_id) as King
+
+        if(!losing_king || !winning_king) {
+            throw new Error("One of the kings is not defined")
+        }
+
+        losing_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.lose)
+        winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
+    }
 }

@@ -54,7 +54,6 @@ export default class TokenController {
                 },
                 body: JSON.stringify({ token: token }),
             })
-            console.log(response)
             if (response.ok) {
                 const data = await response.json()
                 return data.success === true

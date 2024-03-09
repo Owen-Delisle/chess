@@ -3,7 +3,10 @@ import { BlackOrWhite, not_color } from '../global_types/enums/black_or_white'
 import { Move } from '../global_types/move'
 import King from '../components/piece/pieces/king'
 import PieceList from '../models/piece_list'
-import GameType from 'src/global_types/enums/game_type'
+import GameType from '../global_types/enums/game_type'
+import ClientWebSocket from '../server/client_websocket'
+import CheckmateMessage from '../server/messages/checkmate_message'
+import PlayerController from '../server/controllers/player_controller'
 
 export class GameController {
 	public static game_type: GameType
@@ -39,6 +42,10 @@ export class GameController {
 
 			const winning_king = PieceList.king_by_color(not_color(king.color))
 			winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
+
+			if(this.game_type === GameType.online) {
+				ClientWebSocket.send_message_to_server(new CheckmateMessage(PlayerController.opponent_user_id, king.title, winning_king.title))
+			}
 		}
 	}
 }

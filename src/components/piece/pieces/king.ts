@@ -325,8 +325,6 @@ export default class King extends Piece implements Piece_Interface {
 			let piece_is_within_distance: boolean = false
 			
 			if(direction < index_of_knight_directions) {
-				console.log("KING POS:", this.pos)
-				console.log("PIECE:", SquareID.pos_at_point(piece_gp), "KING:", SquareID.pos_at_point(king_gp))
 				if(piece.move_distance >= distance_between_aligned_points(piece_gp, king_gp)) {
 					piece_is_within_distance = true
 				}

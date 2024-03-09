@@ -10,6 +10,7 @@ import { Move } from './src/global_types/move.ts'
 import { CastleMove } from './src/global_types/castle_move.ts'
 import { CheckStatus } from './src/server/messages/king_check_message.ts'
 import Square from './src/components/square/square.ts'
+import King from './src/components/piece/pieces/king.ts'
 require('dotenv').config()
 
 const server = http.createServer(http_server)
@@ -65,6 +66,9 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             case MessageType.king_check_status:
                 send_check_status_to_recipient(data.recipient_id, data.square, data.check_status)
             break
+            case MessageType.checkmate:
+                send_checkmate_to_recipient(data.recipient_id, data.losing_king_id, data.winning_king_id)
+            break
         }
     })
 
@@ -119,6 +123,13 @@ function send_castle_move_to_recipient(recipient_id: UUID, castle_move: CastleMo
 
 function send_check_status_to_recipient(recipient_id: UUID, square: Square, check_status: CheckStatus) {
     const data = {type: MessageType.king_check_status.toString(), square, check_status}
+    const json_data = JSON.stringify(data)
+
+    active_clients[recipient_id].send(json_data)
+}
+
+function send_checkmate_to_recipient(recipient_id: UUID, losing_king_id: string, winning_king_id: string) {
+    const data = {type: MessageType.checkmate.toString(), losing_king_id, winning_king_id}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)
