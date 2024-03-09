@@ -5,9 +5,11 @@ import jwt, { VerifyErrors } from 'jsonwebtoken'
 import { parse } from 'url'
 import { UUID } from 'crypto'
 import ActiveUsersMessage from './src/server/messages/active_users_message.ts'
-import { MessageType } from './src/server/messages/message.ts'
+import Message, { MessageType } from './src/server/messages/message.ts'
 import { Move } from './src/global_types/move.ts'
 import { CastleMove } from './src/global_types/castle_move.ts'
+import { CheckStatus } from './src/server/messages/king_check_message.ts'
+import Square from './src/components/square/square.ts'
 require('dotenv').config()
 
 const server = http.createServer(http_server)
@@ -58,9 +60,10 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
                 send_move_to_recipient(data.recipient_id, data.move)
             break
             case MessageType.castle_move:
-                console.log("CASTLE MOVE RECEIVED")
-                console.log(data.castle_move)
                 send_castle_move_to_recipient(data.recipient_id, data.castle_move)
+            break
+            case MessageType.king_check_status:
+                send_check_status_to_recipient(data.recipient_id, data.square, data.check_status)
             break
         }
     })
@@ -109,6 +112,13 @@ function send_move_to_recipient(recipient_id: UUID, move: Move) {
 
 function send_castle_move_to_recipient(recipient_id: UUID, castle_move: CastleMove) {
     const data = {type: MessageType.castle_move.toString(), castle_move}
+    const json_data = JSON.stringify(data)
+
+    active_clients[recipient_id].send(json_data)
+}
+
+function send_check_status_to_recipient(recipient_id: UUID, square: Square, check_status: CheckStatus) {
+    const data = {type: MessageType.king_check_status.toString(), square, check_status}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)

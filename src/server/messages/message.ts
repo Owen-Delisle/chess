@@ -13,5 +13,6 @@ export enum MessageType {
     active_users,
     game_request,
     game_accepted,
-    castle_move
+    castle_move,
+    king_check_status
 }

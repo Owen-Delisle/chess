@@ -253,7 +253,9 @@ export default class King extends Piece implements Piece_Interface {
 	}
 
 	public render_check_paths_list(): void {
-		this.king_out_of_check()
+		if(this.in_check) {
+			this.king_out_of_check()
+		}
 
 		const check_paths_list: {
 			direction: PieceDirections

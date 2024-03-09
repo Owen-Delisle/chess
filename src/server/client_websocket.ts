@@ -9,6 +9,8 @@ import Piece from '../components/piece/piece'
 import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import TokenController from './controllers/token_controller'
 import { CastleMove } from '../global_types/castle_move'
+import Square from '../components/square/square'
+import { CheckStatus } from './messages/king_check_message'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -45,6 +47,9 @@ export default class ClientWebSocket {
                 break
                 case MessageType.castle_move.toString():
                     ClientWebSocket.castle_with_server_move(message.castle_move)
+                break
+                case MessageType.king_check_status.toString():
+                    ClientWebSocket.update_king_square_color_with_server(message.square, message.check_status)
                 break
             }
         })
@@ -142,4 +147,18 @@ export default class ClientWebSocket {
     private static castle_with_server_move(castle_move: CastleMove) {
         MoveController.move_castle_pieces(castle_move, MoveInitiator.server)
     }
+
+    private static update_king_square_color_with_server(square: Square, check_status: CheckStatus) {
+        const element: HTMLElement | null = document.getElementById(square.square_id)
+        
+        if(!element) {
+            throw new Error("Square Element is undefined or null")
+        }
+        if(check_status === CheckStatus.in_check) {
+            element.style.backgroundColor = 'red'
+        }
+        if(check_status === CheckStatus.not_in_check) {
+            element.style.backgroundColor = square.default_background
+        }
+    } 
 }

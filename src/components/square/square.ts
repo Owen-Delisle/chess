@@ -3,16 +3,23 @@ import SquareID from './square_id'
 import Piece from '../piece/piece'
 import MoveController from '../../controllers/move_controller'
 import PieceList from '../../models/piece_list'
+import { GameController } from '../../controllers/game_controller'
+import GameType from '../../global_types/enums/game_type'
+import ClientWebSocket from '../../server/client_websocket'
+import KingCheckStatusMessage, { CheckStatus } from '../../server/messages/king_check_message'
+import PlayerController from '../../server/controllers/player_controller'
 
 export default class Square extends HTMLElement {
 	square_id: string
 	color: BlackOrWhite
 	element: HTMLElement | null = null
+	default_background: string
 
 	constructor(color: BlackOrWhite, square_id: number) {
 		super()
 		this.square_id = SquareID.pos_at_index(square_id)
 		this.color = color
+		this.default_background = color === BlackOrWhite.white ? '#D8ECEC' : '#1FE5DF'
 	}
 
 	public async build_clickable_square() {
@@ -111,6 +118,9 @@ export default class Square extends HTMLElement {
 			throw new Error('Cannot add check color to undefined')
 		}
 		this.element.style.backgroundColor = 'red'
+		if(GameController.game_type === GameType.online) {
+			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id, this, CheckStatus.in_check))
+		}
 	}
 
 	public remove_check_border() {
@@ -121,10 +131,10 @@ export default class Square extends HTMLElement {
 		}
 
 		//TODO USE GLOBAL STYLES
-		if(this.color === BlackOrWhite.white) {
-			this.element.style.backgroundColor = '#D8ECEC'
-		} else {
-			this.element.style.backgroundColor = '#1FE5DF'
+		this.element.style.backgroundColor = this.default_background
+
+		if(GameController.game_type === GameType.online) {
+			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id, this, CheckStatus.not_in_check))
 		}
 	}
 
