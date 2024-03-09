@@ -19,6 +19,7 @@ import PlayerController from '../server/controllers/player_controller'
 import GameType from '../global_types/enums/game_type'
 import { CastleMove } from '../global_types/castle_move'
 import CastleMoveMessage from '../server/messages/castle_move_message'
+import { BlackOrWhite } from '../global_types/enums/black_or_white'
 
 export default class MoveController {
 	private static focused_square: Square | undefined
@@ -189,7 +190,12 @@ export default class MoveController {
 	public static load_possible_moves_lists(): void {
 		PieceList.clear_position_restrictions_property()
 
-		const king_of_color: King = PieceList.king_by_color(GameController.turn)
+		let king_color: BlackOrWhite = GameController.turn
+		if(GameController.game_type === GameType.online) {
+			king_color = PlayerController.player_color
+		}
+
+		const king_of_color: King = PieceList.king_by_color(king_color)
 		king_of_color.render_legal_squares_surrounding_king()
 		king_of_color.render_check_paths_list()
 

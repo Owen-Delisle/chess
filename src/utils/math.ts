@@ -11,8 +11,6 @@ export function distance_between_aligned_points(point_one: GridPoint, point_two:
 		}
 	})
 
-	//TODO -- HANDLE KNIGHT DIRECTIONS
-
 	const x1 = point_one.row
 	const x2 = point_two.row
 

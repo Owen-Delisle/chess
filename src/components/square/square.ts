@@ -1,6 +1,6 @@
-import type { BlackOrWhite } from '../../global_types/enums/black_or_white'
+import { BlackOrWhite } from '../../global_types/enums/black_or_white'
 import SquareID from './square_id'
-import type Piece from '../piece/piece'
+import Piece from '../piece/piece'
 import MoveController from '../../controllers/move_controller'
 import PieceList from '../../models/piece_list'
 
@@ -106,8 +106,25 @@ export default class Square extends HTMLElement {
 
 	public add_check_border() {
 		this.element = document.getElementById(`${this.square_id}`)
-		if(this.element != undefined) {
-			this.element!.style.backgroundColor = 'red'
+
+		if(!this.element) {
+			throw new Error('Cannot add check color to undefined')
+		}
+		this.element.style.backgroundColor = 'red'
+	}
+
+	public remove_check_border() {
+		this.element = document.getElementById(`${this.square_id}`)
+
+		if(!this.element) {
+			throw new Error('Cannot add check color to undefined')
+		}
+
+		//TODO USE GLOBAL STYLES
+		if(this.color === BlackOrWhite.white) {
+			this.element.style.backgroundColor = '#D8ECEC'
+		} else {
+			this.element.style.backgroundColor = '#1FE5DF'
 		}
 	}
 

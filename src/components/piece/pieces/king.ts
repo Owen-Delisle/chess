@@ -10,7 +10,6 @@ import {
 import type Piece_Interface from '../piece_interface'
 import { PieceType } from '../piece_types'
 import SquareGrid from '../../../models/square_grid'
-import type Square from '../../../components/square/square'
 import type Rook from './rook'
 import { RookType } from './rook'
 import PieceList from '../../../models/piece_list'
@@ -28,6 +27,7 @@ import King_W_Win_SVG from '../piece_factory/assets/king-w-win.svg'
 import King_B_Win_SVG from '../piece_factory/assets/king-b-win.svg'
 import King_W_Loss_SVG from '../piece_factory/assets/king-w-loss.svg'
 import King_B_Loss_SVG from '../piece_factory/assets/king-b-loss.svg'
+import Square from '../../../components/square/square'
 
 export default class King extends Piece implements Piece_Interface {
 	move_distance: number = 1
@@ -53,12 +53,8 @@ export default class King extends Piece implements Piece_Interface {
 		]
 	}
 
-	private points_surrounding_king(): GridPoint[] {
-		return surrounding_points(SquareGrid.point_at_board_position(this.pos))
-	}
-
 	private moveable_positions_surrounding_king(): string[] {
-		const list: string[] = surrounding_points(SquareGrid.point_at_board_position(this.pos))
+		const list_of_positions: string[] = this.points_surrounding_king()
 			.filter((point) => {
 				const piece: Piece | undefined = SquareGrid.piece_by_grid_point(point)
 				if (piece === undefined) {
@@ -70,7 +66,11 @@ export default class King extends Piece implements Piece_Interface {
 				}
 			})
 			.map((point) => SquareID.pos_at_point(point))
-		return list
+		return list_of_positions
+	}
+
+	private points_surrounding_king(): GridPoint[] {
+		return surrounding_points(SquareGrid.point_at_board_position(this.pos))
 	}
 
 	public check_for_checkmate(): string | undefined {
@@ -84,7 +84,7 @@ export default class King extends Piece implements Piece_Interface {
 	}
 
 	public any_piece_can_move(): boolean {
-		const any_piece_has_move = PieceList.pieces_by_color(this.color).some(
+		const any_piece_has_move: boolean = PieceList.pieces_by_color(this.color).some(
 			(piece) => piece.possible_moves.length > 0,
 		)
 
@@ -253,7 +253,7 @@ export default class King extends Piece implements Piece_Interface {
 	}
 
 	public render_check_paths_list(): void {
-		this.in_check = false
+		this.king_out_of_check()
 
 		const check_paths_list: {
 			direction: PieceDirections
@@ -305,7 +305,14 @@ export default class King extends Piece implements Piece_Interface {
 
 	private king_in_check(): void {
 		this.in_check = true
+		const current_king_square: Square | undefined = SquareGrid.square_by_board_position(this.pos)
 		SquareGrid.square_by_board_position(this.pos)?.add_check_border()
+	}
+
+	private king_out_of_check(): void {
+		this.in_check = false
+		const current_king_square: Square | undefined = SquareGrid.square_by_board_position(this.pos)
+		SquareGrid.square_by_board_position(this.pos)?.remove_check_border()
 	}
 
 	// Refactor
@@ -316,6 +323,8 @@ export default class King extends Piece implements Piece_Interface {
 			let piece_is_within_distance: boolean = false
 			
 			if(direction < index_of_knight_directions) {
+				console.log("KING POS:", this.pos)
+				console.log("PIECE:", SquareID.pos_at_point(piece_gp), "KING:", SquareID.pos_at_point(king_gp))
 				if(piece.move_distance >= distance_between_aligned_points(piece_gp, king_gp)) {
 					piece_is_within_distance = true
 				}
