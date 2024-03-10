@@ -17,5 +17,6 @@ export enum MessageType {
     game_canceled,
     castle_move,
     king_check_status,
-    checkmate
+    checkmate,
+    pawn_promotion
 }

@@ -20,6 +20,7 @@ import GameType from '../global_types/enums/game_type'
 import { CastleMove } from '../global_types/castle_move'
 import CastleMoveMessage from '../server/messages/castle_move_message'
 import { BlackOrWhite } from '../global_types/enums/black_or_white'
+import { UUID } from 'crypto'
 
 export default class MoveController {
 	private static focused_square: Square | undefined
@@ -311,7 +312,7 @@ export default class MoveController {
 	private static send_move_to_server(move: Move) {
 		const message = new MoveMessage(
 			MessageTargetType.direct, 
-			PlayerController.opponent_user_id, 
+			PlayerController.opponent_user_id as UUID, 
 			move)
 
 		ClientWebSocket.send_message_to_server(message)
@@ -362,7 +363,7 @@ export default class MoveController {
 	private static send_castle_move_to_server(castle_move: CastleMove) {
 		const message = new CastleMoveMessage(
 			MessageTargetType.direct, 
-			PlayerController.opponent_user_id,
+			PlayerController.opponent_user_id as UUID,
 			castle_move)
 
 		ClientWebSocket.send_message_to_server(message)

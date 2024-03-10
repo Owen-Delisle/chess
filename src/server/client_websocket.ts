@@ -20,6 +20,8 @@ import GameDeclinedMessage from './messages/game_declined_message'
 import GameRequestDeclined from '../components/message/game_request_declined'
 import GameCanceledMessage from './messages/game_canceled_message'
 import UserAPI from './api/user_api'
+import Pawn from '../components/piece/pieces/pawn'
+import Board from '../components/board/board'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -42,31 +44,34 @@ export default class ClientWebSocket {
             switch (message_type) {
                 case MessageType.active_users.toString():
                     ClientWebSocket.update_active_users_list_ui(message.users)
-                    break
+                break
                 case MessageType.game_request.toString():
                     ClientWebSocket.update_request_list_ui(message.requesting_user, message.recieving_user)
-                    break
+                break
                 case MessageType.game_accepted.toString():
                     ClientWebSocket.update_current_game_ui(message.accepting_user, BlackOrWhite.black)
-                    break
+                break
                 case MessageType.game_declined.toString():
                     ClientWebSocket.swap_waiting_message_to_declined()
-                    break
+                break
                 case MessageType.game_canceled.toString():
                     ClientWebSocket.close_game_request_message()
-                    break
+                break
                 case MessageType.move.toString():
                     ClientWebSocket.move_piece_with_server_move(message.move)
-                    break
+                break
                 case MessageType.castle_move.toString():
                     ClientWebSocket.castle_with_server_move(message.castle_move)
-                    break
+                break
                 case MessageType.king_check_status.toString():
                     ClientWebSocket.update_king_square_color_with_server(message.square, message.check_status)
-                    break
+                break
                 case MessageType.checkmate.toString():
                     ClientWebSocket.checkmate_from_server(message.losing_king_id, message.winning_king_id)
-                    break
+                break
+                case MessageType.pawn_promotion.toString():
+                    ClientWebSocket.promote_pawn_from_server(message.pawn_id)
+                break
             }
         })
     }
@@ -107,7 +112,7 @@ export default class ClientWebSocket {
 
                 const username: string | undefined = await UserAPI.username_from_id(typed_user_id)
 
-                if(!username) {
+                if (!username) {
                     throw new Error("Could not query username")
                 }
 
@@ -174,7 +179,7 @@ export default class ClientWebSocket {
         const opponent_id_item = document.createElement('p')
 
         const username: string | undefined = await UserAPI.username_from_id(user_id_of_opponent)
-        if(!username) {
+        if (!username) {
             throw new Error("Could not query username")
         }
         opponent_id_item.textContent = username
@@ -245,5 +250,16 @@ export default class ClientWebSocket {
 
         losing_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.lose)
         winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
+    }
+
+    private static promote_pawn_from_server(pawn_id: string) {
+        const pawn_to_promote: Pawn | undefined = PieceList.piece_by_id(pawn_id) as Pawn
+
+        if(!pawn_to_promote) {
+            throw new Error("The Pawn to Promote is undefined")
+        }
+
+        PieceList.swap_with_queen(pawn_to_promote.title, pawn_to_promote.pos, pawn_to_promote.color)
+        Board.singleton.redraw()
     }
 }

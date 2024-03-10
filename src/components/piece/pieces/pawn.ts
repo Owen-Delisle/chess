@@ -11,6 +11,11 @@ import { GameController } from '../../../controllers/game_controller'
 import { Move } from '../../../global_types/move'
 import { distance_between_aligned_positions } from '../../../utils/math'
 import { GridPoint } from '../../../global_types/grid_point'
+import GameType from '../../../global_types/enums/game_type'
+import ClientWebSocket from '../../../server/client_websocket'
+import PawnPromotionMessage from '../../../server/messages/pawn_promotion_message'
+import PlayerController from '../../../server/controllers/player_controller'
+import { UUID } from 'crypto'
 
 export default class Pawn extends Piece implements Piece_Interface {
 	private maximum_move_distance: number = 2
@@ -166,6 +171,10 @@ export default class Pawn extends Piece implements Piece_Interface {
 
 	private make_queen() {
 		PieceList.swap_with_queen(this.title, this.pos, this.color)
+		
+		if(GameController.game_type === GameType.online) {
+			ClientWebSocket.send_message_to_server(new PawnPromotionMessage(PlayerController.opponent_user_id as UUID, this.title))
+		}
 	}
 
 	private should_en_passant(square_id: string): boolean {
