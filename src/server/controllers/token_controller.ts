@@ -45,6 +45,7 @@ export default class TokenController {
         }
     }
 
+    //TODO Check if this is being used
     static async verify_jwt_token(token: string): Promise<boolean> {
         try {
             const response = await fetch('/verify_jwt', {

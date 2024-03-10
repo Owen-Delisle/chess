@@ -5,12 +5,11 @@ import jwt, { VerifyErrors } from 'jsonwebtoken'
 import { parse } from 'url'
 import { UUID } from 'crypto'
 import ActiveUsersMessage from './src/server/messages/active_users_message.ts'
-import Message, { MessageType } from './src/server/messages/message.ts'
+import { MessageType } from './src/server/messages/message.ts'
 import { Move } from './src/global_types/move.ts'
 import { CastleMove } from './src/global_types/castle_move.ts'
 import { CheckStatus } from './src/server/messages/king_check_message.ts'
 import Square from './src/components/square/square.ts'
-import King from './src/components/piece/pieces/king.ts'
 require('dotenv').config()
 
 const server = http.createServer(http_server)
@@ -57,6 +56,9 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             case MessageType.game_accepted:
                 send_game_accepted_to_recipient(data.sender, data.receiver)
             break
+            case MessageType.game_declined:
+                send_game_declined_to_recipient(data.receiver)
+            break
             case MessageType.move:
                 send_move_to_recipient(data.recipient_id, data.move)
             break
@@ -93,7 +95,6 @@ function send_active_users_to_clients() {
 }
 
 function send_game_request_to_recipient(sender: UUID, recipient_id: UUID) {
-    console.log("SERVER SEND GAME REQUEST", "SENDER", sender, "RECEIVER", recipient_id)
     const data = {type: MessageType.game_request.toString(), requesting_user: sender, recieving_user: recipient_id}
     const json_data = JSON.stringify(data)
 
@@ -102,6 +103,13 @@ function send_game_request_to_recipient(sender: UUID, recipient_id: UUID) {
 
 function send_game_accepted_to_recipient(sender: UUID, receiver: UUID) {
     const data = {type: MessageType.game_accepted.toString(), accepting_user: sender}
+    const json_data = JSON.stringify(data)
+
+    active_clients[receiver].send(json_data)
+}
+
+function send_game_declined_to_recipient(receiver: UUID) {
+    const data = {type: MessageType.game_declined.toString()}
     const json_data = JSON.stringify(data)
 
     active_clients[receiver].send(json_data)

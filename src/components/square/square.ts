@@ -8,6 +8,7 @@ import GameType from '../../global_types/enums/game_type'
 import ClientWebSocket from '../../server/client_websocket'
 import KingCheckStatusMessage, { CheckStatus } from '../../server/messages/king_check_message'
 import PlayerController from '../../server/controllers/player_controller'
+import { UUID } from 'crypto'
 
 export default class Square extends HTMLElement {
 	square_id: string
@@ -119,7 +120,7 @@ export default class Square extends HTMLElement {
 		}
 		this.element.style.backgroundColor = 'red'
 		if(GameController.game_type === GameType.online) {
-			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id, this, CheckStatus.in_check))
+			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id as UUID, this, CheckStatus.in_check))
 		}
 	}
 
@@ -134,7 +135,7 @@ export default class Square extends HTMLElement {
 		this.element.style.backgroundColor = this.default_background
 
 		if(GameController.game_type === GameType.online) {
-			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id, this, CheckStatus.not_in_check))
+			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id as UUID, this, CheckStatus.not_in_check))
 		}
 	}
 
