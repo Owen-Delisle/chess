@@ -1,5 +1,6 @@
 import { UUID } from "crypto"
 import MessageStyles from "./styles"
+import UserAPI from "../../server/api/user_api"
 
 export default class GameRequestElement extends HTMLElement {
     requester_id: UUID
@@ -19,7 +20,7 @@ export default class GameRequestElement extends HTMLElement {
         this.render()
     }
 
-    render() {
+    async render() {
         const wrapper = document.createElement('div')
         wrapper.classList.add('game-request-wrapper')
 
@@ -30,7 +31,13 @@ export default class GameRequestElement extends HTMLElement {
 
         // Title in the centre of the square
         const title = document.createElement('h3')
-        title.textContent = `Game request from: ${this.requester_id}`
+
+        const username: string | undefined = await UserAPI.username_from_id(this.requester_id)
+        if(!username) {
+            throw new Error("Could not query username")
+        }
+
+        title.textContent = `Game request from: ${username}`
         title.classList.add('title')
 
         // Buttons

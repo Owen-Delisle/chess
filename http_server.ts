@@ -16,7 +16,6 @@ const dbPromise = open({
     driver: sqlite3.Database
 })
 
-
 http_server.use((req, res, next) => {
     // Content Security Policy (CSP) header
     res.setHeader(
@@ -117,6 +116,24 @@ http_server.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Error logging in user:', error)
         res.status(500).send('Error logging in user')
+    }
+})
+
+http_server.post('/username', async (req, res) => {
+    const { user_id } = req.body
+    try {
+        // Query database to check if user exists
+        const db = await dbPromise
+        const username = await db.get('SELECT username FROM users WHERE id = ?', [user_id])
+
+        if (username) {
+            res.json(username)
+        } else {
+            res.status(401).send('USERNAME NOT FOUND')
+        }
+    } catch (error) {
+        console.error('ERROR QUERYING USERNAME:', error)
+        res.status(500).send('Error fetching username from users')
     }
 })
 
