@@ -18,6 +18,7 @@ import GameRequestState from 'src/global_types/enums/game_request_state'
 import WaitingElement from 'src/components/message/waiting'
 import GameDeclinedMessage from './messages/game_declined_message'
 import GameRequestDeclined from '../components/message/game_request_declined'
+import GameCanceledMessage from './messages/game_canceled_message'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -49,6 +50,9 @@ export default class ClientWebSocket {
                 break
                 case MessageType.game_declined.toString():
                     ClientWebSocket.swap_waiting_message_to_declined()
+                break
+                case MessageType.game_canceled.toString():
+                    ClientWebSocket.close_game_request_message()
                 break
                 case MessageType.move.toString():
                     ClientWebSocket.move_piece_with_server_move(message.move)
@@ -100,11 +104,16 @@ export default class ClientWebSocket {
                 const list_item = document.createElement('li')
                 const typed_user_id: UUID = user_id as UUID
                 list_item.textContent = typed_user_id
+
                 list_item.addEventListener('click', async function () {
                     ClientWebSocket.send_message_to_server(new GameRequestMessage(await ClientWebSocket.client_user_id, typed_user_id))
 
                     const message_container_element: HTMLElement | null = document.getElementById('message_container')
-                    const waiting_element = new WaitingElement("Waiting for Game Request Response")
+                    const waiting_element = new WaitingElement(
+                        () => {
+                            ClientWebSocket.send_message_to_server(new GameCanceledMessage(typed_user_id))
+                        }
+                    )
 
                     if(!message_container_element || !waiting_element) {
                         throw new Error("ELEMENT NOT FOUND")
@@ -112,6 +121,7 @@ export default class ClientWebSocket {
 
                     message_container_element.appendChild(waiting_element)
                 })
+
                 user_list_element.appendChild(list_item)
             }
         })
@@ -141,6 +151,13 @@ export default class ClientWebSocket {
 
     private static update_current_game_ui(user_id_of_opponent: UUID, color: BlackOrWhite) {
         console.log("received!!!")
+        const message_container = document.getElementById("message_container")
+        if(!message_container) {
+            throw new Error("MESSAGE CONTAINER ELEMENT NOT FOUND")
+        }
+
+        message_container.innerHTML = ''
+
         const current_game_element: HTMLElement | null = document.getElementById('current_game')
 
         if (!current_game_element) {
@@ -172,6 +189,16 @@ export default class ClientWebSocket {
         message_container.innerHTML = ''
         message_container.appendChild(game_declined_message)
         
+    }
+
+    private static close_game_request_message() {
+        const message_container = document.getElementById("message_container")
+
+        if(!message_container) {
+            throw new Error("MESSAGE CONTAINER ELEMENT NOT FOUND")
+        }
+
+        message_container.innerHTML = ''
     }
 
     private static move_piece_with_server_move(move: Move) {

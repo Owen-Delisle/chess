@@ -1,12 +1,12 @@
 import MessageStyles from "./styles"
 
 export default class WaitingElement extends HTMLElement {
-    message: string
-    constructor(message: string) {
+    
+    cancel_game_request: Function
+    constructor(cancel_game_request: Function) {
         super()
 
-        this.message = message
-
+        this.cancel_game_request = cancel_game_request
         this.attachShadow({ mode: 'open' })
     }
 
@@ -20,7 +20,7 @@ export default class WaitingElement extends HTMLElement {
 
         // Header title element
         const header = document.createElement('h2')
-        header.textContent = this.message
+        header.textContent = "Waiting for Game Request Response"
         header.classList.add('header')
 
         // Title in the centre of the square
@@ -31,6 +31,7 @@ export default class WaitingElement extends HTMLElement {
         const cancel_button = document.createElement('button')
         cancel_button.textContent = 'Cancel'
         cancel_button.onclick = () => {
+            this.cancel_game_request()
             this.remove_children_from_message_container()
         }
 

@@ -59,6 +59,9 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             case MessageType.game_declined:
                 send_game_declined_to_recipient(data.receiver)
             break
+            case MessageType.game_canceled:
+                send_game_canceled_to_recipient(data.receiver)
+            break
             case MessageType.move:
                 send_move_to_recipient(data.recipient_id, data.move)
             break
@@ -94,6 +97,7 @@ function send_active_users_to_clients() {
     })
 }
 
+//TODO - Combine all these functions
 function send_game_request_to_recipient(sender: UUID, recipient_id: UUID) {
     const data = {type: MessageType.game_request.toString(), requesting_user: sender, recieving_user: recipient_id}
     const json_data = JSON.stringify(data)
@@ -110,6 +114,13 @@ function send_game_accepted_to_recipient(sender: UUID, receiver: UUID) {
 
 function send_game_declined_to_recipient(receiver: UUID) {
     const data = {type: MessageType.game_declined.toString()}
+    const json_data = JSON.stringify(data)
+
+    active_clients[receiver].send(json_data)
+}
+
+function send_game_canceled_to_recipient(receiver: UUID) {
+    const data = {type: MessageType.game_canceled.toString()}
     const json_data = JSON.stringify(data)
 
     active_clients[receiver].send(json_data)

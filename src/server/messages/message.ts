@@ -14,6 +14,7 @@ export enum MessageType {
     game_request,
     game_accepted,
     game_declined,
+    game_canceled,
     castle_move,
     king_check_status,
     checkmate
