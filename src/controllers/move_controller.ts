@@ -7,8 +7,6 @@ import { PieceType } from '../components/piece/piece_types'
 import type Rook from '../components/piece/pieces/rook'
 import type { CastleVars } from '../components/piece/pieces/king'
 import SquareID from '../components/square/square_id'
-import { GameController } from './game_controller'
-import PieceList from '../models/piece_list'
 import Pawn from '../components/piece/pieces/pawn'
 import ClientWebSocket from '../server/client_websocket'
 import { Move } from '../global_types/move'
@@ -21,13 +19,17 @@ import { CastleMove } from '../global_types/castle_move'
 import CastleMoveMessage from '../server/messages/castle_move_message'
 import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import { UUID } from 'crypto'
+import PieceList from 'src/models/piece_list'
+import { GameController } from './game_controller'
 
 export default class MoveController {
-	board: Board
+	piece_list: PieceList
+	game_controller: GameController
 	private focused_square: Square | undefined
 
-	constructor(board: Board) {
-		this.board = board
+	constructor(game_controller: GameController) {
+		this.piece_list = game_controller.piece_list
+		this.game_controller = game_controller
 	}
 
 	public on_square_click(clicked_square: Square): void {
@@ -92,7 +94,7 @@ export default class MoveController {
 				if (!king_piece.has_moved && !rook_piece.has_moved) {
 					if (
 						!king_piece.in_check &&
-						!king_piece.kings_castle_squares_attacked(rook_piece)
+						!king_piece.kings_castle_squares_attacked(this.piece_list, rook_piece)
 					) {
 						should_castle = true
 					}
@@ -112,7 +114,7 @@ export default class MoveController {
 
 		const castle_vars: CastleVars = king_piece.castle_vars_for_rook_type(rook_piece.rook_type)
 
-		if (king_piece.squares_between_king_and_rook_empty(rook_piece)) {
+		if (king_piece.squares_between_king_and_rook_empty(this.piece_list, rook_piece)) {
 			const king_gp: GridPoint = SquareGrid.point_at_board_position(king_piece.pos)
 			const rook_gp: GridPoint = SquareGrid.point_at_board_position(rook_piece.pos)
 			const next_king_point: GridPoint = {
@@ -185,18 +187,18 @@ export default class MoveController {
 			throw new Error("Piece Attached to Square is undefined")
 		}
 
-		if(GameController.game_type === GameType.online) {
+		if(this.game_controller.game_type === GameType.online) {
 			if(piece_attached_to_square.color !== PlayerController.player_color ) {
 				return false
 			}
-			if(PlayerController.player_color !== GameController.turn) {
+			if(PlayerController.player_color !== this.game_controller.turn) {
 				return false
 			}
 			return true
 		}
 
-		if(GameController.game_type === GameType.offline) {
-			return (piece_attached_to_square.color === GameController.turn)
+		if(this.game_controller.game_type === GameType.offline) {
+			return (piece_attached_to_square.color === this.game_controller.turn)
 		}
 	}
 
@@ -212,18 +214,18 @@ export default class MoveController {
 	}
 
 	public load_possible_moves_lists(): void {
-		this.board.piece_list.clear_position_restrictions_property()
+		this.piece_list.clear_position_restrictions_property()
 
-		let king_color: BlackOrWhite = GameController.turn
-		if(GameController.game_type === GameType.online) {
+		let king_color: BlackOrWhite = this.game_controller.turn
+		if(this.game_controller.game_type === GameType.online) {
 			king_color = PlayerController.player_color
 		}
 
-		const king_of_color: King = this.board.piece_list.king_by_color(king_color)
-		king_of_color.render_legal_squares_surrounding_king()
+		const king_of_color: King = this.piece_list.king_by_color(king_color)
+		king_of_color.render_legal_squares_surrounding_king(this.piece_list)
 		king_of_color.render_check_paths_list()
 
-		this.board.piece_list.list.forEach((piece) => {
+		this.piece_list.list.forEach((piece) => {
 			if (piece !== undefined) {
 				piece.calculate_possible_moves()
 				if (piece.type === PieceType.pawn) {
@@ -233,11 +235,11 @@ export default class MoveController {
 			}
 		})
 
-		GameController.should_game_end(king_of_color)
+		this.game_controller.should_game_end(king_of_color)
 	}
 
 	public clear_possible_moves_lists(): void {
-		this.board.piece_list.list.forEach((piece) => {
+		this.piece_list.list.forEach((piece) => {
 			if (piece != undefined) {
 				piece.possible_moves = []
 			}
@@ -250,7 +252,7 @@ export default class MoveController {
 			this.add_border_to_attacked_piece_for(piece)
 			if (piece.type === PieceType.king) {
 				const king: King = piece as King
-				king.add_borders_to_castleable_rooks(king.rooks_for_king())
+				king.add_borders_to_castleable_rooks(this.piece_list, king.rooks_for_king(this.piece_list))
 			}
 		}
 	}
@@ -268,7 +270,7 @@ export default class MoveController {
 
 	private add_border_to_attacked_piece_for(piece: Piece | undefined): void {
 		piece!.possible_moves.forEach((position) => {
-			const piece_at_position = this.board.piece_list.piece_by_position(position)
+			const piece_at_position = this.piece_list.piece_by_position(position)
 			if (piece_at_position !== undefined) {
 				if (piece!.color !== piece_at_position.color) {
 					SquareGrid.square_by_board_position(position)!.add_border()
@@ -300,7 +302,7 @@ export default class MoveController {
 			new_square.remove_piece()
 		}
 
-		GameController.add_move_to_list(move)
+		this.game_controller.add_move_to_list(move)
 
 		this.handle_move(mover, move)
 
@@ -316,9 +318,9 @@ export default class MoveController {
 	}
 
 	private handle_player_move(move: Move) {
-		if(GameController.game_type === GameType.online) {
+		if(this.game_controller.game_type === GameType.online) {
 			this.online_player_move(move)
-		} else if(GameController.game_type === GameType.offline) {
+		} else if(this.game_controller.game_type === GameType.offline) {
 			this.offline_player_move(move)
 		}
 	}
@@ -342,7 +344,7 @@ export default class MoveController {
 	}
 
 	private move_sent_from_server(move: Move) {
-		const piece = this.board.piece_list.piece_by_id(move.piece.title)
+		const piece = this.piece_list.piece_by_id(move.piece.title)
 		if(!piece) {
 			throw new Error("Piece is not defined")
 		}
@@ -358,7 +360,7 @@ export default class MoveController {
 
 		let should_remove_piece: boolean = false
 		if (!new_square.is_empty()) {
-			if (new_square.piece_attached_to_square()!.color !== GameController.turn) {
+			if (new_square.piece_attached_to_square()!.color !== this.game_controller.turn) {
 				should_remove_piece = true
 			}
 		}
@@ -366,8 +368,8 @@ export default class MoveController {
 	}
 
 	public async move_castle_pieces(castle_move: CastleMove, mover: MoveInitiator) {
-		const king_piece: Piece | undefined = this.board.piece_list.piece_by_id(castle_move.king_move.piece.title)
-		const rook_piece: Piece | undefined = this.board.piece_list.piece_by_id(castle_move.rook_move.piece.title)
+		const king_piece: Piece | undefined = this.piece_list.piece_by_id(castle_move.king_move.piece.title)
+		const rook_piece: Piece | undefined = this.piece_list.piece_by_id(castle_move.rook_move.piece.title)
 
 		if(!king_piece || !rook_piece) {
 			throw new Error("Couldnt find king or rook piece in piece list")
@@ -376,7 +378,7 @@ export default class MoveController {
 		await king_piece.move_to(castle_move.king_move.to)
 		await rook_piece.move_to(castle_move.rook_move.to)
 
-		if(mover === MoveInitiator.player && GameController.game_type === GameType.online) {
+		if(mover === MoveInitiator.player && this.game_controller.game_type === GameType.online) {
 			this.send_castle_move_to_server(castle_move)
 		}
 
@@ -394,8 +396,7 @@ export default class MoveController {
 
 	private async redraw(): Promise<void> {
 		this.focused_square = undefined
-		GameController.switch_turn()
-		this.board.redraw()
+		this.game_controller.switch_turn()
 	}
 }
 

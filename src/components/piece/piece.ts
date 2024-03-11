@@ -18,7 +18,6 @@ export default abstract class Piece {
 	possible_moves: string[] = []
 	directions: PieceDirections[] = []
 	position_restrictions: string[] = []
-	board: Board
 
 	//Global Property
 	static position_restrictions: string[] = []
@@ -27,14 +26,13 @@ export default abstract class Piece {
 	move_distance: number = 0
 	piece_value: number = 0
 
-	constructor(title: string, type: PieceType, pos: string, svg: string, color: BlackOrWhite, board: Board) {
+	constructor(title: string, type: PieceType, pos: string, svg: string, color: BlackOrWhite) {
 		this.title = title
 		this.type = type
 		this.pos = pos
 		this.svg = svg
 		this.image = this.image_builder()
 		this.color = color
-		this.board = board
 	}
 
 	public image_builder(): HTMLImageElement {

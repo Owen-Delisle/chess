@@ -27,7 +27,7 @@ export default function piece_factory(id: string, position: string, type: PieceT
             case PieceType.bishop:
                 return new Bishop(id, position, color === BlackOrWhite.black ? Bishop_B_SVG : Bishop_W_SVG, type, color);
             case PieceType.king:
-                return new King(id, position, color === BlackOrWhite.black ? King_B_SVG : King_W_SVG, type, color);
+                    return new King(id, position, color === BlackOrWhite.black ? King_B_SVG : King_W_SVG, type, color);
             case PieceType.knight:
                 return new Knight(id, position, color === BlackOrWhite.black ? Knight_B_SVG : Knight_W_SVG, type, color);
             case PieceType.pawn:

@@ -15,7 +15,7 @@ export default class PieceList {
 	list: Piece[]
 
 	constructor() {
-		this.list = default_piece_list
+		this.list = default_piece_list()
 	}
 
 	public pieces_by_color(color: BlackOrWhite): Piece[] {

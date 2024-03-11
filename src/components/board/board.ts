@@ -13,17 +13,18 @@ import PieceList from 'src/models/piece_list'
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement('div')
-	static board_size: number = Math.pow(row_and_column_size,2)
+	board_size: number = Math.pow(row_and_column_size,2)
 	piece_list: PieceList
 	move_controller: MoveController
+	game_controller: GameController
 
 	constructor(game_type: GameType, player_color: BlackOrWhite, opponent_user_id: UUID) {
 		super()
-		this.piece_list = new PieceList()
-		GameController.game_type = game_type
 		PlayerController.player_color = player_color
 		PlayerController.opponent_user_id = opponent_user_id
-		this.move_controller = new MoveController(this)
+		this.piece_list = new PieceList()
+		this.game_controller = new GameController(this.piece_list, game_type)
+		this.move_controller = new MoveController(this.game_controller)
 		this.render()
 	}
 
@@ -55,7 +56,7 @@ export default class Board extends HTMLElement {
 		this.container_node.appendChild(row_node)
 
 		let row_array: Square[] = []
-		for (let col = board_start_index; col < Board.board_size; col++) {
+		for (let col = board_start_index; col < this.board_size; col++) {
 			next_square = this.instantiate_square(col)
 			next_square.build_clickable_square()
 

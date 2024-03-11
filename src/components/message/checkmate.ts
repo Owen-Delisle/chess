@@ -1,7 +1,5 @@
-import PieceList from "../../models/piece_list"
 import MessageStyles from "./styles"
-import default_piece_list from "../../models/default_piece_list"
-import Board from "../board/board"
+import PlayerController from "src/server/controllers/player_controller"
 
 export default class CheckmateElement extends HTMLElement {
     constructor() {
@@ -38,7 +36,15 @@ export default class CheckmateElement extends HTMLElement {
             if(!board_container) {
                 throw new Error("Board Container Element not Found")
             }
-            board_container.innerHTML = '<board-element id="default_board" game_type="offline" player_color="white" opponent_user_id="none"></board-element>'
+            board_container.innerHTML = ''
+
+            const message_container = document.getElementById("current_game")
+            if(!message_container) {
+                throw new Error('Message Container Element not Found')
+            }
+            message_container.innerHTML = ''
+
+            PlayerController.opponent_user_id = "none"
             //END TODO
         }
 

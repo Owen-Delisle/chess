@@ -12,7 +12,6 @@ import { PieceType } from '../piece_types'
 import SquareGrid from '../../../models/square_grid'
 import type Rook from './rook'
 import { RookType } from './rook'
-import PieceList from '../../../models/piece_list'
 import SquareID from '../../../components/square/square_id'
 import { are_coors_within_board_bounds } from '../../../utils/bounds'
 import { distance_between_aligned_points, is_within_one_knight_move } from '../../../utils/math'
@@ -28,7 +27,7 @@ import King_B_Win_SVG from '../piece_factory/assets/king-b-win.svg'
 import King_W_Loss_SVG from '../piece_factory/assets/king-w-loss.svg'
 import King_B_Loss_SVG from '../piece_factory/assets/king-b-loss.svg'
 import Square from '../../../components/square/square'
-import Board from 'src/components/board/board'
+import PieceList from '../../../models/piece_list'
 
 export default class King extends Piece implements Piece_Interface {
 	move_distance: number = 1
@@ -39,8 +38,8 @@ export default class King extends Piece implements Piece_Interface {
 	in_check: boolean = false
 	positions_to_be_blocked: string[] = []
 
-	constructor(title: string, pos: string, svg: string, type: PieceType, color: BlackOrWhite, board: Board) {
-		super(title, type, pos, svg, color, board)
+	constructor(title: string, pos: string, svg: string, type: PieceType, color: BlackOrWhite) {
+		super(title, type, pos, svg, color)
 		this.type = type
 		this.directions = [
 			PieceDirections.north,
@@ -74,8 +73,8 @@ export default class King extends Piece implements Piece_Interface {
 		return surrounding_points(SquareGrid.point_at_board_position(this.pos))
 	}
 
-	public check_for_checkmate(): string | undefined {
-		if (!this.any_piece_can_move()) {
+	public check_for_checkmate(piece_list: PieceList): string | undefined {
+		if (!this.any_piece_can_move(piece_list)) {
 			if(this.in_check) {
 				return 'Game Over: Checkmate'
 			} else {
@@ -84,18 +83,17 @@ export default class King extends Piece implements Piece_Interface {
 		}
 	}
 
-	public any_piece_can_move(): boolean {
-		// const any_piece_has_move: boolean = PieceList.pieces_by_color(this.color).some(
-		// 	(piece) => piece.possible_moves.length > 0,
-		// )
+	public any_piece_can_move(piece_list: PieceList): boolean {
+		const any_piece_has_move: boolean = piece_list.pieces_by_color(this.color).some(
+			(piece) => piece.possible_moves.length > 0,
+		)
 
-		// return any_piece_has_move
-		return false
+		return any_piece_has_move
 	}
 
-	public render_legal_squares_surrounding_king(): void {
+	public render_legal_squares_surrounding_king(piece_list: PieceList): void {
 		const positions_surrounding_king = this.moveable_positions_surrounding_king()
-		const attacked_points_around_king = this.attacked_points_around_king()
+		const attacked_points_around_king = this.attacked_points_around_king(piece_list)
 		if (are_equal(positions_surrounding_king, attacked_points_around_king)) {
 			this.move_distance = 0
 		} else {
@@ -106,7 +104,7 @@ export default class King extends Piece implements Piece_Interface {
 		}
 	}
 
-	public attacked_points_around_king(): string[] {
+	public attacked_points_around_king(piece_list: PieceList): string[] {
 		let attacked_positions: string[] = []
 
 		this.points_surrounding_king().forEach((point) => {
@@ -138,9 +136,9 @@ export default class King extends Piece implements Piece_Interface {
 						col: initial_col,
 					})
 					if (!attacked_positions.includes(next_pos)) {
-						// if (PieceList.piece_by_position(next_pos) === undefined) {
-						// 	attacked_positions.push(next_pos)
-						// }
+						if (piece_list.piece_by_position(next_pos) === undefined) {
+							attacked_positions.push(next_pos)
+						}
 					}
 				}
 			})
@@ -411,8 +409,8 @@ export default class King extends Piece implements Piece_Interface {
 		})
 	}
 
-	public rooks_for_king(): Rook[] {
-		const pieces = this.board.piece_list.list.filter(
+	public rooks_for_king(piece_list: PieceList): Rook[] {
+		const pieces = piece_list.list.filter(
 			(rook) => rook.type === PieceType.rook && rook.color === this.color,
 		)
 
@@ -421,16 +419,16 @@ export default class King extends Piece implements Piece_Interface {
 		return rooks
 	}
 
-	public add_borders_to_castleable_rooks(rooks: Piece[]) {
+	public add_borders_to_castleable_rooks(piece_list: PieceList, rooks: Piece[]) {
 		rooks.forEach((piece) => {
 			const rook = piece as Rook
 			const rook_gp: GridPoint = SquareGrid.point_at_board_position(rook.pos)
 			if (
-				this.squares_between_king_and_rook_empty(rook) &&
+				this.squares_between_king_and_rook_empty(piece_list, rook) &&
 				!this.has_moved &&
 				!rook.has_moved &&
 				!this.in_check &&
-				!this.kings_castle_squares_attacked(rook)
+				!this.kings_castle_squares_attacked(piece_list, rook)
 			) {
 				SquareGrid.square_by_grid_point({
 					row: rook_gp.row,
@@ -440,7 +438,7 @@ export default class King extends Piece implements Piece_Interface {
 		})
 	}
 
-	public squares_between_king_and_rook_empty(rook: Rook): boolean {
+	public squares_between_king_and_rook_empty(piece_list: PieceList, rook: Rook): boolean {
 		const castle_vars = this.castle_vars_for_rook_type(rook.rook_type)
 		const rook_gp: GridPoint = SquareGrid.point_at_board_position(rook.pos)
 
@@ -457,14 +455,14 @@ export default class King extends Piece implements Piece_Interface {
 			square_beside_king,
 			square_beside_rook,
 		)
-		// const any_pieces = positions_between_king_and_rook.some(
-		// 	(position) => PieceList.piece_by_position(position) !== undefined,
-		// )
-		// return !any_pieces
-		return false
+
+		const any_pieces = positions_between_king_and_rook.some(
+			(position) => piece_list.piece_by_position(position) !== undefined,
+		)
+		return !any_pieces
 	}
 
-	public kings_castle_squares_attacked(rook: Rook): boolean {
+	public kings_castle_squares_attacked(piece_list: PieceList, rook: Rook): boolean {
 		const castle_vars = this.castle_vars_for_rook_type(rook.rook_type)
 
 		const first_point: GridPoint = {
@@ -479,12 +477,11 @@ export default class King extends Piece implements Piece_Interface {
 		const first_position = SquareID.pos_at_point(first_point)
 		const second_position = SquareID.pos_at_point(second_point)
 
-		// const any_piece = PieceList.pieces_by_other_color(this.color).some((piece) =>
-		// 	piece.possible_moves.some((move) => [first_position, second_position].includes(move)),
-		// )
+		const any_piece = piece_list.pieces_by_other_color(this.color).some((piece) =>
+			piece.possible_moves.some((move) => [first_position, second_position].includes(move)),
+		)
 
-		// return any_piece
-		return false
+		return any_piece
 	}
 
 	public castle_vars_for_rook_type(rook_type: RookType): CastleVars {
