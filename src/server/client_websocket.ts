@@ -22,6 +22,7 @@ import GameCanceledMessage from './messages/game_canceled_message'
 import UserAPI from './api/user_api'
 import Pawn from '../components/piece/pieces/pawn'
 import Board from '../components/board/board'
+import CheckmateElement from '../components/message/checkmate'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -253,6 +254,16 @@ export default class ClientWebSocket {
 
         losing_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.lose)
         winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
+
+        const message_container_element: HTMLElement | null = document.getElementById('message_container')
+        if (!message_container_element) {
+            throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
+        }
+
+        const checkmate_window = new CheckmateElement()
+        setTimeout(() => {
+            message_container_element.appendChild(checkmate_window)
+        }, 1000);
     }
 
     private static promote_pawn_from_server(pawn_id: string) {

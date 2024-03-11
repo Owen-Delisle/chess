@@ -7,6 +7,8 @@ import GameType from '../global_types/enums/game_type'
 import ClientWebSocket from '../server/client_websocket'
 import CheckmateMessage from '../server/messages/checkmate_message'
 import PlayerController from '../server/controllers/player_controller'
+import { UUID } from 'crypto'
+import CheckmateElement from '../components/message/checkmate'
 
 export class GameController {
 	public static game_type: GameType
@@ -44,7 +46,19 @@ export class GameController {
 			winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
 
 			if(this.game_type === GameType.online) {
-				ClientWebSocket.send_message_to_server(new CheckmateMessage(PlayerController.opponent_user_id, king.title, winning_king.title))
+				ClientWebSocket.send_message_to_server(new CheckmateMessage(PlayerController.opponent_user_id as UUID, king.title, winning_king.title))
+
+				//TODO MAKE FUNCTION
+				const message_container_element: HTMLElement | null = document.getElementById('message_container')
+				if (!message_container_element) {
+					throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
+				}
+				const checkmate_window = new CheckmateElement()
+				setTimeout(() => {
+					message_container_element.appendChild(checkmate_window)
+				}, 1000);
+
+				//END MAKE FUNCTION
 			}
 		}
 	}
