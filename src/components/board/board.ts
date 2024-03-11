@@ -26,8 +26,8 @@ export default class Board extends HTMLElement {
 		const player_color_prop = this.getAttribute('player_color')
 		const opponent_user_id_prop = this.getAttribute('opponent_user_id')
 
-		GameController.game_type = GameType[game_type_prop! as keyof typeof GameType];
-		PlayerController.player_color = BlackOrWhite[player_color_prop! as keyof typeof BlackOrWhite];
+		GameController.game_type = GameType[game_type_prop! as keyof typeof GameType]
+		PlayerController.player_color = BlackOrWhite[player_color_prop! as keyof typeof BlackOrWhite]
 		PlayerController.opponent_user_id = opponent_user_id_prop as UUID
 		
 		this.add_styles_to_dom()

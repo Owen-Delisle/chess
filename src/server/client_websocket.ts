@@ -4,7 +4,7 @@ import Message, { MessageType } from './messages/message'
 import GameAcceptedMessage from './messages/game_accepted_message'
 import MoveController, { MoveInitiator } from '../controllers/move_controller'
 import { Move } from '../global_types/move'
-import { BlackOrWhite } from '../global_types/enums/black_or_white'
+import { BlackOrWhite, black_or_white_by_index, not_color } from '../global_types/enums/black_or_white'
 import TokenController from './controllers/token_controller'
 import { CastleMove } from '../global_types/castle_move'
 import Square from '../components/square/square'
@@ -49,7 +49,7 @@ export default class ClientWebSocket {
                     ClientWebSocket.update_request_list_ui(message.requesting_user, message.recieving_user)
                 break
                 case MessageType.game_accepted.toString():
-                    ClientWebSocket.update_current_game_ui(message.accepting_user, BlackOrWhite.black)
+                    ClientWebSocket.update_current_game_ui(message.accepting_user, message.color)
                 break
                 case MessageType.game_declined.toString():
                     ClientWebSocket.swap_waiting_message_to_declined()
@@ -141,6 +141,8 @@ export default class ClientWebSocket {
     }
 
     private static update_request_list_ui(user_id_of_requester: UUID, this_client_user_id: UUID) {
+        const player_piece_color: BlackOrWhite = black_or_white_by_index(Math.round(Math.random()))
+
         const message_container_element: HTMLElement | null = document.getElementById('message_container')
         if (!message_container_element) {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
@@ -150,9 +152,10 @@ export default class ClientWebSocket {
         if (PlayerController.opponent_user_id === "none") {
             const game_request_element: HTMLElement = new GameRequestElement(
                 user_id_of_requester,
+    
                 () => {
-                    ClientWebSocket.send_message_to_server(new GameAcceptedMessage(this_client_user_id, user_id_of_requester)),
-                        ClientWebSocket.update_current_game_ui(user_id_of_requester, BlackOrWhite.white)
+                    ClientWebSocket.send_message_to_server(new GameAcceptedMessage(this_client_user_id, user_id_of_requester, not_color(player_piece_color))),
+                    ClientWebSocket.update_current_game_ui(user_id_of_requester, player_piece_color)
                 },
                 () => {
                     ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id_of_requester))

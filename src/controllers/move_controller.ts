@@ -9,7 +9,7 @@ import type { CastleVars } from '../components/piece/pieces/king'
 import SquareID from '../components/square/square_id'
 import { GameController } from './game_controller'
 import PieceList from '../models/piece_list'
-import type Pawn from '../components/piece/pieces/pawn'
+import Pawn from '../components/piece/pieces/pawn'
 import ClientWebSocket from '../server/client_websocket'
 import { Move } from '../global_types/move'
 import MoveMessage from '../server/messages/move_message'
@@ -170,11 +170,29 @@ export default class MoveController {
 		}
 	}
 
-	private static conditions_to_setup_values(clicked_square: Square): boolean {
-		if(GameController.game_type === GameType.online) {
-			return (!clicked_square.is_empty() && clicked_square.piece_attached_to_square()!.color == PlayerController.player_color)
+	private static conditions_to_setup_values(clicked_square: Square): boolean | undefined {
+		if(clicked_square.is_empty()) {
+			return false
 		}
-		return (!clicked_square.is_empty() && clicked_square.piece_attached_to_square()!.color == GameController.turn)
+
+		const piece_attached_to_square = clicked_square.piece_attached_to_square()
+		if(!piece_attached_to_square) {
+			throw new Error("Piece Attached to Square is undefined")
+		}
+
+		if(GameController.game_type === GameType.online) {
+			if(piece_attached_to_square.color !== PlayerController.player_color ) {
+				return false
+			}
+			if(PlayerController.player_color !== GameController.turn) {
+				return false
+			}
+			return true
+		}
+
+		if(GameController.game_type === GameType.offline) {
+			return (piece_attached_to_square.color === GameController.turn)
+		}
 	}
 
 	private static clear_focused_square_visuals() {
