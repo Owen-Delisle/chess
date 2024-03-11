@@ -23,9 +23,14 @@ import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import { UUID } from 'crypto'
 
 export default class MoveController {
-	private static focused_square: Square | undefined
+	board: Board
+	private focused_square: Square | undefined
 
-	public static on_square_click(clicked_square: Square): void {
+	constructor(board: Board) {
+		this.board = board
+	}
+
+	public on_square_click(clicked_square: Square): void {
 		if (this.conditions_for_standard_move(clicked_square)) {
 			this.clear_prev_focused_square()
 			this.make_standard_move(clicked_square)
@@ -37,11 +42,11 @@ export default class MoveController {
 		}
 	}
 
-	private static focused_square_is_defined(): boolean {
+	private focused_square_is_defined(): boolean {
 		return this.focused_square !== undefined
 	}
 
-	private static conditions_for_standard_move(clicked_square: Square): boolean {
+	private conditions_for_standard_move(clicked_square: Square): boolean {
 		let conditions_met: boolean = false
 
 		if (this.focused_square_is_defined()) {
@@ -58,7 +63,7 @@ export default class MoveController {
 		return conditions_met
 	}
 
-	private static make_standard_move(clicked_square: Square): void {
+	private make_standard_move(clicked_square: Square): void {
 		let piece_attached_to_focused_square: Piece | undefined =
 			this.focused_square?.piece_attached_to_square()
 		if (piece_attached_to_focused_square != undefined) {
@@ -72,7 +77,7 @@ export default class MoveController {
 	}
 
 	// Made public for testing
-	public static conditions_for_castle(focused_square: Square | undefined, clicked_square: Square): boolean {
+	public conditions_for_castle(focused_square: Square | undefined, clicked_square: Square): boolean {
 		let should_castle: boolean = false
 		let focused_piece: Piece | undefined = focused_square?.piece_attached_to_square()
 		let clicked_piece: Piece | undefined = clicked_square?.piece_attached_to_square()
@@ -98,7 +103,7 @@ export default class MoveController {
 		return should_castle
 	}
 
-	private static castle(clicked_square: Square | undefined): void {
+	private castle(clicked_square: Square | undefined): void {
 		const focused_piece: Piece = this.focused_square?.piece_attached_to_square()!
 		const clicked_piece: Piece = clicked_square?.piece_attached_to_square()!
 
@@ -146,7 +151,7 @@ export default class MoveController {
 		}
 	}
 
-	private static clear_prev_focused_square() {
+	private clear_prev_focused_square() {
 		this.focused_square!.remove_border()
 		if (this.focused_square!.piece_attached_to_square() != undefined) {
 			this.remove_visuals_from_possible_moves(
@@ -155,7 +160,7 @@ export default class MoveController {
 		}
 	}
 
-	private static setup_values_for_move(clicked_square: Square): void {
+	private setup_values_for_move(clicked_square: Square): void {
 		if (this.conditions_to_setup_values(clicked_square)) {
 			if(this.focused_square !== clicked_square) {
 				this.clear_focused_square_visuals()
@@ -170,7 +175,7 @@ export default class MoveController {
 		}
 	}
 
-	private static conditions_to_setup_values(clicked_square: Square): boolean | undefined {
+	private conditions_to_setup_values(clicked_square: Square): boolean | undefined {
 		if(clicked_square.is_empty()) {
 			return false
 		}
@@ -195,7 +200,7 @@ export default class MoveController {
 		}
 	}
 
-	private static clear_focused_square_visuals() {
+	private clear_focused_square_visuals() {
 		if (this.focused_square != undefined) {
 			this.focused_square.remove_border()
 			if (this.focused_square.piece_attached_to_square() != undefined) {
@@ -206,19 +211,19 @@ export default class MoveController {
 		}
 	}
 
-	public static load_possible_moves_lists(): void {
-		PieceList.clear_position_restrictions_property()
+	public load_possible_moves_lists(): void {
+		this.board.piece_list.clear_position_restrictions_property()
 
 		let king_color: BlackOrWhite = GameController.turn
 		if(GameController.game_type === GameType.online) {
 			king_color = PlayerController.player_color
 		}
 
-		const king_of_color: King = PieceList.king_by_color(king_color)
+		const king_of_color: King = this.board.piece_list.king_by_color(king_color)
 		king_of_color.render_legal_squares_surrounding_king()
 		king_of_color.render_check_paths_list()
 
-		PieceList.piece_list.forEach((piece) => {
+		this.board.piece_list.list.forEach((piece) => {
 			if (piece !== undefined) {
 				piece.calculate_possible_moves()
 				if (piece.type === PieceType.pawn) {
@@ -231,15 +236,15 @@ export default class MoveController {
 		GameController.should_game_end(king_of_color)
 	}
 
-	public static clear_possible_moves_lists(): void {
-		PieceList.piece_list.forEach((piece) => {
+	public clear_possible_moves_lists(): void {
+		this.board.piece_list.list.forEach((piece) => {
 			if (piece != undefined) {
 				piece.possible_moves = []
 			}
 		})
 	}
 
-	private static add_visuals_to_possible_moves_for(piece: Piece | undefined): void {
+	private add_visuals_to_possible_moves_for(piece: Piece | undefined): void {
 		if (piece !== undefined) {
 			this.add_dots_to_possible_moves_for(piece)
 			this.add_border_to_attacked_piece_for(piece)
@@ -250,7 +255,7 @@ export default class MoveController {
 		}
 	}
 
-	private static add_dots_to_possible_moves_for(piece: Piece | undefined): void {
+	private add_dots_to_possible_moves_for(piece: Piece | undefined): void {
 		piece!.possible_moves.forEach((possible_move) => {
 			let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
 			if (square != undefined) {
@@ -261,9 +266,9 @@ export default class MoveController {
 		})
 	}
 
-	private static add_border_to_attacked_piece_for(piece: Piece | undefined): void {
+	private add_border_to_attacked_piece_for(piece: Piece | undefined): void {
 		piece!.possible_moves.forEach((position) => {
-			const piece_at_position = PieceList.piece_by_position(position)
+			const piece_at_position = this.board.piece_list.piece_by_position(position)
 			if (piece_at_position !== undefined) {
 				if (piece!.color !== piece_at_position.color) {
 					SquareGrid.square_by_board_position(position)!.add_border()
@@ -272,7 +277,7 @@ export default class MoveController {
 		})
 	}
 
-	private static remove_visuals_from_possible_moves(piece: Piece | undefined): void {
+	private remove_visuals_from_possible_moves(piece: Piece | undefined): void {
 		if(piece === undefined) {
 			throw Error("Piece is undefined")
 		} 
@@ -285,7 +290,7 @@ export default class MoveController {
 		})
 	}
 
-	public static async move_piece_to(move: Move, mover: MoveInitiator): Promise<void> {
+	public async move_piece_to(move: Move, mover: MoveInitiator): Promise<void> {
 		const new_square = SquareGrid.square_by_board_position(move.to)
 
 		if(!new_square) {
@@ -302,7 +307,7 @@ export default class MoveController {
 		this.redraw()
 	}
 
-	private static handle_move(mover: MoveInitiator, move: Move) {
+	private handle_move(mover: MoveInitiator, move: Move) {
 		if(mover === MoveInitiator.server) {
 			this.move_sent_from_server(move)
 		} else if(mover === MoveInitiator.player) {
@@ -310,7 +315,7 @@ export default class MoveController {
 		}
 	}
 
-	private static handle_player_move(move: Move) {
+	private handle_player_move(move: Move) {
 		if(GameController.game_type === GameType.online) {
 			this.online_player_move(move)
 		} else if(GameController.game_type === GameType.offline) {
@@ -318,16 +323,16 @@ export default class MoveController {
 		}
 	}
 
-	private static async offline_player_move(move: Move) {
+	private async offline_player_move(move: Move) {
 		await move.piece.move_to(move.to)
 	}
 
-	private static async online_player_move(move: Move) {
+	private async online_player_move(move: Move) {
 		this.send_move_to_server(move)
 		await move.piece.move_to(move.to)
 	}
 
-	private static send_move_to_server(move: Move) {
+	private send_move_to_server(move: Move) {
 		const message = new MoveMessage(
 			MessageTargetType.direct, 
 			PlayerController.opponent_user_id as UUID, 
@@ -336,15 +341,15 @@ export default class MoveController {
 		ClientWebSocket.send_message_to_server(message)
 	}
 
-	private static move_sent_from_server(move: Move) {
-		const piece = PieceList.piece_by_id(move.piece.title)
+	private move_sent_from_server(move: Move) {
+		const piece = this.board.piece_list.piece_by_id(move.piece.title)
 		if(!piece) {
 			throw new Error("Piece is not defined")
 		}
 		piece.move_to(move.to)
 	}
 
-	private static remove_piece_conditions(selected_pos: string): boolean {
+	private remove_piece_conditions(selected_pos: string): boolean {
 		const new_square: Square | undefined = SquareGrid.square_by_board_position(selected_pos)
 
 		if(!new_square) {
@@ -360,9 +365,9 @@ export default class MoveController {
 		return should_remove_piece
 	}
 
-	public static async move_castle_pieces(castle_move: CastleMove, mover: MoveInitiator) {
-		const king_piece: Piece | undefined = PieceList.piece_by_id(castle_move.king_move.piece.title)
-		const rook_piece: Piece | undefined = PieceList.piece_by_id(castle_move.rook_move.piece.title)
+	public async move_castle_pieces(castle_move: CastleMove, mover: MoveInitiator) {
+		const king_piece: Piece | undefined = this.board.piece_list.piece_by_id(castle_move.king_move.piece.title)
+		const rook_piece: Piece | undefined = this.board.piece_list.piece_by_id(castle_move.rook_move.piece.title)
 
 		if(!king_piece || !rook_piece) {
 			throw new Error("Couldnt find king or rook piece in piece list")
@@ -378,7 +383,7 @@ export default class MoveController {
 		this.redraw()
 	}
 
-	private static send_castle_move_to_server(castle_move: CastleMove) {
+	private send_castle_move_to_server(castle_move: CastleMove) {
 		const message = new CastleMoveMessage(
 			MessageTargetType.direct, 
 			PlayerController.opponent_user_id as UUID,
@@ -387,10 +392,10 @@ export default class MoveController {
 		ClientWebSocket.send_message_to_server(message)
 	}
 
-	private static async redraw(): Promise<void> {
+	private async redraw(): Promise<void> {
 		this.focused_square = undefined
 		GameController.switch_turn()
-		Board.singleton.redraw()
+		this.board.redraw()
 	}
 }
 

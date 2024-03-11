@@ -6,6 +6,7 @@ import { are_coors_within_board_bounds } from '../../utils/bounds'
 import SquareID from '../square/square_id'
 import { PieceDirections, piece_direction_modifier } from './piece_directions'
 import { square_is_empty } from '../../utils/grid'
+import Board from '../board/board'
 
 export default abstract class Piece {
 	title: string
@@ -17,6 +18,7 @@ export default abstract class Piece {
 	possible_moves: string[] = []
 	directions: PieceDirections[] = []
 	position_restrictions: string[] = []
+	board: Board
 
 	//Global Property
 	static position_restrictions: string[] = []
@@ -25,13 +27,14 @@ export default abstract class Piece {
 	move_distance: number = 0
 	piece_value: number = 0
 
-	constructor(title: string, type: PieceType, pos: string, svg: string, color: BlackOrWhite) {
+	constructor(title: string, type: PieceType, pos: string, svg: string, color: BlackOrWhite, board: Board) {
 		this.title = title
 		this.type = type
 		this.pos = pos
 		this.svg = svg
 		this.image = this.image_builder()
 		this.color = color
+		this.board = board
 	}
 
 	public image_builder(): HTMLImageElement {

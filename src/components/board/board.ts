@@ -9,32 +9,28 @@ import { GameController } from '../../controllers/game_controller'
 import PlayerController from '../../server/controllers/player_controller'
 import GameType from '../../global_types/enums/game_type'
 import { UUID } from 'crypto'
+import PieceList from 'src/models/piece_list'
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement('div')
 	static board_size: number = Math.pow(row_and_column_size,2)
+	piece_list: PieceList
+	move_controller: MoveController
 
-	static singleton: Board
-
-	constructor() {
+	constructor(game_type: GameType, player_color: BlackOrWhite, opponent_user_id: UUID) {
 		super()
+		this.piece_list = new PieceList()
+		GameController.game_type = game_type
+		PlayerController.player_color = player_color
+		PlayerController.opponent_user_id = opponent_user_id
+		this.move_controller = new MoveController(this)
 		this.render()
 	}
 
 	render(): void {
-		const game_type_prop: string | null = this.getAttribute('game_type')
-		const player_color_prop = this.getAttribute('player_color')
-		const opponent_user_id_prop = this.getAttribute('opponent_user_id')
-
-		GameController.game_type = GameType[game_type_prop! as keyof typeof GameType]
-		PlayerController.player_color = BlackOrWhite[player_color_prop! as keyof typeof BlackOrWhite]
-		PlayerController.opponent_user_id = opponent_user_id_prop as UUID
-		
 		this.add_styles_to_dom()
 		this.board_generator()
-		MoveController.load_possible_moves_lists()
-
-		Board.singleton = this
+		this.move_controller.load_possible_moves_lists()
 	}
 
 	private add_styles_to_dom() {
@@ -85,7 +81,7 @@ export default class Board extends HTMLElement {
 			color = BlackOrWhite.white
 		}
 
-		let square: Square = new Square(color, index)
+		let square: Square = new Square(color, index, this)
 
 		return square
 	}
@@ -110,8 +106,8 @@ export default class Board extends HTMLElement {
 		SquareGrid.square_grid = []
 		document.querySelectorAll('.row').forEach((e) => e.remove())
 		this.add_squares_to_board()
-		MoveController.clear_possible_moves_lists()
-		MoveController.load_possible_moves_lists()
+		this.move_controller.clear_possible_moves_lists()
+		this.move_controller.load_possible_moves_lists()
 	}
 }
 

@@ -23,11 +23,13 @@ import UserAPI from './api/user_api'
 import Pawn from '../components/piece/pieces/pawn'
 import Board from '../components/board/board'
 import CheckmateElement from '../components/message/checkmate'
+import GameType from 'src/global_types/enums/game_type'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
     static client_user_id: Promise<UUID> = ClientWebSocket.user_id_of_client()
     static game_request_state: GameRequestState = GameRequestState.dormant
+    static online_game_board: Board
 
     //TODO:: UPDATE WHEN DEPLOYED
     static web_socket: WebSocket = new WebSocket(`ws://localhost:3000?token=${this.token}`)
@@ -195,8 +197,11 @@ export default class ClientWebSocket {
             throw new Error("BOARD CONTAINER ELEMENT NOT FOUND")
         }
 
+        const board: Board = new Board(GameType.online, color, user_id_of_opponent)
+        this.online_game_board = board
+
         board_container_element.innerHTML = ''
-        board_container_element.innerHTML = `<board-element game_type="online" player_color="${color}" opponent_user_id="${user_id_of_opponent}"></board-element>`
+        board_container_element.appendChild(this.online_game_board)
     }
 
     private static swap_waiting_message_to_declined() {
@@ -223,11 +228,11 @@ export default class ClientWebSocket {
     }
 
     private static move_piece_with_server_move(move: Move) {
-        MoveController.move_piece_to(move, MoveInitiator.server)
+        this.online_game_board.move_controller.move_piece_to(move, MoveInitiator.server)
     }
 
     private static castle_with_server_move(castle_move: CastleMove) {
-        MoveController.move_castle_pieces(castle_move, MoveInitiator.server)
+        this.online_game_board.move_controller.move_castle_pieces(castle_move, MoveInitiator.server)
     }
 
     private static update_king_square_color_with_server(square: Square, check_status: CheckStatus) {
@@ -245,8 +250,8 @@ export default class ClientWebSocket {
     }
 
     private static checkmate_from_server(losing_king_id: string, winning_king_id: string) {
-        const losing_king: King | undefined = PieceList.piece_by_id(losing_king_id) as King
-        const winning_king: King | undefined = PieceList.piece_by_id(winning_king_id) as King
+        const losing_king: King | undefined = this.online_game_board.piece_list.piece_by_id(losing_king_id) as King
+        const winning_king: King | undefined = this.online_game_board.piece_list.piece_by_id(winning_king_id) as King
 
         if (!losing_king || !winning_king) {
             throw new Error("One of the kings is not defined")
@@ -267,13 +272,13 @@ export default class ClientWebSocket {
     }
 
     private static promote_pawn_from_server(pawn_id: string) {
-        const pawn_to_promote: Pawn | undefined = PieceList.piece_by_id(pawn_id) as Pawn
+        const pawn_to_promote: Pawn | undefined = this.online_game_board.piece_list.piece_by_id(pawn_id) as Pawn
 
         if(!pawn_to_promote) {
             throw new Error("The Pawn to Promote is undefined")
         }
 
-        PieceList.swap_with_queen(pawn_to_promote.title, pawn_to_promote.pos, pawn_to_promote.color)
-        Board.singleton.redraw()
+        this.online_game_board.piece_list.swap_with_queen(pawn_to_promote.title, pawn_to_promote.pos, pawn_to_promote.color)
+        this.online_game_board.redraw()
     }
 }

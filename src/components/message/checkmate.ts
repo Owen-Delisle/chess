@@ -39,8 +39,6 @@ export default class CheckmateElement extends HTMLElement {
                 throw new Error("Board Container Element not Found")
             }
             board_container.innerHTML = '<board-element id="default_board" game_type="offline" player_color="white" opponent_user_id="none"></board-element>'
-            // PieceList.piece_list = default_piece_list
-            Board.singleton.redraw()
             //END TODO
         }
 

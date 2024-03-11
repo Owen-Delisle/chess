@@ -30,37 +30,37 @@ export class GameController {
 	}
 
 	public static should_game_end(king: King): void {
-		if(!PieceList.any_pawns_left_in_game()) {
-			if(PieceList.material_value_in_game() <= this.insufficient_material_value) {
-				console.log("Game Over: Insufficient Material -- King and Minor Piece")
-			}
-			if(PieceList.only_same_square_color_bishops_left_in_game()) {
-				console.log("Game Over: Insufficient Material -- Same Color Bishops")
-			}
-		}
-		if(king.check_for_checkmate() !== undefined) {
-			console.log(king.check_for_checkmate())
-			king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.lose)
+		// if(!PieceList.any_pawns_left_in_game()) {
+		// 	if(PieceList.material_value_in_game() <= this.insufficient_material_value) {
+		// 		console.log("Game Over: Insufficient Material -- King and Minor Piece")
+		// 	}
+		// 	if(PieceList.only_same_square_color_bishops_left_in_game()) {
+		// 		console.log("Game Over: Insufficient Material -- Same Color Bishops")
+		// 	}
+		// }
+		// if(king.check_for_checkmate() !== undefined) {
+		// 	console.log(king.check_for_checkmate())
+		// 	king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.lose)
 
-			const winning_king = PieceList.king_by_color(not_color(king.color))
-			winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
+		// 	const winning_king = PieceList.king_by_color(not_color(king.color))
+		// 	winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
 
-			if(this.game_type === GameType.online) {
-				ClientWebSocket.send_message_to_server(new CheckmateMessage(PlayerController.opponent_user_id as UUID, king.title, winning_king.title))
+		// 	if(this.game_type === GameType.online) {
+		// 		ClientWebSocket.send_message_to_server(new CheckmateMessage(PlayerController.opponent_user_id as UUID, king.title, winning_king.title))
 
-				//TODO MAKE FUNCTION
-				const message_container_element: HTMLElement | null = document.getElementById('message_container')
-				if (!message_container_element) {
-					throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
-				}
-				const checkmate_window = new CheckmateElement()
-				setTimeout(() => {
-					message_container_element.appendChild(checkmate_window)
-				}, 1000);
+		// 		//TODO MAKE FUNCTION
+		// 		const message_container_element: HTMLElement | null = document.getElementById('message_container')
+		// 		if (!message_container_element) {
+		// 			throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
+		// 		}
+		// 		const checkmate_window = new CheckmateElement()
+		// 		setTimeout(() => {
+		// 			message_container_element.appendChild(checkmate_window)
+		// 		}, 1000);
 
-				//END MAKE FUNCTION
-			}
-		}
+		// 		//END MAKE FUNCTION
+		// 	}
+		// }
 	}
 }
 

@@ -170,7 +170,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 	}
 
 	private make_queen() {
-		PieceList.swap_with_queen(this.title, this.pos, this.color)
+		// PieceList.swap_with_queen(this.title, this.pos, this.color)
 		
 		if(GameController.game_type === GameType.online) {
 			ClientWebSocket.send_message_to_server(new PawnPromotionMessage(PlayerController.opponent_user_id as UUID, this.title))
@@ -183,6 +183,6 @@ export default class Pawn extends Piece implements Piece_Interface {
 
 	private en_passant() {
 		const point = SquareGrid.point_at_board_position(this.en_passant_position)
-		PieceList.remove_piece_by_point({row: point.row+1, col: point.col})
+		// PieceList.remove_piece_by_point({row: point.row+1, col: point.col})
 	}
 }

@@ -2,13 +2,13 @@ import { BlackOrWhite } from '../../global_types/enums/black_or_white'
 import SquareID from './square_id'
 import Piece from '../piece/piece'
 import MoveController from '../../controllers/move_controller'
-import PieceList from '../../models/piece_list'
 import { GameController } from '../../controllers/game_controller'
 import GameType from '../../global_types/enums/game_type'
 import ClientWebSocket from '../../server/client_websocket'
 import KingCheckStatusMessage, { CheckStatus } from '../../server/messages/king_check_message'
 import PlayerController from '../../server/controllers/player_controller'
 import { UUID } from 'crypto'
+import Board from '../board/board'
 
 export default class Square extends HTMLElement {
 	square_id: string
@@ -16,11 +16,14 @@ export default class Square extends HTMLElement {
 	element: HTMLElement | null = null
 	default_background: string
 
-	constructor(color: BlackOrWhite, square_id: number) {
+	board: Board
+
+	constructor(color: BlackOrWhite, square_id: number, board: Board) {
 		super()
 		this.square_id = SquareID.pos_at_index(square_id)
 		this.color = color
 		this.default_background = color === BlackOrWhite.white ? '#D8ECEC' : '#1FE5DF'
+		this.board = board
 	}
 
 	public async build_clickable_square() {
@@ -52,7 +55,7 @@ export default class Square extends HTMLElement {
 	}
 
 	private handle_click() {
-		MoveController.on_square_click(this)
+		this.board.move_controller.on_square_click(this)
 	}
 
 	private piece_image(): HTMLImageElement {
@@ -81,7 +84,7 @@ export default class Square extends HTMLElement {
 
 	public piece_attached_to_square(): Piece | undefined {
 		const position: string = this.square_id as string
-		return PieceList.piece_by_position(position)
+		return this.board.piece_list.piece_by_position(position)
 	}
 
 	public add_border(): void {
@@ -142,7 +145,7 @@ export default class Square extends HTMLElement {
 	public remove_piece(): void {
 		let piece: Piece | undefined = this.piece_attached_to_square()
 		if (piece != undefined) {
-			PieceList.remove_piece_by_id(piece.title)
+			this.board.piece_list.remove_piece_by_id(piece.title)
 		} 
 	}
 }

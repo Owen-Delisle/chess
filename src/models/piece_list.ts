@@ -11,22 +11,25 @@ import piece_factory from '../components/piece/piece_factory/piece_factory'
 import default_piece_list from './default_piece_list'
 
 export default class PieceList {
-	private static number_of_queens: number = 2
+	private number_of_queens: number = 2
+	list: Piece[]
 
-	public static piece_list: Piece[] = default_piece_list
-
-	public static pieces_by_color(color: BlackOrWhite): Piece[] {
-		return this.piece_list.filter((piece) => piece.color === color)
+	constructor() {
+		this.list = default_piece_list
 	}
 
-	public static pieces_by_other_color(color: BlackOrWhite): Piece[] {
+	public pieces_by_color(color: BlackOrWhite): Piece[] {
+		return this.list.filter((piece) => piece.color === color)
+	}
+
+	public pieces_by_other_color(color: BlackOrWhite): Piece[] {
 		const other_color: BlackOrWhite = color === BlackOrWhite.white ? BlackOrWhite.black : BlackOrWhite.white
-		return this.piece_list.filter((piece) => piece.color === other_color)
+		return this.list.filter((piece) => piece.color === other_color)
 	}
 
-	public static piece_by_position(pos: string): Piece | undefined {
+	public piece_by_position(pos: string): Piece | undefined {
 		let p: Piece | undefined
-		this.piece_list.forEach((piece) => {
+		this.list.forEach((piece) => {
 			if (piece.pos === pos) {
 				p = piece
 			}
@@ -34,9 +37,9 @@ export default class PieceList {
 		return p
 	}
 
-	public static piece_by_id(id: string): Piece | undefined {
+	public piece_by_id(id: string): Piece | undefined {
 		let p: Piece | undefined
-		this.piece_list.forEach((piece) => {
+		this.list.forEach((piece) => {
 			if (piece.title == id) {
 				p = piece
 			}
@@ -44,9 +47,9 @@ export default class PieceList {
 		return p
 	}
 
-	public static list_of_pieces_by_type(type: PieceType): Piece[] {
+	public list_of_pieces_by_type(type: PieceType): Piece[] {
 		let typed_piece_list: Piece[] = []
-		this.piece_list.forEach((piece) => {
+		this.list.forEach((piece) => {
 			if (piece.type == type) {
 				typed_piece_list.push(piece)
 			}
@@ -55,26 +58,26 @@ export default class PieceList {
 		return typed_piece_list
 	}
 
-	public static remove_piece_by_id(id: string): void {
-		const index = this.piece_list.findIndex((piece) => piece.title === id)
+	public remove_piece_by_id(id: string): void {
+		const index = this.list.findIndex((piece) => piece.title === id)
 		if (index != -1) {
-			this.piece_list.splice(index, 1)
+			this.list.splice(index, 1)
 		}
 	}
 
-    public static remove_piece_by_position(pos: string) {
-        const index = this.piece_list.findIndex((piece) => piece.pos === pos)
+    public remove_piece_by_position(pos: string) {
+        const index = this.list.findIndex((piece) => piece.pos === pos)
         if (index != -1) {
-			this.piece_list.splice(index, 1)
+			this.list.splice(index, 1)
 		}
     }
 
-    public static remove_piece_by_point(point: GridPoint): void {
+    public remove_piece_by_point(point: GridPoint): void {
         const position = SquareID.pos_at_point(point)
         this.remove_piece_by_position(position)
     }
 
-	public static king_by_color(color: BlackOrWhite): King {
+	public king_by_color(color: BlackOrWhite): King {
 		switch (color) {
 			case BlackOrWhite.black:
 				return this.piece_by_id('king_b') as King
@@ -83,34 +86,34 @@ export default class PieceList {
 		}
 	}
 
-	public static clear_position_restrictions_property(): void {
+	public clear_position_restrictions_property(): void {
 		Piece.position_restrictions = []
-		PieceList.piece_list.forEach((piece) => {
+		this.list.forEach((piece) => {
 			piece.position_restrictions = []
 		})
 	}
 
-	public static swap_with_queen(piece_id: string, position: string, color: BlackOrWhite) {
+	public swap_with_queen(piece_id: string, position: string, color: BlackOrWhite) {
 		this.remove_piece_by_id(piece_id)
-		this.piece_list.push(
+		this.list.push(
 			piece_factory(`queen_${++this.number_of_queens}`, position, PieceType.queen, color)
 		)
 	}
 
-    public static any_pawns_left_in_game(): boolean {
-        return this.piece_list.some(piece => piece.type === PieceType.pawn)
+    public any_pawns_left_in_game(): boolean {
+        return this.list.some(piece => piece.type === PieceType.pawn)
     }
 
-    public static material_value_in_game(): number {
-        return this.piece_list.map(piece => piece.piece_value).reduce((acc, value) => acc + value, 0);
+    public material_value_in_game(): number {
+        return this.list.map(piece => piece.piece_value).reduce((acc, value) => acc + value, 0);
     }
 
-    public static only_same_square_color_bishops_left_in_game(): boolean {
-        if(this.piece_list.length !== 4) {
+    public only_same_square_color_bishops_left_in_game(): boolean {
+        if(this.list.length !== 4) {
             return false
         }
 
-        const bishops = this.piece_list.filter(piece => piece.type === PieceType.bishop)
+        const bishops = this.list.filter(piece => piece.type === PieceType.bishop)
         if(bishops.length !== 2) {
             return false
         }

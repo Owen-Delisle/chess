@@ -28,6 +28,7 @@ import King_B_Win_SVG from '../piece_factory/assets/king-b-win.svg'
 import King_W_Loss_SVG from '../piece_factory/assets/king-w-loss.svg'
 import King_B_Loss_SVG from '../piece_factory/assets/king-b-loss.svg'
 import Square from '../../../components/square/square'
+import Board from 'src/components/board/board'
 
 export default class King extends Piece implements Piece_Interface {
 	move_distance: number = 1
@@ -38,8 +39,8 @@ export default class King extends Piece implements Piece_Interface {
 	in_check: boolean = false
 	positions_to_be_blocked: string[] = []
 
-	constructor(title: string, pos: string, svg: string, type: PieceType, color: BlackOrWhite) {
-		super(title, type, pos, svg, color)
+	constructor(title: string, pos: string, svg: string, type: PieceType, color: BlackOrWhite, board: Board) {
+		super(title, type, pos, svg, color, board)
 		this.type = type
 		this.directions = [
 			PieceDirections.north,
@@ -84,11 +85,12 @@ export default class King extends Piece implements Piece_Interface {
 	}
 
 	public any_piece_can_move(): boolean {
-		const any_piece_has_move: boolean = PieceList.pieces_by_color(this.color).some(
-			(piece) => piece.possible_moves.length > 0,
-		)
+		// const any_piece_has_move: boolean = PieceList.pieces_by_color(this.color).some(
+		// 	(piece) => piece.possible_moves.length > 0,
+		// )
 
-		return any_piece_has_move
+		// return any_piece_has_move
+		return false
 	}
 
 	public render_legal_squares_surrounding_king(): void {
@@ -136,9 +138,9 @@ export default class King extends Piece implements Piece_Interface {
 						col: initial_col,
 					})
 					if (!attacked_positions.includes(next_pos)) {
-						if (PieceList.piece_by_position(next_pos) === undefined) {
-							attacked_positions.push(next_pos)
-						}
+						// if (PieceList.piece_by_position(next_pos) === undefined) {
+						// 	attacked_positions.push(next_pos)
+						// }
 					}
 				}
 			})
@@ -410,7 +412,7 @@ export default class King extends Piece implements Piece_Interface {
 	}
 
 	public rooks_for_king(): Rook[] {
-		const pieces = PieceList.piece_list.filter(
+		const pieces = this.board.piece_list.list.filter(
 			(rook) => rook.type === PieceType.rook && rook.color === this.color,
 		)
 
@@ -455,10 +457,11 @@ export default class King extends Piece implements Piece_Interface {
 			square_beside_king,
 			square_beside_rook,
 		)
-		const any_pieces = positions_between_king_and_rook.some(
-			(position) => PieceList.piece_by_position(position) !== undefined,
-		)
-		return !any_pieces
+		// const any_pieces = positions_between_king_and_rook.some(
+		// 	(position) => PieceList.piece_by_position(position) !== undefined,
+		// )
+		// return !any_pieces
+		return false
 	}
 
 	public kings_castle_squares_attacked(rook: Rook): boolean {
@@ -476,11 +479,12 @@ export default class King extends Piece implements Piece_Interface {
 		const first_position = SquareID.pos_at_point(first_point)
 		const second_position = SquareID.pos_at_point(second_point)
 
-		const any_piece = PieceList.pieces_by_other_color(this.color).some((piece) =>
-			piece.possible_moves.some((move) => [first_position, second_position].includes(move)),
-		)
+		// const any_piece = PieceList.pieces_by_other_color(this.color).some((piece) =>
+		// 	piece.possible_moves.some((move) => [first_position, second_position].includes(move)),
+		// )
 
-		return any_piece
+		// return any_piece
+		return false
 	}
 
 	public castle_vars_for_rook_type(rook_type: RookType): CastleVars {
