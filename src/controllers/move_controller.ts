@@ -171,10 +171,10 @@ export default class MoveController {
 	}
 
 	private static conditions_to_setup_values(clicked_square: Square): boolean {
-		return (
-			!clicked_square.is_empty() &&
-			clicked_square.piece_attached_to_square()!.color == GameController.turn
-		)
+		if(GameController.game_type === GameType.online) {
+			return (!clicked_square.is_empty() && clicked_square.piece_attached_to_square()!.color == PlayerController.player_color)
+		}
+		return (!clicked_square.is_empty() && clicked_square.piece_attached_to_square()!.color == GameController.turn)
 	}
 
 	private static clear_focused_square_visuals() {
