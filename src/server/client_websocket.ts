@@ -2,7 +2,7 @@ import { UUID } from 'crypto'
 import GameRequestMessage from './messages/game_request_message'
 import Message, { MessageType } from './messages/message'
 import GameAcceptedMessage from './messages/game_accepted_message'
-import MoveController, { MoveInitiator } from '../controllers/move_controller'
+import { MoveInitiator } from '../controllers/move_controller'
 import { Move } from '../global_types/move'
 import { BlackOrWhite, black_or_white_by_index, not_color } from '../global_types/enums/black_or_white'
 import TokenController from './controllers/token_controller'
@@ -11,7 +11,6 @@ import Square from '../components/square/square'
 import { CheckStatus } from './messages/king_check_message'
 import King from 'src/components/piece/pieces/king'
 import { GameEndType, WinOrLose } from 'src/controllers/game_controller'
-import PlayerController from './controllers/player_controller'
 import GameRequestElement from 'src/components/message/game_request'
 import WaitingElement from 'src/components/message/waiting'
 import GameDeclinedMessage from './messages/game_declined_message'
@@ -22,6 +21,8 @@ import Pawn from '../components/piece/pieces/pawn'
 import Board from '../components/board/board'
 import CheckmateElement from '../components/message/checkmate'
 import GameType from 'src/global_types/enums/game_type'
+import ActiveGamesAPI from './api/active_games_api'
+import ActiveGamesMessage from './messages/active_games_message'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -32,7 +33,7 @@ export default class ClientWebSocket {
     static web_socket: WebSocket = new WebSocket(`ws://localhost:3000?token=${this.token}`)
 
     public static open_connection(): void {
-        ClientWebSocket.web_socket.addEventListener('open', function (event) {
+        ClientWebSocket.web_socket.addEventListener('open', async function (event) {
             console.log('Client WebSocket connection established')
         })
 
@@ -44,34 +45,34 @@ export default class ClientWebSocket {
             switch (message_type) {
                 case MessageType.active_users.toString():
                     ClientWebSocket.update_active_users_list_ui(message.users)
-                break
+                    break
                 case MessageType.game_request.toString():
                     ClientWebSocket.update_request_list_ui(message.requesting_user, message.recieving_user)
-                break
+                    break
                 case MessageType.game_accepted.toString():
                     ClientWebSocket.update_current_game_ui(message.accepting_user, message.color)
-                break
+                    break
                 case MessageType.game_declined.toString():
                     ClientWebSocket.swap_waiting_message_to_declined()
-                break
+                    break
                 case MessageType.game_canceled.toString():
                     ClientWebSocket.close_game_request_message()
-                break
+                    break
                 case MessageType.move.toString():
                     ClientWebSocket.move_piece_with_server_move(message.move)
-                break
+                    break
                 case MessageType.castle_move.toString():
                     ClientWebSocket.castle_with_server_move(message.castle_move)
-                break
+                    break
                 case MessageType.king_check_status.toString():
                     ClientWebSocket.update_king_square_color_with_server(message.square, message.check_status)
-                break
+                    break
                 case MessageType.checkmate.toString():
-                    ClientWebSocket.checkmate_from_server(message.losing_king_id, message.winning_king_id)
-                break
+                    ClientWebSocket.checkmate_from_server(message.sender_id, message.recipient_id, message.losing_king_id, message.winning_king_id)
+                    break
                 case MessageType.pawn_promotion.toString():
                     ClientWebSocket.promote_pawn_from_server(message.pawn_id)
-                break
+                    break
             }
         })
     }
@@ -119,20 +120,9 @@ export default class ClientWebSocket {
                 list_item.textContent = username
 
                 list_item.addEventListener('click', async function () {
-                    ClientWebSocket.send_message_to_server(new GameRequestMessage(await ClientWebSocket.client_user_id, typed_user_id))
-
-                    const message_container_element: HTMLElement | null = document.getElementById('message_container')
-                    const waiting_element = new WaitingElement(
-                        () => {
-                            ClientWebSocket.send_message_to_server(new GameCanceledMessage(typed_user_id))
-                        }
-                    )
-
-                    if (!message_container_element || !waiting_element) {
-                        throw new Error("ELEMENT NOT FOUND")
+                    if (ClientWebSocket.message_channel_open()) {
+                        ClientWebSocket.request_game(typed_user_id)
                     }
-
-                    message_container_element.appendChild(waiting_element)
                 })
 
                 user_list_element.appendChild(list_item)
@@ -140,7 +130,24 @@ export default class ClientWebSocket {
         })
     }
 
-    private static update_request_list_ui(user_id_of_requester: UUID, this_client_user_id: UUID) {
+    private static async request_game(recieving_user: UUID) {
+        ClientWebSocket.send_message_to_server(new GameRequestMessage(await ClientWebSocket.client_user_id, recieving_user))
+
+        const message_container_element: HTMLElement | null = document.getElementById('message_container')
+        const waiting_element = new WaitingElement(
+            () => {
+                ClientWebSocket.send_message_to_server(new GameCanceledMessage(recieving_user))
+            }
+        )
+
+        if (!message_container_element || !waiting_element) {
+            throw new Error("ELEMENT NOT FOUND")
+        }
+
+        message_container_element.appendChild(waiting_element)
+    }
+
+    private static async update_request_list_ui(user_id_of_requester: UUID, this_client_user_id: UUID) {
         const player_piece_color: BlackOrWhite = black_or_white_by_index(Math.round(Math.random()))
 
         const message_container_element: HTMLElement | null = document.getElementById('message_container')
@@ -148,20 +155,27 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        //TODO Change to is in game variable
-        if (PlayerController.opponent_user_id === "none") {
-            const game_request_element: HTMLElement = new GameRequestElement(
-                user_id_of_requester,
-    
-                () => {
-                    ClientWebSocket.send_message_to_server(new GameAcceptedMessage(this_client_user_id, user_id_of_requester, not_color(player_piece_color))),
-                    ClientWebSocket.update_current_game_ui(user_id_of_requester, player_piece_color)
-                },
-                () => {
-                    ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id_of_requester))
-                }
-            )
-            message_container_element.appendChild(game_request_element)
+        //If not currently in a game and does not have request
+        const game_request_element: HTMLElement = new GameRequestElement(
+            user_id_of_requester,
+            () => {
+                ClientWebSocket.accept_game_button_functions(this_client_user_id, user_id_of_requester, player_piece_color)
+            },
+            () => {
+                ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id_of_requester))
+            }
+        )
+        message_container_element.appendChild(game_request_element)
+    }
+
+    private static async accept_game_button_functions(client_id: UUID, sender_id: UUID, player_piece_color: BlackOrWhite) {
+        await ActiveGamesAPI.post_active_game(client_id, sender_id)
+        const active_games: { id: UUID, user1: UUID, user2: UUID }[] | undefined = await ActiveGamesAPI.active_games()
+        ClientWebSocket.send_message_to_server(new GameAcceptedMessage(client_id, sender_id, not_color(player_piece_color))),
+            ClientWebSocket.update_current_game_ui(sender_id, player_piece_color)
+
+        if (active_games) {
+            ClientWebSocket.send_message_to_server(new ActiveGamesMessage(active_games))
         }
     }
 
@@ -194,7 +208,8 @@ export default class ClientWebSocket {
             throw new Error("BOARD CONTAINER ELEMENT NOT FOUND")
         }
 
-        const board: Board = new Board(GameType.online, color, user_id_of_opponent)
+        const client_id: UUID = await ClientWebSocket.client_user_id
+        const board: Board = new Board(GameType.online, color, client_id, user_id_of_opponent)
         this.online_game_board = board
 
         board_container_element.innerHTML = ''
@@ -246,7 +261,7 @@ export default class ClientWebSocket {
         }
     }
 
-    private static checkmate_from_server(losing_king_id: string, winning_king_id: string) {
+    private static async checkmate_from_server(sender_id: UUID, recipient_id: UUID, losing_king_id: string, winning_king_id: string) {
         const losing_king: King | undefined = this.online_game_board.piece_list.piece_by_id(losing_king_id) as King
         const winning_king: King | undefined = this.online_game_board.piece_list.piece_by_id(winning_king_id) as King
 
@@ -266,16 +281,37 @@ export default class ClientWebSocket {
         setTimeout(() => {
             message_container_element.appendChild(checkmate_window)
         }, 1000);
+
+        ActiveGamesAPI.delete_active_game(sender_id, recipient_id)
+        const active_games: { id: UUID, user1: UUID, user2: UUID }[] | undefined = await ActiveGamesAPI.active_games()
+
+        if (!active_games) {
+            throw new Error("Active Games in DB threw error")
+        }
+
+        ClientWebSocket.send_message_to_server(new ActiveGamesMessage(active_games))
     }
 
     private static promote_pawn_from_server(pawn_id: string) {
         const pawn_to_promote: Pawn | undefined = this.online_game_board.piece_list.piece_by_id(pawn_id) as Pawn
 
-        if(!pawn_to_promote) {
+        if (!pawn_to_promote) {
             throw new Error("The Pawn to Promote is undefined")
         }
 
         this.online_game_board.piece_list.swap_with_queen(pawn_to_promote.title, pawn_to_promote.pos, pawn_to_promote.color)
         this.online_game_board.redraw()
+    }
+
+    private static message_channel_open(): boolean {
+        const message_container = document.getElementById("message_container")
+        if (!message_container) {
+            throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
+        }
+
+        if (message_container.firstElementChild) {
+            return false
+        }
+        return true
     }
 }

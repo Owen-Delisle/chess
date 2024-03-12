@@ -6,12 +6,13 @@ import jwt from 'jsonwebtoken'
 import path from 'path'
 require('dotenv').config()
 import bcrypt from 'bcrypt'
+import { UUID } from 'crypto'
 
 const http_server = express()
 const PORT = 3000
 const secretKey = process.env.JWT_SECRET
 
-const dbPromise = open({
+const db_promise = open({
     filename: './database/database.db',
     driver: sqlite3.Database
 })
@@ -20,9 +21,9 @@ http_server.use((req, res, next) => {
     // Content Security Policy (CSP) header
     res.setHeader(
         'Content-Security-Policy',
-        `default-src 'self'; 
-        script-src 'self' https://trusted-scripts.com; 
-        style-src 'self' https://trusted-styles.com;`)
+        `default-src 'self' 
+        script-src 'self' https://trusted-scripts.com 
+        style-src 'self' https://trusted-styles.com`)
 
     // X-XSS-Protection header
     res.setHeader('X-XSS-Protection', '1 mode=block')
@@ -72,7 +73,7 @@ http_server.post('/signup', async (req, res) => {
     const { username, email, password } = req.body
     const id = uuidv4()
     try {
-        const db = await dbPromise
+        const db = await db_promise
         const saltRounds = 10
         const salt = await bcrypt.genSalt(saltRounds)
 
@@ -91,7 +92,7 @@ http_server.post('/login', async (req, res) => {
     const { username, password } = req.body
     try {
         // Query database to check if user exists
-        const db = await dbPromise
+        const db = await db_promise
         const user = await db.get('SELECT * FROM users WHERE username = ?', [username])
 
         if (user) {
@@ -123,7 +124,7 @@ http_server.post('/username', async (req, res) => {
     const { user_id } = req.body
     try {
         // Query database to check if user exists
-        const db = await dbPromise
+        const db = await db_promise
         const username = await db.get('SELECT username FROM users WHERE id = ?', [user_id])
 
         if (username) {
@@ -179,13 +180,57 @@ http_server.post('/userID_from_token', async (req, res) => {
     }
 })
 
-http_server.get('/users', async (req, res) => {
+http_server.post('/post_active_game', async(req, res) => {
+    try {
+        const db = await db_promise
+
+        const active_game_id: UUID = uuidv4() as UUID
+        const user1_id: UUID = req.body.user1 as UUID
+        const user2_id: UUID = req.body.user2 as UUID
+
+        await db.run('INSERT INTO active_games (id, user1, user2) VALUES (?, ?, ?)', [active_game_id, user1_id, user2_id])
+        res.status(200).json({ message: 'Active game posted successfully' })
+
+    } catch(error) {
+        res.status(500).json({ error: 'Internal server error' })
+        console.log('Error posting active game:', error)
+    }
+})
+
+http_server.post('/delete_active_game', async (req, res) => {
+    try {
+        const db = await db_promise
+
+        const user1: UUID = req.body.user1 as UUID
+        const user2: UUID = req.body.user2 as UUID
+
+        db.run('DELETE FROM active_games WHERE (user1 = ? OR user1 = ?) AND (user2 = ? OR user2 = ?)', [user1, user2, user1, user2])
+
+        // Send a success response back to the client
+        res.status(200).json({ message: 'Active game deleted successfully' })
+    } catch (error) {
+        console.log('Error deleting active game:', error)
+        // Send an error response back to the client
+        res.status(500).json({ error: 'Internal server error' })
+    }
+})
+
+http_server.get('/users', async(req, res) => {
     // Query database to check if user exists
-    const db = await dbPromise
+    const db = await db_promise
     const users = await db.all('SELECT * FROM users')
 
     if (users) {
         res.json({ users: users})
+    }
+})
+
+http_server.get('/active_games', async(req, res) => {
+    const db = await db_promise
+    const active_games = await db.all('SELECT * FROM active_games')
+
+    if(active_games) {
+        res.json({ active_games })
     }
 })
 

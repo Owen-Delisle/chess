@@ -63,7 +63,7 @@ export class GameController {
 			winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
 
 			if(this.game_type === GameType.online) {
-				ClientWebSocket.send_message_to_server(new CheckmateMessage(PlayerController.opponent_user_id as UUID, king.title, winning_king.title))
+				ClientWebSocket.send_message_to_server(new CheckmateMessage(PlayerController.player_id, PlayerController.opponent_user_id as UUID, king.title, winning_king.title))
 
 				//TODO MAKE FUNCTION
 				const message_container_element: HTMLElement | null = document.getElementById('message_container')

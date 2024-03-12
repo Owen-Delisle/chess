@@ -1,5 +1,4 @@
 import MessageStyles from "./styles"
-import PlayerController from "src/server/controllers/player_controller"
 
 export default class CheckmateElement extends HTMLElement {
     constructor() {

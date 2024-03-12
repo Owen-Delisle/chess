@@ -4,7 +4,6 @@ import { http_server, PORT } from './http_server.ts'
 import jwt, { VerifyErrors } from 'jsonwebtoken'
 import { parse } from 'url'
 import { UUID } from 'crypto'
-import ActiveUsersMessage from './src/server/messages/active_users_message.ts'
 import { MessageType } from './src/server/messages/message.ts'
 import { Move } from './src/global_types/move.ts'
 import { CastleMove } from './src/global_types/castle_move.ts'
@@ -21,33 +20,12 @@ const active_clients: { [user_id: UUID]: WebSocket } = {};
 
 wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOptions & { url?: string }) {
     const client_connection: WebSocket = ws as WebSocket
-    
-    const query = req.url ? parse(req.url, true).query : {}
-    const token = typeof query === 'object' && 'token' in query ? query['token'] as string : undefined
 
-    if (!token) {
-        console.log('No token provided. Connection rejected.')
-        ws.close()
-        return
-    }
-
-    try {
-        if(!secretKey) {
-            throw new Error("Secret Key was undefined")
-        }
-        const decoded = jwt.verify(token, secretKey) as { [key: string]: any }
-        active_clients[decoded.userId] = client_connection
-        send_active_users_to_clients()
-
-    } catch (error) {
-        console.error('JWT token verification failed. Connection rejected.', error as VerifyErrors)
-        ws.close()
-    }
-
-    console.log('Client connected')
+    update_active_users_table(client_connection, req, [])
+    send_active_users_to_clients([])
 
     // // Handle messages from clients
-    ws.on('message', function incoming(message) {
+    client_connection.on('message', function incoming(message) {
         const data = JSON.parse(message.toString())
 
         switch(data.message_type) {
@@ -73,10 +51,13 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
                 send_check_status_to_recipient(data.recipient_id, data.square, data.check_status)
             break
             case MessageType.checkmate:
-                send_checkmate_to_recipient(data.recipient_id, data.losing_king_id, data.winning_king_id)
+                send_checkmate_to_recipient(data.sender_id, data.recipient_id, data.losing_king_id, data.winning_king_id)
             break
             case MessageType.pawn_promotion:
                 send_pawn_promotion_to_recipient(data.recipient_id, data.pawn_id)
+            break
+            case MessageType.active_games:
+                send_active_users_to_clients(data.active_games)
             break
         }
     })
@@ -87,16 +68,47 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
                 delete active_clients[user_id]
             }
         })
-        send_active_users_to_clients()
+        send_active_users_to_clients([])
     })
 })
 
-function send_active_users_to_clients() {
-    const message: ActiveUsersMessage = new ActiveUsersMessage(Object.keys(active_clients) as UUID[])
+function update_active_users_table(client_connection: WebSocket, req: WebSocket.ServerOptions & { url?: string }, active_games: {id: UUID, user1: UUID, user2: UUID}[] | undefined) {
+    const query = req.url ? parse(req.url, true).query : {}
+    const token = typeof query === 'object' && 'token' in query ? query['token'] as string : undefined
+
+    if (!token) {
+        console.log('No token provided. Connection rejected.')
+        client_connection.close()
+        return
+    }
+
+    try {
+        if(!secretKey) {
+            throw new Error("Secret Key was undefined")
+        }
+        const decoded = jwt.verify(token, secretKey) as { [key: string]: any }
+        active_clients[decoded.userId] = client_connection
+
+    } catch (error) {
+        console.error('JWT token verification failed. Connection rejected.', error as VerifyErrors)
+        client_connection.close()
+    }
+
+    console.log('Client connected')
+}
+
+function send_active_users_to_clients(active_games: {id: UUID, user1: UUID, user2: UUID}[] | undefined) {
+    if(!active_games) {
+        throw new Error('active games undefined')
+    }
+
+    const filtered_users = Object.keys(active_clients).filter(key => {
+        return !active_games.some(game => key === game.user1 || key === game.user2)
+    })    
 
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(message.json_string())
+            client.send(JSON.stringify({ type: MessageType.active_users.toString(), users: filtered_users }))
         }
     })
 }
@@ -151,8 +163,8 @@ function send_check_status_to_recipient(recipient_id: UUID, square: Square, chec
     active_clients[recipient_id].send(json_data)
 }
 
-function send_checkmate_to_recipient(recipient_id: UUID, losing_king_id: string, winning_king_id: string) {
-    const data = {type: MessageType.checkmate.toString(), losing_king_id, winning_king_id}
+function send_checkmate_to_recipient(sender_id: UUID, recipient_id: UUID, losing_king_id: string, winning_king_id: string) {
+    const data = {type: MessageType.checkmate.toString(), sender_id, recipient_id, losing_king_id, winning_king_id}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)
