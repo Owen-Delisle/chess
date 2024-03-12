@@ -26,34 +26,18 @@ export default class CheckmateElement extends HTMLElement {
         title.textContent = `Checkmate`
         title.classList.add('title')
 
-        const cancel_button = document.createElement('button')
-        cancel_button.textContent = 'Close'
-        cancel_button.onclick = () => {
-            this.remove_children_from_message_container()
-            
-            //TODO: MAKE FUNCTION
-            const board_container = document.getElementById("board_element_container")
-            if(!board_container) {
-                throw new Error("Board Container Element not Found")
-            }
-            board_container.innerHTML = ''
-
-            const message_container = document.getElementById("current_game")
-            if(!message_container) {
-                throw new Error('Message Container Element not Found')
-            }
-            message_container.innerHTML = ''
-
-            PlayerController.opponent_user_id = "none"
-            //END TODO
+        const close_button = document.createElement('button')
+        close_button.textContent = 'Close'
+        close_button.onclick = () => {            
+            window.location.reload()
         }
 
-        cancel_button.classList.add('button', 'cancel')
+        close_button.classList.add('button', 'cancel')
 
         // Append elements to wrapper
         wrapper.appendChild(header)
         wrapper.appendChild(title)
-        wrapper.appendChild(cancel_button)
+        wrapper.appendChild(close_button)
 
         wrapper.className = 'request_message'
 
@@ -61,19 +45,6 @@ export default class CheckmateElement extends HTMLElement {
 
         // Append wrapper to shadow DOM
         this.shadowRoot?.appendChild(wrapper)
-    }
-
-    //MAKE GLOBAL FUNCTION
-    private remove_children_from_message_container(): void {
-        const message_container = document.getElementById("message_container")
-
-        if(!message_container) {
-            throw new Error("MESSAGE CONTAINER NOT FOUND")
-        }
-
-        while(message_container?.firstChild) {
-            message_container.removeChild(message_container.firstChild)
-        }
     }
 }
 

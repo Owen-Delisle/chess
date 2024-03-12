@@ -141,15 +141,19 @@ export default class SquareID {
 	]
 
 	private static board_positions(): string[] {
-		if(GameController.game_type === GameType.offline) {
-			return GameController.turn === BlackOrWhite.white
-			? SquareID.white_board_positions
-			: SquareID.black_board_positions
-		} else {
-			return PlayerController.player_color === BlackOrWhite.white
-			? SquareID.white_board_positions
-			: SquareID.black_board_positions
-		}
+		// if(GameController.game_type === GameType.offline) {
+		// 	return GameController.turn === BlackOrWhite.white
+		// 	? SquareID.white_board_positions
+		// 	: SquareID.black_board_positions
+		// } else {
+		// 	return PlayerController.player_color === BlackOrWhite.white
+		// 	? SquareID.white_board_positions
+		// 	: SquareID.black_board_positions
+		// }
+
+		return PlayerController.player_color === BlackOrWhite.white
+		? SquareID.white_board_positions
+		: SquareID.black_board_positions
 	}
 
 	public static pos_at_index(index: number): string {

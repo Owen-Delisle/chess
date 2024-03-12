@@ -128,19 +128,19 @@ export default class Pawn extends Piece implements Piece_Interface {
 			return false
 		}
 
-		if(GameController.move_list.last_move() === undefined) {
-			throw(Error("Move list is empty and not functioning properly."))
-		}
+		// if(GameController.move_list.last_move() === undefined) {
+		// 	throw(Error("Move list is empty and not functioning properly."))
+		// }
 
-		const last_move: Move = GameController.move_list.last_move()!
+		// const last_move: Move = GameController.move_list.last_move()!
 
-		if(piece_at_attack_point.type === PieceType.pawn) {
-			if(last_move.piece === piece_at_attack_point) {
-				if(distance_between_aligned_positions(last_move.from, last_move.to) === this.maximum_move_distance) {
-					return true
-				}
-			}
-		}
+		// if(piece_at_attack_point.type === PieceType.pawn) {
+		// 	if(last_move.piece === piece_at_attack_point) {
+		// 		if(distance_between_aligned_positions(last_move.from, last_move.to) === this.maximum_move_distance) {
+		// 			return true
+		// 		}
+		// 	}
+		// }
 		return false
 	}
 
@@ -172,9 +172,9 @@ export default class Pawn extends Piece implements Piece_Interface {
 	private make_queen() {
 		// PieceList.swap_with_queen(this.title, this.pos, this.color)
 		
-		if(GameController.game_type === GameType.online) {
-			ClientWebSocket.send_message_to_server(new PawnPromotionMessage(PlayerController.opponent_user_id as UUID, this.title))
-		}
+		// if(GameController.game_type === GameType.online) {
+		// 	ClientWebSocket.send_message_to_server(new PawnPromotionMessage(PlayerController.opponent_user_id as UUID, this.title))
+		// }
 	}
 
 	private should_en_passant(square_id: string): boolean {

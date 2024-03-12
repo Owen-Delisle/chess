@@ -6,7 +6,6 @@ import { are_coors_within_board_bounds } from '../../utils/bounds'
 import SquareID from '../square/square_id'
 import { PieceDirections, piece_direction_modifier } from './piece_directions'
 import { square_is_empty } from '../../utils/grid'
-import Board from '../board/board'
 
 export default abstract class Piece {
 	title: string

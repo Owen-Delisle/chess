@@ -307,13 +307,11 @@ export default class King extends Piece implements Piece_Interface {
 
 	private king_in_check(): void {
 		this.in_check = true
-		const current_king_square: Square | undefined = SquareGrid.square_by_board_position(this.pos)
 		SquareGrid.square_by_board_position(this.pos)?.add_check_border()
 	}
 
 	private king_out_of_check(): void {
 		this.in_check = false
-		const current_king_square: Square | undefined = SquareGrid.square_by_board_position(this.pos)
 		SquareGrid.square_by_board_position(this.pos)?.remove_check_border()
 	}
 

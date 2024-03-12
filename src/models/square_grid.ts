@@ -2,9 +2,7 @@ import type Square from '../components/square/square'
 import type { GridPoint } from '../global_types/grid_point'
 import type Piece from '../components/piece/piece'
 import { are_coors_within_board_bounds } from '../utils/bounds'
-import { GameController } from '../controllers/game_controller'
 import { BlackOrWhite } from '../global_types/enums/black_or_white'
-import GameType from '../global_types/enums/game_type'
 import PlayerController from '../server/controllers/player_controller'
 
 export default class SquareGrid {
@@ -55,7 +53,10 @@ export default class SquareGrid {
 	}
 
 	public static point_at_board_position(s: string): GridPoint {
-		const color: BlackOrWhite = GameController.game_type === GameType.offline ? GameController.turn : PlayerController.player_color
+		//TODO Fix for offline
+		// const color: BlackOrWhite = GameController.game_type === GameType.offline ? GameController.turn : PlayerController.player_color
+
+		const color: BlackOrWhite = PlayerController.player_color
 		if (color === BlackOrWhite.white) {
 			return {
 				row: 8 - parseInt(`${s[1]}`),

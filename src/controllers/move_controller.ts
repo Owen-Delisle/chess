@@ -23,13 +23,13 @@ import PieceList from 'src/models/piece_list'
 import { GameController } from './game_controller'
 
 export default class MoveController {
-	piece_list: PieceList
 	game_controller: GameController
+	piece_list: PieceList
 	private focused_square: Square | undefined
 
 	constructor(game_controller: GameController) {
-		this.piece_list = game_controller.piece_list
 		this.game_controller = game_controller
+		this.piece_list = game_controller.piece_list
 	}
 
 	public on_square_click(clicked_square: Square): void {

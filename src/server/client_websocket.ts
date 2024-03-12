@@ -11,10 +11,8 @@ import Square from '../components/square/square'
 import { CheckStatus } from './messages/king_check_message'
 import King from 'src/components/piece/pieces/king'
 import { GameEndType, WinOrLose } from 'src/controllers/game_controller'
-import PieceList from 'src/models/piece_list'
 import PlayerController from './controllers/player_controller'
 import GameRequestElement from 'src/components/message/game_request'
-import GameRequestState from 'src/global_types/enums/game_request_state'
 import WaitingElement from 'src/components/message/waiting'
 import GameDeclinedMessage from './messages/game_declined_message'
 import GameRequestDeclined from '../components/message/game_request_declined'
@@ -28,7 +26,6 @@ import GameType from 'src/global_types/enums/game_type'
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
     static client_user_id: Promise<UUID> = ClientWebSocket.user_id_of_client()
-    static game_request_state: GameRequestState = GameRequestState.dormant
     static online_game_board: Board
 
     //TODO:: UPDATE WHEN DEPLOYED
