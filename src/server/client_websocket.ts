@@ -239,7 +239,6 @@ export default class ClientWebSocket {
 
         message_container.innerHTML = ''
         message_container.appendChild(game_declined_message)
-
     }
 
     private static close_game_request_message() {

@@ -53,7 +53,12 @@ export default class GameRequestElement extends HTMLElement {
         declineButton.textContent = 'Decline'
         declineButton.onclick = () => {
             this.decline_game_function()
-            this.remove_children_from_message_container()
+
+            const message_container = document.getElementById("message_container")
+            if(!message_container) {
+                throw new Error("MESSAGE CONTAINER NOT FOUND")
+            }
+            message_container.removeChild(this)
         }
 
         declineButton.classList.add('button', 'decline')
