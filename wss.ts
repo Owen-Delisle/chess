@@ -10,6 +10,7 @@ import { CastleMove } from './src/global_types/castle_move.ts'
 import { CheckStatus } from './src/server/messages/king_check_message.ts'
 import Square from './src/components/square/square.ts'
 import { BlackOrWhite } from './src/global_types/enums/black_or_white.ts'
+import ActiveGame from './src/server/types/active_game_type.ts'
 require('dotenv').config()
 
 const server = http.createServer(http_server)
@@ -97,7 +98,7 @@ function update_active_users_table(client_connection: WebSocket, req: WebSocket.
     console.log('Client connected')
 }
 
-function send_active_users_to_clients(active_games: {id: UUID, user1: UUID, user2: UUID}[] | undefined) {
+function send_active_users_to_clients(active_games: ActiveGame[] | undefined) {
     if(!active_games) {
         throw new Error('active games undefined')
     }

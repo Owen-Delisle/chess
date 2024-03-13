@@ -1,7 +1,8 @@
 import { UUID } from "crypto"
+import ActiveGame from "../types/active_game_type"
 
 export default class ActiveGamesAPI {
-    public static async active_games(): Promise<{ id: UUID, user1: UUID, user2: UUID }[] | undefined> {
+    public static async active_games(): Promise<ActiveGame[] | undefined> {
         try {
             const response = await fetch('/active_games', {
                 method: 'GET',

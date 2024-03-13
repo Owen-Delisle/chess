@@ -23,11 +23,13 @@ import CheckmateElement from '../components/message/checkmate'
 import GameType from 'src/global_types/enums/game_type'
 import ActiveGamesAPI from './api/active_games_api'
 import ActiveGamesMessage from './messages/active_games_message'
+import ActiveGame from './types/active_game_type'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
     static client_user_id: Promise<UUID> = ClientWebSocket.user_id_of_client()
     static online_game_board: Board
+    static requested_games_from: UUID[] = []
 
     //TODO:: UPDATE WHEN DEPLOYED
     static web_socket: WebSocket = new WebSocket(`ws://localhost:3000?token=${this.token}`)
@@ -148,8 +150,6 @@ export default class ClientWebSocket {
     }
 
     private static async update_request_list_ui(user_id_of_requester: UUID, this_client_user_id: UUID) {
-        const player_piece_color: BlackOrWhite = black_or_white_by_index(Math.round(Math.random()))
-
         const message_container_element: HTMLElement | null = document.getElementById('message_container')
         if (!message_container_element) {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
@@ -159,26 +159,39 @@ export default class ClientWebSocket {
         const game_request_element: HTMLElement = new GameRequestElement(
             user_id_of_requester,
             () => {
-                ClientWebSocket.accept_game_button_functions(this_client_user_id, user_id_of_requester, player_piece_color)
+                ClientWebSocket.accept_game_button_functions(
+                    this_client_user_id, user_id_of_requester, 
+                    black_or_white_by_index(Math.round(Math.random()))
+                    )
             },
             () => {
                 ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id_of_requester))
             }
         )
+        ClientWebSocket.requested_games_from.push(user_id_of_requester)
         message_container_element.appendChild(game_request_element)
     }
 
     private static async accept_game_button_functions(client_id: UUID, sender_id: UUID, player_piece_color: BlackOrWhite) {
         await ActiveGamesAPI.post_active_game(client_id, sender_id)
-        const active_games: { id: UUID, user1: UUID, user2: UUID }[] | undefined = await ActiveGamesAPI.active_games()
+
+        const active_games: ActiveGame[] | undefined = await ActiveGamesAPI.active_games()
         ClientWebSocket.send_message_to_server(new GameAcceptedMessage(client_id, sender_id, not_color(player_piece_color))),
-            ClientWebSocket.update_current_game_ui(sender_id, player_piece_color)
+        ClientWebSocket.update_current_game_ui(sender_id, player_piece_color)
+
+        ClientWebSocket.requested_games_from.forEach(user_id => {
+            if(user_id !== sender_id) {
+                ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id))
+            }
+        })
+        ClientWebSocket.requested_games_from = []
 
         if (active_games) {
             ClientWebSocket.send_message_to_server(new ActiveGamesMessage(active_games))
         }
     }
 
+    // TODO Refactor
     private static async update_current_game_ui(user_id_of_opponent: UUID, color: BlackOrWhite) {
         const message_container = document.getElementById("message_container")
         if (!message_container) {
@@ -283,7 +296,7 @@ export default class ClientWebSocket {
         }, 1000);
 
         ActiveGamesAPI.delete_active_game(sender_id, recipient_id)
-        const active_games: { id: UUID, user1: UUID, user2: UUID }[] | undefined = await ActiveGamesAPI.active_games()
+        const active_games: ActiveGame[] | undefined = await ActiveGamesAPI.active_games()
 
         if (!active_games) {
             throw new Error("Active Games in DB threw error")
