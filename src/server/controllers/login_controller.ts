@@ -40,10 +40,13 @@ export default class LoginController {
                         throw new Error('Failed to login')
                     }
 
-                    const { token } = await response.json()
+                    const token_from_db = await TokenController.retrieve_token_from_db_by_username(form_data.username)
+                    if(!token_from_db) {
+                        throw new Error('Bad token from DB')
+                    }
 
-                    // Store token in local storage
-                    TokenController.add_token_to_storage(token)
+                    console.log(token_from_db)
+                    TokenController.add_token_to_storage(token_from_db)
 
                     // Redirect user to dashboard or another page
                     // window.location.href = '/dashboard'

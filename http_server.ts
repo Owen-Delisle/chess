@@ -10,7 +10,7 @@ import { UUID } from 'crypto'
 
 const http_server = express()
 const PORT = 3000
-const secretKey = process.env.JWT_SECRET
+const secret_key = process.env.JWT_SECRET
 
 const db_promise = open({
     filename: './database/database.db',
@@ -91,29 +91,34 @@ http_server.post('/signup', async (req, res) => {
 http_server.post('/login', async (req, res) => {
     const { username, password } = req.body
     try {
-        // Query database to check if user exists
+
         const db = await db_promise
         const user = await db.get('SELECT * FROM users WHERE username = ?', [username])
 
-        if (user) {
-            const passwordMatch = await bcrypt.compare(password, user.password)
-            if (passwordMatch) {
-                if (secretKey !== undefined) {
-                    const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '24h' })
-                    if (jwt.verify(token, secretKey)) {
-                        res.json({ token })
-                    } else {
-                        throw new Error("Could not verify JWT Token")
-                    }
-                } else {
-                    throw new Error("Secret Key was undefined")
-                }
-            } else {
-                res.status(401).send('Invalid Password')
-            }
-        } else {
-            res.status(401).send('Invalid Username')
+        if(!user) {
+            res.status(401).send('Invalid username')
         }
+
+        const password_match = await bcrypt.compare(password, user.password)
+        if(!password_match) {
+            res.status(401).send('Invalid Password')
+        }
+
+        if(!secret_key) {
+            throw new Error("Secret Key was undefined")
+        }
+        
+        const token = jwt.sign({ userId: user.id }, secret_key, { expiresIn: '24h' })
+
+        console.log('VERIFYING')
+        jwt.verify(token, secret_key)
+        console.log('DONE VERIFYING')
+
+        const active_token_id = uuidv4()
+        await db.run('INSERT INTO active_tokens (id, user_id, token) VALUES (?, ?, ?)', [active_token_id, user.id, token])
+    
+        res.status(200).json({ message: 'active_token stored successfully' })
+
     } catch (error) {
         console.error('Error logging in user:', error)
         res.status(500).send('Error logging in user')
@@ -139,24 +144,35 @@ http_server.post('/username', async (req, res) => {
 })
 
 http_server.post('/verify_jwt', async (req, res) => {
-    if (!secretKey) {
+    if (!secret_key) {
         throw new Error("JWT Environment variable is null")
     }
     try {
         const token = req.body.token
-        jwt.verify(token, secretKey) as { [key: string]: any }
+        jwt.verify(token, secret_key) as { [key: string]: any }
         res.json({ success: true })
+
+        // STEP 2. VALIDATE TOKEN
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
             // TODO: HANDLE EXPIRED TOKEN
+            // DELETE BROWSER TOKEN
+            // DELETE DB TOKEN
+            // ROUTE TO LOGIN PAGE
             console.log("EXPIRED TOKEN")
             res.json({ success: false })
         } else if (error instanceof jwt.JsonWebTokenError) {
             // TODO: HANDLE INVALID TOKEN
+            // DELETE BROWSER TOKEN
+            // DELETE DB TOKEN
+            // ROUTE TO LOGIN PAGE
             console.log("INVALID TOKEN")
             res.json({ success: false })
         } else {
             // TODO: HANDLE ALL OTHER CASES
+            // DELETE BROWSER TOKEN
+            // DELETE DB TOKEN
+            // ROUTE TO LOGIN PAGE
             console.log("DEFAULT TOKEN ERROR")
             res.json({ success: false })
         }
@@ -164,12 +180,12 @@ http_server.post('/verify_jwt', async (req, res) => {
 })
 
 http_server.post('/userID_from_token', async (req, res) => {
-    if (!secretKey) {
+    if (!secret_key) {
         throw new Error("JWT Environment variable is null")
     }
     try {
         const token: string = req.body.token
-        const decoded: any = jwt.verify(token, secretKey)
+        const decoded: any = jwt.verify(token, secret_key)
         if (decoded && typeof decoded === 'object' && decoded.hasOwnProperty('userId')) {
             res.json({ userId: decoded.userId }) 
         }
@@ -231,6 +247,24 @@ http_server.get('/active_games', async(req, res) => {
 
     if(active_games) {
         res.json({ active_games })
+    }
+})
+
+http_server.post('/active_token', async(req, res) => {
+    const db = await db_promise
+    const username: string = req.body.username
+
+    console.log('USERNAME:', username)
+
+    const user_id = await db.get('SELECT id FROM users WHERE username = ?', [username])
+
+    console.log('USER ID:', user_id)
+    console.log("FETCHING ACTIVE TOKEN")
+    const active_token = await db.get('SELECT * FROM active_tokens WHERE user_id = ?', [user_id.id])
+    console.log("ACTIVE_TOKEN", active_token)
+
+    if(active_token) {
+        res.json({ active_token })
     }
 })
 

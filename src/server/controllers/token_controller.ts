@@ -9,21 +9,44 @@ export default class TokenController {
     }
 
     static async add_token_to_storage(token: string): Promise<void> {
-    try {
-        const is_valid_token: boolean = await TokenController.verify_jwt_token(token)
-        if (is_valid_token) {
-            localStorage.setItem(this.jwt_token_id, token)
+        try {
+            const is_valid_token: boolean = await TokenController.verify_jwt_token(token)
+            if (is_valid_token) {
+                localStorage.setItem(this.jwt_token_id, token)
+            }
+        } catch (error: any) {
+            // Handle verification error
+            console.error('Verification error:', error.message)
+            // Optionally rethrow the error to propagate it to the caller
+            throw error
         }
-    } catch (error: any) {
-        // Handle verification error
-        console.error('Verification error:', error.message)
-        // Optionally rethrow the error to propagate it to the caller
-        throw error
     }
-}
+
+    static async retrieve_token_from_db_by_username(username: string): Promise<string | null> {
+        console.log("RETREIVING TOKEN")
+        try {
+            const response = await fetch('/active_token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: username }),
+            })
+            if(response.ok) {
+                const data = await response.json()
+                console.log("YOOHOO", data.active_token.token)
+                return data.active_token.token
+            } else {
+                throw new Error('Bad response from /active_token')
+            }
+        } catch(error) {
+            console.error('Error:', error)
+            return null
+        }
+    }
 
     static async userID_from_token(token: string): Promise<UUID | null> {
-        const token_data = {token: token}
+        const token_data = { token: token }
         console.log(token_data)
         try {
             const response = await fetch('/userID_from_token', {
@@ -45,7 +68,6 @@ export default class TokenController {
         }
     }
 
-    //TODO Check if this is being used
     static async verify_jwt_token(token: string): Promise<boolean> {
         try {
             const response = await fetch('/verify_jwt', {

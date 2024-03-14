@@ -37,6 +37,9 @@ export default class ClientWebSocket {
     public static open_connection(): void {
         ClientWebSocket.web_socket.addEventListener('open', async function (event) {
             console.log('Client WebSocket connection established')
+            // STEP 1. VALIDATE BROWSER TOKEN
+            // STEP 2. UPDATE DB TOKEN
+            // STEP 3. STORE NEW DB TOKEN IN BROWSER
         })
 
         ClientWebSocket.web_socket.addEventListener('message', function (event) {

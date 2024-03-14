@@ -34,8 +34,12 @@ class LoginController {
           if (!response.ok) {
             throw new Error("Failed to login");
           }
-          const { token } = await response.json();
-          TokenController.add_token_to_storage(token);
+          const token_from_db = await TokenController.retrieve_token_from_db_by_username(form_data.username);
+          if (!token_from_db) {
+            throw new Error("Bad token from DB");
+          }
+          console.log(token_from_db);
+          TokenController.add_token_to_storage(token_from_db);
         } catch (error) {
           console.error("Error:", error.message);
           alert("Thrown from Client - Failed to login on");
