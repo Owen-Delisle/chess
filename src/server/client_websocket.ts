@@ -5,7 +5,7 @@ import GameAcceptedMessage from './messages/game_accepted_message'
 import { MoveInitiator } from '../controllers/move_controller'
 import { Move } from '../global_types/move'
 import { BlackOrWhite, black_or_white_by_index, not_color } from '../global_types/enums/black_or_white'
-import TokenController from './controllers/token_controller'
+import TokenAPI from './api/token_api'
 import { CastleMove } from '../global_types/castle_move'
 import Square from '../components/square/square'
 import { CheckStatus } from './messages/king_check_message'
@@ -24,8 +24,7 @@ import GameType from 'src/global_types/enums/game_type'
 import ActiveGamesAPI from './api/active_games_api'
 import ActiveGamesMessage from './messages/active_games_message'
 import ActiveGame from './types/active_game_type'
-import LogoutMessage from './messages/logout_message'
-import LoginController from './controllers/login_controller'
+import redirect_to_login_page from './redirects/login'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -90,7 +89,7 @@ export default class ClientWebSocket {
             throw new Error('Invalid token')
         }
 
-        const user_id: UUID | null = await TokenController.userID_from_token(ClientWebSocket.token)
+        const user_id: UUID | null = await TokenAPI.userID_from_token(ClientWebSocket.token)
 
         if (!user_id) {
             throw new Error("Could not decode UserID from token")
@@ -337,6 +336,6 @@ export default class ClientWebSocket {
         alert('Someone else logged in on your account')
         console.log('Logout Calleds')
         localStorage.removeItem('jwtToken')
-        LoginController.redirect_to_login_page()
+        redirect_to_login_page()
     }
 }

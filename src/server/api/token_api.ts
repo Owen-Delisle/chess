@@ -1,6 +1,6 @@
 import { UUID } from "crypto"
 
-export default class TokenController {
+export default class TokenAPI {
     static jwt_token_id: string = 'jwtToken'
 
     static async retrieve_token_from_storage(): Promise<string | null> {
@@ -10,7 +10,7 @@ export default class TokenController {
 
     static async add_token_to_storage(token: string): Promise<void> {
         try {
-            const is_valid_token: boolean = await TokenController.verify_jwt_token(token)
+            const is_valid_token: boolean = await this.verify_jwt_token(token)
             if (is_valid_token) {
                 localStorage.setItem(this.jwt_token_id, token)
             }

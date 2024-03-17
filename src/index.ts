@@ -1,4 +1,4 @@
-import TokenController from './server/controllers/token_controller'
+import TokenAPI from './server/api/token_api'
 import LoginController from './server/controllers/login_controller'
 import ClientWebSocket from './server/client_websocket'
 

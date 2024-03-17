@@ -170,14 +170,9 @@ http_server.post('/verify_jwt', async (req, res) => {
         const user = await db.get('SELECT user_id FROM active_tokens WHERE token = ?', [token])
         const new_token = jwt.sign({ userId: user.user_id }, secret_key, { expiresIn: '24h' })
 
-        // console.log("USER ID", user.user_id)
-        // console.log("NEW TOKEN", new_token)
-
         await db.run('UPDATE active_tokens SET token = ? WHERE user_id = ?', [new_token, user.user_id])
 
         res.json({ success: true, token: new_token })
-        // console.log(69696969)
-        // STEP 2. VALIDATE TOKEN
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
             console.log("EXPIRED TOKEN")
@@ -235,17 +230,14 @@ http_server.post('/delete_active_game', async (req, res) => {
 
         db.run('DELETE FROM active_games WHERE (user1 = ? OR user1 = ?) AND (user2 = ? OR user2 = ?)', [user1, user2, user1, user2])
 
-        // Send a success response back to the client
         res.status(200).json({ message: 'Active game deleted successfully' })
     } catch (error) {
         console.log('Error deleting active game:', error)
-        // Send an error response back to the client
         res.status(500).json({ error: 'Internal server error' })
     }
 })
 
 http_server.get('/users', async(req, res) => {
-    // Query database to check if user exists
     const db = await db_promise
     const users = await db.all('SELECT * FROM users')
 
