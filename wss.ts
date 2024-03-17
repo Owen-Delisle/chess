@@ -22,10 +22,10 @@ const active_clients: { [user_id: UUID]: WebSocket } = {};
 wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOptions & { url?: string }) {
     const client_connection: WebSocket = ws as WebSocket
 
-    update_active_users_table(client_connection, req, [])
+    update_active_users_table(client_connection, req)
     send_active_users_to_clients([])
 
-    // // Handle messages from clients
+    // Handle messages from clients
     client_connection.on('message', function incoming(message) {
         const data = JSON.parse(message.toString())
 
@@ -73,25 +73,26 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
     })
 })
 
-function update_active_users_table(client_connection: WebSocket, req: WebSocket.ServerOptions & { url?: string }, active_games: {id: UUID, user1: UUID, user2: UUID}[] | undefined) {
+function update_active_users_table(client_connection: WebSocket, req: WebSocket.ServerOptions & { url?: string }) {
     const query = req.url ? parse(req.url, true).query : {}
     const token = typeof query === 'object' && 'token' in query ? query['token'] as string : undefined
-
-    if (!token) {
-        console.log('No token provided. Connection rejected.')
-        client_connection.close()
-        return
-    }
 
     try {
         if(!secretKey) {
             throw new Error("Secret Key was undefined")
         }
-        const decoded = jwt.verify(token, secretKey) as { [key: string]: any }
-        active_clients[decoded.userId] = client_connection
+
+        const decoded = jwt.verify(token!, secretKey) as { [key: string]: any }
+        const user_id = decoded.userId
+
+        if(active_clients[user_id] !== undefined) {
+            send_logout_message_to_client(user_id)
+        }
+
+        active_clients[user_id] = client_connection
 
     } catch (error) {
-        console.error('JWT token verification failed. Connection rejected.', error as VerifyErrors)
+        console.error('JWT token malformed. Connection rejected.', error as VerifyErrors)
         client_connection.close()
     }
 
@@ -176,6 +177,15 @@ function send_pawn_promotion_to_recipient(recipient_id: UUID, pawn_id: string) {
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)
+}
+
+function send_logout_message_to_client(user_id: UUID) {
+    console.log("SENDING LOGOUT FROM WSS")
+    const data = {type: MessageType.logout.toString()}
+    const json_data = JSON.stringify(data)
+
+    console.log("YOU GON GIT IT", user_id, active_clients[user_id])
+    active_clients[user_id].send(json_data)
 }
 
 server.listen(PORT, () => {

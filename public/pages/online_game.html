@@ -2,33 +2,64 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="description" />
-    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
-    <script src="index.js" type="module"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" />
+    <script src="https://unpkg.com/htmx.org@1.9.10"
+        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+        crossorigin="anonymous"></script>
+    <script>
+        async function check_token() {
+            try {
+                const response = await fetch('/verify_jwt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token: localStorage.getItem('jwtToken') }),
+                })
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch')
+                } 
+                    
+                const data = await response.json()
+                if(data.success) {
+                    localStorage.setItem('jwtToken', data.token)
+                } else {
+                    window.location.href = '/login'
+                }
+
+            } catch (error) {
+                console.log('ERROR', error)
+                window.location.href = '/login'
+            }
+        }
+        check_token()
+    </script>
     <script src="/components/board/board.js" type="module"></script>
-	<title>Online Game</title>
+    <script src="index.js" type="module"></script>
+    <title>Online Game</title>
 </head>
 
 <body id="body">
     <h1>Online Game</h1>
 
-        <p>ACTIVE USER LIST</p>
-        <div id="user_list">
-            <!-- List items will be populated here -->
-        </div>
+    <p>ACTIVE USER LIST</p>
+    <div id="user_list">
+        <!-- List items will be populated here -->
+    </div>
 
-        <p>Current Game</p>
-        <div id="current_game">
-            <!-- List items will be populated here -->
-        </div>
+    <p>Current Game</p>
+    <div id="current_game">
+        <!-- List items will be populated here -->
+    </div>
 
     <div id="message_container" class="message_container">
     </div>
 
     <div id="board_element_container">
-        <!-- <board-element id="default_board" game_type="offline" player_color="white" opponent_user_id="none"></board-element> -->
     </div>
 </body>
+
 </html>

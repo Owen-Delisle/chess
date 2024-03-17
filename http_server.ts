@@ -45,6 +45,10 @@ http_server.use(express.json())
 
 http_server.use(express.static(path.join(__dirname, 'public')))
 
+http_server.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/pages/online_game.html')
+})
+
 http_server.get('/signup', (req, res) => {
     res.sendFile(__dirname + '/public/pages/signup.html')
 })
@@ -61,12 +65,16 @@ http_server.get('/otb', (req, res) => {
     res.sendFile(__dirname + '/public/pages/otb.html')
 })
 
-http_server.get('/online', (req, res) => {
-    res.sendFile(__dirname + '/public/pages/online_game.html')
-})
-
 http_server.get('/tests', (req, res) => {
     res.sendFile(__dirname + '/public/pages/tests.html')
+})
+
+http_server.get('/redirect_to_online', (req, res) => {
+    res.redirect('/')
+})
+
+http_server.get('/redirect_to_login', (req, res) => {
+    res.redirect('/login')
 })
 
 http_server.post('/signup', async (req, res) => {
@@ -110,14 +118,18 @@ http_server.post('/login', async (req, res) => {
         
         const token = jwt.sign({ userId: user.id }, secret_key, { expiresIn: '24h' })
 
-        console.log('VERIFYING')
         jwt.verify(token, secret_key)
-        console.log('DONE VERIFYING')
 
-        const active_token_id = uuidv4()
-        await db.run('INSERT INTO active_tokens (id, user_id, token) VALUES (?, ?, ?)', [active_token_id, user.id, token])
-    
-        res.status(200).json({ message: 'active_token stored successfully' })
+        const active_token = await db.get('SELECT * FROM active_tokens WHERE user_id = ?', [user.id])
+
+        if(active_token) {
+            await db.run('UPDATE active_tokens SET token = ? WHERE id = ?', [token, active_token.id])
+            res.status(200).json({ message: 'updated' })
+        } else {
+            const new_active_token_id = uuidv4()
+            await db.run('INSERT INTO active_tokens (id, user_id, token) VALUES (?, ?, ?)', [new_active_token_id, user.id, token])
+            res.status(200).json({ message: 'inserted' })
+        }
 
     } catch (error) {
         console.error('Error logging in user:', error)
@@ -148,32 +160,33 @@ http_server.post('/verify_jwt', async (req, res) => {
         throw new Error("JWT Environment variable is null")
     }
     try {
+        const db = await db_promise
         const token = req.body.token
-        jwt.verify(token, secret_key) as { [key: string]: any }
-        res.json({ success: true })
 
+        console.log("ORIGINAL TOKEN", token)
+
+        jwt.verify(token, secret_key) as { [key: string]: any }
+
+        const user = await db.get('SELECT user_id FROM active_tokens WHERE token = ?', [token])
+        const new_token = jwt.sign({ userId: user.user_id }, secret_key, { expiresIn: '24h' })
+
+        // console.log("USER ID", user.user_id)
+        // console.log("NEW TOKEN", new_token)
+
+        await db.run('UPDATE active_tokens SET token = ? WHERE user_id = ?', [new_token, user.user_id])
+
+        res.json({ success: true, token: new_token })
+        // console.log(69696969)
         // STEP 2. VALIDATE TOKEN
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
-            // TODO: HANDLE EXPIRED TOKEN
-            // DELETE BROWSER TOKEN
-            // DELETE DB TOKEN
-            // ROUTE TO LOGIN PAGE
             console.log("EXPIRED TOKEN")
             res.json({ success: false })
         } else if (error instanceof jwt.JsonWebTokenError) {
-            // TODO: HANDLE INVALID TOKEN
-            // DELETE BROWSER TOKEN
-            // DELETE DB TOKEN
-            // ROUTE TO LOGIN PAGE
-            console.log("INVALID TOKEN")
+            console.log("INVALID TOLKIENNNN")
             res.json({ success: false })
         } else {
-            // TODO: HANDLE ALL OTHER CASES
-            // DELETE BROWSER TOKEN
-            // DELETE DB TOKEN
-            // ROUTE TO LOGIN PAGE
-            console.log("DEFAULT TOKEN ERROR")
+            console.log("DEFAULT TOKEN ERROR", error)
             res.json({ success: false })
         }
     }
@@ -257,11 +270,7 @@ http_server.post('/active_token', async(req, res) => {
     console.log('USERNAME:', username)
 
     const user_id = await db.get('SELECT id FROM users WHERE username = ?', [username])
-
-    console.log('USER ID:', user_id)
-    console.log("FETCHING ACTIVE TOKEN")
     const active_token = await db.get('SELECT * FROM active_tokens WHERE user_id = ?', [user_id.id])
-    console.log("ACTIVE_TOKEN", active_token)
 
     if(active_token) {
         res.json({ active_token })

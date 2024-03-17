@@ -24,6 +24,8 @@ import GameType from 'src/global_types/enums/game_type'
 import ActiveGamesAPI from './api/active_games_api'
 import ActiveGamesMessage from './messages/active_games_message'
 import ActiveGame from './types/active_game_type'
+import LogoutMessage from './messages/logout_message'
+import LoginController from './controllers/login_controller'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -37,9 +39,6 @@ export default class ClientWebSocket {
     public static open_connection(): void {
         ClientWebSocket.web_socket.addEventListener('open', async function (event) {
             console.log('Client WebSocket connection established')
-            // STEP 1. VALIDATE BROWSER TOKEN
-            // STEP 2. UPDATE DB TOKEN
-            // STEP 3. STORE NEW DB TOKEN IN BROWSER
         })
 
         ClientWebSocket.web_socket.addEventListener('message', function (event) {
@@ -77,6 +76,10 @@ export default class ClientWebSocket {
                     break
                 case MessageType.pawn_promotion.toString():
                     ClientWebSocket.promote_pawn_from_server(message.pawn_id)
+                    break
+                case MessageType.logout.toString():
+                    console.log("LOGOOOOT MESSAGERS")
+                    ClientWebSocket.logout()
                     break
             }
         })
@@ -328,5 +331,12 @@ export default class ClientWebSocket {
             return false
         }
         return true
+    }
+
+    private static logout() {
+        alert('Someone else logged in on your account')
+        console.log('Logout Calleds')
+        localStorage.removeItem('jwtToken')
+        LoginController.redirect_to_login_page()
     }
 }

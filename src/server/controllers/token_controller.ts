@@ -34,7 +34,6 @@ export default class TokenController {
             })
             if(response.ok) {
                 const data = await response.json()
-                console.log("YOOHOO", data.active_token.token)
                 return data.active_token.token
             } else {
                 throw new Error('Bad response from /active_token')
