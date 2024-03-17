@@ -14,7 +14,11 @@
 // })
 
 await Bun.build({
-	entrypoints: ['./src/index.ts', './src/components/board/board.ts'],
+	entrypoints: [
+		'./src/components/board/board.ts', 
+		'./src/startup_scripts/login.ts',
+		'./src/startup_scripts/client_connection.ts'
+	],
 	outdir: './public',
 	splitting: true,
   })

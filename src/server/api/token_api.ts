@@ -1,4 +1,5 @@
 import { UUID } from "crypto"
+import redirect_to_login_page from "../redirects/login"
 
 export default class TokenAPI {
     static jwt_token_id: string = 'jwtToken'
@@ -85,6 +86,34 @@ export default class TokenAPI {
         } catch (error) {
             console.error('Error:', error)
             return false
+        }
+    }
+
+    static async check_token_in_storage() {
+        console.log("checking token in storage")
+        try {
+            const response = await fetch('/verify_jwt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token: localStorage.getItem('jwtToken') }),
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch')
+            } 
+                
+            const data = await response.json()
+            if(data.success) {
+                localStorage.setItem('jwtToken', data.token)
+            } else {
+                redirect_to_login_page()
+            }
+
+        } catch (error) {
+            console.log('ERROR', error)
+            redirect_to_login_page()
         }
     }
 }

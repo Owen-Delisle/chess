@@ -8,37 +8,8 @@
     <script src="https://unpkg.com/htmx.org@1.9.10"
         integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
         crossorigin="anonymous"></script>
-    <script>
-        async function check_token() {
-            try {
-                const response = await fetch('/verify_jwt', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ token: localStorage.getItem('jwtToken') }),
-                })
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch')
-                } 
-                    
-                const data = await response.json()
-                if(data.success) {
-                    localStorage.setItem('jwtToken', data.token)
-                } else {
-                    window.location.href = '/login'
-                }
-
-            } catch (error) {
-                console.log('ERROR', error)
-                window.location.href = '/login'
-            }
-        }
-        check_token()
-    </script>
+        <script src="/startup_scripts/client_connection.js" type="module"></script>
     <script src="/components/board/board.js" type="module"></script>
-    <script src="index.js" type="module"></script>
     <title>Online Game</title>
 </head>
 
