@@ -8,13 +8,22 @@
     <script src="https://unpkg.com/htmx.org@1.9.10"
         integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
         crossorigin="anonymous"></script>
-        <script src="/startup_scripts/client_connection.js" type="module"></script>
+
+    <script src="/startup_scripts/client_connection.js" type="module"></script>
+    <script src="/ui/scripts/game_page_ui_script.js" type="module"></script>
     <script src="/components/board/board.js" type="module"></script>
-    <title>Online Game</title>
+
+    <title>Home Page</title>
 </head>
 
 <body id="body">
-    <h1>Online Game</h1>
+    <h1>Offline Game</h1>
+
+    <button id="offline_game_button">Offline Game</button>
+
+    <button id="online_game_button">Online Game</button>
+
+    <button id="logout_button">Logout</button>
 
     <p>ACTIVE USER LIST</p>
     <div id="user_list">
@@ -30,6 +39,7 @@
     </div>
 
     <div id="board_element_container">
+        <!-- game board will populate here -->
     </div>
 </body>
 
