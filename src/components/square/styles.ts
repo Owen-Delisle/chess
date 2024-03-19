@@ -5,14 +5,14 @@ export default class SquareStyles {
 			.black {
 				height: 100px;
 				width: 100px;
-				background-color: #1FE5DF;
+				background-color: #B58863;
 				position: relative;
 				box-sizing: border-box
 				}
 				.white {
 				height: 100px;
 				width: 100px;
-				background-color: #D8ECEC;
+				background-color: #F0D9B5;
 				position: relative;
 				box-sizing: border-box
 				}
@@ -41,6 +41,17 @@ export default class SquareStyles {
 				left: 87%;
 				margin: -50px 0 0 -50px;
 				}
+				.big-message {
+					font-size: 36px; /* Adjust font size */
+					text-align: center;
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					margin: 0;
+					z-index: 1;
+					background-color: grey;
+				  }
 				`
 
 		return style

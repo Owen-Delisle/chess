@@ -36,11 +36,11 @@ export default class Square extends HTMLElement {
 			div_node.className = `${this.color}`
 			div_node.id = `${this.square_id}`
 
-			let p_node: Element = document.createElement('p')
-			p_node.className = 'p'
-			p_node.innerHTML = `${this.square_id}`
+			// let p_node: Element = document.createElement('p')
+			// p_node.className = 'p'
+			// p_node.innerHTML = `${this.square_id}`
 
-			div_node.appendChild(p_node)
+			// div_node.appendChild(p_node)
 			div_node.appendChild(this.piece_image())
 
 			this.appendChild(div_node)

@@ -25,11 +25,12 @@ export class GameController {
 	}
 
 	public switch_turn(): void {
-		if (this.turn == BlackOrWhite.white) {
-			this.turn = BlackOrWhite.black
-		} else {
-			this.turn = BlackOrWhite.white
+		this.turn = not_color(this.turn)
+
+		if(this.game_type === GameType.offline) {
+			PlayerController.player_color = not_color(PlayerController.player_color)
 		}
+
 		this.redraw_game_board()
 	}
 
@@ -74,7 +75,6 @@ export class GameController {
 				setTimeout(() => {
 					message_container_element.appendChild(checkmate_window)
 				}, 1000);
-
 				//END MAKE FUNCTION
 			}
 		}

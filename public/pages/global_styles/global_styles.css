@@ -1,0 +1,129 @@
+.header {
+    font-family: Verdana;
+    color: #ADADAD
+}
+
+.body {
+    background-color: #171512;
+}
+
+.login_form {
+    width: 50%;
+    border: solid 3px #ADADAD;
+    display: grid;
+    gap: 20px;
+    padding: 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -80%);
+}
+
+.text_input {
+    padding: 0 10px;
+    text-align: left;
+    transition-property: box-shadow, background;
+    transition-duration: 150ms;
+    transition-timing-function: ease-in-out;
+    background-color: #FFFFFF;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #DAE3F3;
+    border-radius: 0px;
+    color: #272C34;
+    width: 50%;
+    cursor: text;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0px;
+    font-weight: 400;
+    font-style: normal;
+    height: 30px;
+}
+
+.button {
+    display: inline-block;  
+    outline: none;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    padding: 2px 16px;
+    height: 32px;
+    width: 30%;
+    min-width: 60px;
+    min-height: 32px;
+    border: none;
+    color: #fff;
+    background-color: #4f545c;
+    transition: background-color .17s ease,color .17s ease;
+    margin-right: 10px; 
+}
+
+.header_container {
+    text-align: center;
+}
+
+.top_menu {
+    position: relative;
+    width: 99%;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.game_type_container {
+    width: 30%;
+    height: 35px;
+    display: flex;
+    flex-direction: row;
+}
+
+.resign_container {
+    width: 40%;
+    height: 35px;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    margin-right: 50px;
+}
+
+.active_users_list {
+    width:200px;
+    height:500px;
+    background-color:#4f545c;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.active_user_item {
+    font-family: Verdana;
+    font-size: large;
+    color: #00b7a8;
+    border-bottom: 1px solid #00b7a8;
+    cursor: pointer;
+}
+
+.active_user_item:hover {
+    background-color: #45a049; /* Darker green */
+}
+
+.user_list_container {
+    list-style-type: circle;
+    position: relative;
+    height: 500px;
+    width: 20%;
+    text-align: center;
+}
+
+.game_board {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}

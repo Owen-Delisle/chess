@@ -1,6 +1,5 @@
 import Visibility from "./visibility"
 
-
 export function append_child_to_container(container: HTMLElement, element: HTMLElement) {
     container.appendChild(element)
 }

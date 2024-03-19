@@ -13,32 +13,40 @@
     <script src="/ui/scripts/game_page_ui_script.js" type="module"></script>
     <script src="/components/board/board.js" type="module"></script>
 
+    <link rel="stylesheet" href="/pages/global_styles/global_styles.css">
+
     <title>Home Page</title>
 </head>
 
-<body id="body">
-    <h1>Offline Game</h1>
 
-    <button id="offline_game_button">Offline Game</button>
+<body id="body" class="body">
 
-    <button id="online_game_button">Online Game</button>
-
-    <button id="logout_button">Logout</button>
-
-    <p>ACTIVE USER LIST</p>
-    <div id="user_list">
-        <!-- List items will be populated here -->
+    <div class="header_container">
+        <h1 id="game_title" class="header">Offline Game</h1>
     </div>
 
-    <p>Current Game</p>
-    <div id="current_game">
-        <!-- List items will be populated here -->
+    <div class="top_menu">
+        <div id="game_type_container" class="game_type_container">
+            <button class="button" id="offline_game_button">Offline Game</button>
+            <button class="button" id="online_game_button">Online Game</button>
+        </div>
+        <div class="resign_container">
+            <button class="button" id="resign_button">Resign</button>
+        </div>
+    </div>
+
+
+    <div id="user_list_container" class="user_list_container">
+        <p class="header">ACTIVE PLAYERS</p>
+        <div class="active_users_list" id="user_list">
+            <!-- List items will be populated here -->
+        </div>
     </div>
 
     <div id="message_container" class="message_container">
     </div>
 
-    <div id="board_element_container">
+    <div class="game_board" id="board_element_container">
         <!-- game board will populate here -->
     </div>
 </body>

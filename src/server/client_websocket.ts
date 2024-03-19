@@ -20,11 +20,11 @@ import UserAPI from './api/user_api'
 import Pawn from '../components/piece/pieces/pawn'
 import Board from '../components/board/board'
 import CheckmateElement from '../components/message/checkmate'
-import GameType from 'src/global_types/enums/game_type'
 import ActiveGamesAPI from './api/active_games_api'
 import ActiveGamesMessage from './messages/active_games_message'
 import ActiveGame from './types/active_game_type'
 import redirect_to_login_page from './redirects/login'
+import { hide_game_types, hide_user_list, instantiate_online_game } from '../ui/board/board_dom_controller'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -77,7 +77,6 @@ export default class ClientWebSocket {
                     ClientWebSocket.promote_pawn_from_server(message.pawn_id)
                     break
                 case MessageType.logout.toString():
-                    console.log("LOGOOOOT MESSAGERS")
                     ClientWebSocket.logout()
                     break
             }
@@ -116,6 +115,7 @@ export default class ClientWebSocket {
         active_users_id.forEach(async user_id => {
             if (client_user_id !== user_id) {
                 const list_item = document.createElement('li')
+                list_item.className = 'active_user_item'
                 const typed_user_id: UUID = user_id as UUID
 
                 const username: string | undefined = await UserAPI.username_from_id(typed_user_id)
@@ -196,7 +196,6 @@ export default class ClientWebSocket {
         }
     }
 
-    // TODO Refactor
     private static async update_current_game_ui(user_id_of_opponent: UUID, color: BlackOrWhite) {
         const message_container = document.getElementById("message_container")
         if (!message_container) {
@@ -205,33 +204,12 @@ export default class ClientWebSocket {
 
         message_container.innerHTML = ''
 
-        const current_game_element: HTMLElement | null = document.getElementById('current_game')
-
-        if (!current_game_element) {
-            throw new Error('CURRENT GAME ELEMENT NOT FOUND')
-        }
-
-        const opponent_id_item = document.createElement('p')
-
-        const username: string | undefined = await UserAPI.username_from_id(user_id_of_opponent)
-        if (!username) {
-            throw new Error("Could not query username")
-        }
-        opponent_id_item.textContent = username
-
-        current_game_element.appendChild(opponent_id_item)
-        const board_container_element: HTMLElement | null = document.getElementById('board_element_container')
-
-        if (!board_container_element) {
-            throw new Error("BOARD CONTAINER ELEMENT NOT FOUND")
-        }
+        hide_user_list()
+        hide_game_types()
 
         const client_id: UUID = await ClientWebSocket.client_user_id
-        const board: Board = new Board(GameType.online, color, client_id, user_id_of_opponent)
-        this.online_game_board = board
 
-        board_container_element.innerHTML = ''
-        board_container_element.appendChild(this.online_game_board)
+        instantiate_online_game(color, client_id, user_id_of_opponent)
     }
 
     private static swap_waiting_message_to_declined() {
@@ -334,7 +312,6 @@ export default class ClientWebSocket {
 
     private static logout() {
         alert('Someone else logged in on your account')
-        console.log('Logout Calleds')
         localStorage.removeItem('jwtToken')
         redirect_to_login_page()
     }
