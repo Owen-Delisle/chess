@@ -25,6 +25,7 @@ import ActiveGamesMessage from './messages/active_games_message'
 import ActiveGame from './types/active_game_type'
 import redirect_to_login_page from './redirects/login'
 import { hide_game_types, hide_user_list, instantiate_online_game } from '../ui/board/board_dom_controller'
+import PlayerController from 'src/controllers/player_controller'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -47,6 +48,7 @@ export default class ClientWebSocket {
 
             switch (message_type) {
                 case MessageType.active_users.toString():
+                    console.log("active users from server", message.users)
                     ClientWebSocket.update_active_users_list_ui(message.users)
                     break
                 case MessageType.game_request.toString():
@@ -56,7 +58,7 @@ export default class ClientWebSocket {
                     ClientWebSocket.update_current_game_ui(message.accepting_user, message.color)
                     break
                 case MessageType.game_declined.toString():
-                    ClientWebSocket.swap_waiting_message_to_declined()
+                    ClientWebSocket.swap_waiting_message_to_declined(message.message)
                     break
                 case MessageType.game_canceled.toString():
                     ClientWebSocket.close_game_request_message()
@@ -164,7 +166,11 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        //If not currently in a game and does not have request
+        if (PlayerController.in_online_game) {
+            ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id_of_requester, 'That User is busy'))
+            return
+        }
+
         const game_request_element: HTMLElement = new GameRequestElement(
             user_id_of_requester,
             () => {
@@ -174,7 +180,7 @@ export default class ClientWebSocket {
                     )
             },
             () => {
-                ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id_of_requester))
+                ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id_of_requester, 'Game was Declined'))
             }
         )
         ClientWebSocket.requested_games_from.push(user_id_of_requester)
@@ -190,7 +196,7 @@ export default class ClientWebSocket {
 
         ClientWebSocket.requested_games_from.forEach(user_id => {
             if(user_id !== sender_id) {
-                ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id))
+                ClientWebSocket.send_message_to_server(new GameDeclinedMessage(user_id, 'Game was Declined'))
             }
         })
         ClientWebSocket.requested_games_from = []
@@ -216,13 +222,13 @@ export default class ClientWebSocket {
         instantiate_online_game(color, client_id, user_id_of_opponent)
     }
 
-    private static swap_waiting_message_to_declined() {
+    private static swap_waiting_message_to_declined(message: string) {
         const message_container = document.getElementById("message_container")
         if (!message_container) {
             throw new Error("MESSAGE CONTAINER ELEMENT NOT FOUND")
         }
 
-        const game_declined_message = new GameRequestDeclined()
+        const game_declined_message = new GameRequestDeclined(message)
 
         message_container.innerHTML = ''
         message_container.appendChild(game_declined_message)

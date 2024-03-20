@@ -10,7 +10,6 @@ import { CastleMove } from './src/global_types/castle_move.ts'
 import { CheckStatus } from './src/server/messages/king_check_message.ts'
 import Square from './src/components/square/square.ts'
 import { BlackOrWhite } from './src/global_types/enums/black_or_white.ts'
-import ActiveGame from './src/server/types/active_game_type.ts'
 require('dotenv').config()
 
 const server = http.createServer(http_server)
@@ -23,7 +22,7 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
     const client_connection: WebSocket = ws as WebSocket
 
     update_active_users_table(client_connection, req)
-    send_active_users_to_clients([])
+    send_active_users_to_clients()
 
     // Handle messages from clients
     client_connection.on('message', function incoming(message) {
@@ -37,7 +36,7 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
                 send_game_accepted_to_recipient(data.sender, data.receiver, data.color)
             break
             case MessageType.game_declined:
-                send_game_declined_to_recipient(data.receiver)
+                send_game_declined_to_recipient(data.receiver, data.message)
             break
             case MessageType.game_canceled:
                 send_game_canceled_to_recipient(data.receiver)
@@ -61,7 +60,7 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
                 send_pawn_promotion_to_recipient(data.recipient_id, data.pawn_id)
             break
             case MessageType.active_games:
-                send_active_users_to_clients(data.active_games)
+                send_active_users_to_clients()
             break
         }
     })
@@ -72,7 +71,7 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
                 delete active_clients[user_id]
             }
         })
-        send_active_users_to_clients([])
+        send_active_users_to_clients()
     })
 })
 
@@ -102,23 +101,14 @@ function update_active_users_table(client_connection: WebSocket, req: WebSocket.
     console.log('Client connected')
 }
 
-function send_active_users_to_clients(active_games: ActiveGame[] | undefined) {
-    if(!active_games) {
-        throw new Error('active games undefined')
-    }
-
-    const filtered_users = Object.keys(active_clients).filter(key => {
-        return !active_games.some(game => key === game.user1 || key === game.user2)
-    })    
-
+function send_active_users_to_clients() {
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({ type: MessageType.active_users.toString(), users: filtered_users }))
+            client.send(JSON.stringify({ type: MessageType.active_users.toString(), users: Object.keys(active_clients) }))
         }
     })
 }
 
-//TODO - Combine all these functions
 function send_game_request_to_recipient(sender: UUID, recipient_id: UUID) {
     const data = {type: MessageType.game_request.toString(), requesting_user: sender, recieving_user: recipient_id}
     const json_data = JSON.stringify(data)
@@ -133,8 +123,8 @@ function send_game_accepted_to_recipient(sender: UUID, receiver: UUID, color: Bl
     active_clients[receiver].send(json_data)
 }
 
-function send_game_declined_to_recipient(receiver: UUID) {
-    const data = {type: MessageType.game_declined.toString()}
+function send_game_declined_to_recipient(receiver: UUID, message: string) {
+    const data = {type: MessageType.game_declined.toString(), message}
     const json_data = JSON.stringify(data)
 
     active_clients[receiver].send(json_data)
@@ -190,11 +180,9 @@ function send_pawn_promotion_to_recipient(recipient_id: UUID, pawn_id: string) {
 }
 
 function send_logout_message_to_client(user_id: UUID) {
-    console.log("SENDING LOGOUT FROM WSS")
     const data = {type: MessageType.logout.toString()}
     const json_data = JSON.stringify(data)
 
-    console.log("YOU GON GIT IT", user_id, active_clients[user_id])
     active_clients[user_id].send(json_data)
 }
 

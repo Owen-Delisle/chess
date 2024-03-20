@@ -18,11 +18,18 @@ export default class Board extends HTMLElement {
 	move_controller: MoveController
 	game_controller: GameController
 
-	constructor(game_type: GameType, player_color: BlackOrWhite, player_id: UUID, opponent_user_id: UUID) {
+	constructor(game_type: GameType, player_color?: BlackOrWhite, player_id?: UUID, opponent_user_id?: UUID) {
 		super()
-		PlayerController.player_color = player_color
-		PlayerController.player_id = player_id
-		PlayerController.opponent_user_id = opponent_user_id
+		if(player_color) {
+			PlayerController.player_color = player_color
+		}
+		if(player_id) {
+			PlayerController.player_id = player_id
+		}
+		if(opponent_user_id) {
+			PlayerController.opponent_user_id = opponent_user_id
+		}
+		
 		this.piece_list = new PieceList()
 		this.game_controller = new GameController(this.piece_list, game_type)
 		this.move_controller = new MoveController(this.game_controller)

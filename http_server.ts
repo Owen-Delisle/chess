@@ -194,8 +194,6 @@ http_server.post('/verify_jwt', async (req, res) => {
         const db = await db_promise
         const token = req.body.token
 
-        console.log("ORIGINAL TOKEN", token)
-
         jwt.verify(token, secret_key) as { [key: string]: any }
 
         const user = await db.get('SELECT user_id FROM active_tokens WHERE token = ?', [token])
@@ -206,13 +204,10 @@ http_server.post('/verify_jwt', async (req, res) => {
         res.json({ success: true, token: new_token })
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
-            console.log("EXPIRED TOKEN")
             res.json({ success: false })
         } else if (error instanceof jwt.JsonWebTokenError) {
-            console.log("INVALID TOLKIENNNN")
             res.json({ success: false })
         } else {
-            console.log("DEFAULT TOKEN ERROR", error)
             res.json({ success: false })
         }
     }
@@ -289,8 +284,6 @@ http_server.get('/active_games', async(req, res) => {
 http_server.post('/active_token', async(req, res) => {
     const db = await db_promise
     const username: string = req.body.username
-
-    console.log('USERNAME:', username)
 
     const user_id = await db.get('SELECT id FROM users WHERE username = ?', [username])
     const active_token = await db.get('SELECT * FROM active_tokens WHERE user_id = ?', [user_id.id])

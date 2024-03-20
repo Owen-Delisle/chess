@@ -1,8 +1,10 @@
 import MessageStyles from "./styles"
 
 export default class GameRequestDeclined extends HTMLElement {
-    constructor() {
+    message: string
+    constructor(message: string) {
         super()
+        this.message = message
 
         this.attachShadow({ mode: 'open' })
     }
@@ -17,7 +19,7 @@ export default class GameRequestDeclined extends HTMLElement {
 
         // Header title element
         const header = document.createElement('h2')
-        header.textContent = "Game Request Was Declined"
+        header.textContent = `${this.message}`
         header.className = 'header'
 
         const close_button = document.createElement('button')

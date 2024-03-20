@@ -13,18 +13,12 @@ import PlayerController from "src/controllers/player_controller"
 const container: HTMLElement = get_element_by_id("board_element_container")
 
 export function instantiate_offline_game() {
-    console.log("instantiating offline game")
-
     const game_title_element = get_element_by_id("game_title")
     game_title_element.innerHTML = "Offline Game"
 
-    const color: BlackOrWhite = BlackOrWhite.white
-    const client_id: UUID = "123-123-123-123-123"
-    const opponent_id: UUID = "123-123-123-123-123"
-
     hide_online_elements()
 
-    const board: Board = new Board(GameType.offline, color, client_id, opponent_id)
+    const board: Board = new Board(GameType.offline)
 
     clear_container_children(container)
     container.appendChild(board)
@@ -44,8 +38,6 @@ export function instantiate_placeholder_board() {
 }
 
 export async function instantiate_online_game(color: BlackOrWhite, client_id: UUID, opponent_id: UUID) {
-    console.log("instantiating online game")
-
     const username: string | undefined = await UserAPI.username_from_id(opponent_id)
     if (!username) {
         throw new Error("Could not query username")
@@ -64,7 +56,9 @@ export async function instantiate_online_game(color: BlackOrWhite, client_id: UU
     container.appendChild(board)
 
     //TODO MAKE BETTER
+    PlayerController.in_online_game = true
     ClientWebSocket.online_game_board = board
+    //END MAKE BETTER
 }
 
 function hide_online_elements() {
