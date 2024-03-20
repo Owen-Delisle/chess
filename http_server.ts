@@ -7,6 +7,7 @@ import path from 'path'
 require('dotenv').config()
 import bcrypt from 'bcrypt'
 import { UUID } from 'crypto'
+import { body, validationResult } from 'express-validator'
 
 const http_server = express()
 const PORT = 3000
@@ -77,11 +78,25 @@ http_server.get('/redirect_to_login', (req, res) => {
     res.redirect('/login')
 })
 
-http_server.post('/signup', async (req, res) => {
+http_server.post('/signup', [
+    body('username').isLength({ min: 5 }).escape(),
+    body('email').isLength({ min: 5 }).escape(),
+    body('password').isLength({ min: 5 }).escape(),
+    ], async (req, res) => {
     const { username, email, password } = req.body
     const id = uuidv4()
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(500).send({ message: 'Bad Input. All fields must be minimum 5 characters' })
+        }
+
         const db = await db_promise
+
+        const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if(!email_regex.test(email)) {
+            res.status(500).send({message: 'Failed to Signup. That email is misformed.'})
+        }
 
         const duplicate_email = await db.get('SELECT COUNT(*) AS count FROM users WHERE email = ?', [email])
         if(duplicate_email.count > 0) {
@@ -107,9 +122,16 @@ http_server.post('/signup', async (req, res) => {
     }
 })
 
-http_server.post('/login', async (req, res) => {
+http_server.post('/login', [
+    body('username').escape(),
+    body('password').escape(),
+    ], async (req, res) => {
     const { username, password } = req.body
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(500).send({ message: 'Bad Input. All fields must be minimum 5 characters' })
+        }
 
         const db = await db_promise
         const user = await db.get('SELECT * FROM users WHERE username = ?', [username])
@@ -128,8 +150,6 @@ http_server.post('/login', async (req, res) => {
         }
         
         const token = jwt.sign({ userId: user.id }, secret_key, { expiresIn: '24h' })
-
-        jwt.verify(token, secret_key)
 
         const active_token = await db.get('SELECT * FROM active_tokens WHERE user_id = ?', [user.id])
 

@@ -25,8 +25,7 @@ export default class LoginAPI {
             redirect_to_home_page()
 
         } catch (error: any) {
-            console.error('Error:', error.message)
-            alert('Thrown from Client - Failed to login on')
+            alert('Failed to login. That username and password do not exist.')
         }
     }
 }
