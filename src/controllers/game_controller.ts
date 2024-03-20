@@ -7,7 +7,7 @@ import ClientWebSocket from '../server/client_websocket'
 import CheckmateMessage from '../server/messages/checkmate_message'
 import PlayerController from '../server/controllers/player_controller'
 import { UUID } from 'crypto'
-import CheckmateElement from '../components/message/checkmate'
+import GameOverElement from '../components/message/game_over'
 import PieceList from '../models/piece_list'
 import Board from 'src/components/board/board'
 
@@ -71,7 +71,7 @@ export class GameController {
 				if (!message_container_element) {
 					throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
 				}
-				const checkmate_window = new CheckmateElement()
+				const checkmate_window = new GameOverElement("Checkmate")
 				setTimeout(() => {
 					message_container_element.appendChild(checkmate_window)
 				}, 1000);

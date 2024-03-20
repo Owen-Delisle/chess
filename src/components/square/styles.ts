@@ -32,7 +32,7 @@ export default class SquareStyles {
 				position: absolute;
 				}
 				.dot {
-				background-color: #0000FF;
+				background-color: #00b7a8;
 				border-radius: 50%;
 				height: 20px;
 				width: 20px;

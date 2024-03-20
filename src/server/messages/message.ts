@@ -19,5 +19,6 @@ export enum MessageType {
     king_check_status,
     checkmate,
     pawn_promotion,
-    active_games
+    active_games,
+    resignation
 }

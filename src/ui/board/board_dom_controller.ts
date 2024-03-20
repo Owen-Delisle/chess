@@ -7,6 +7,8 @@ import { clear_container_children } from "../utils/funcs"
 import PlaceHolderBoard from "src/components/board/placeholder_board"
 import UserAPI from "src/server/api/user_api"
 import ClientWebSocket from "src/server/client_websocket"
+import ResignationMessage from "src/server/messages/resignation_message"
+import PlayerController from "src/server/controllers/player_controller"
 
 const container: HTMLElement = get_element_by_id("board_element_container")
 
@@ -92,3 +94,7 @@ export function hide_game_types() {
     hide_element(game_type_container)
 }
 
+export function resign() {
+    ClientWebSocket.send_message_to_server(new ResignationMessage(PlayerController.opponent_user_id as UUID))
+    window.location.reload()
+}

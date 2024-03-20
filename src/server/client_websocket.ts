@@ -19,7 +19,7 @@ import GameCanceledMessage from './messages/game_canceled_message'
 import UserAPI from './api/user_api'
 import Pawn from '../components/piece/pieces/pawn'
 import Board from '../components/board/board'
-import CheckmateElement from '../components/message/checkmate'
+import GameOverElement from '../components/message/game_over'
 import ActiveGamesAPI from './api/active_games_api'
 import ActiveGamesMessage from './messages/active_games_message'
 import ActiveGame from './types/active_game_type'
@@ -72,6 +72,9 @@ export default class ClientWebSocket {
                     break
                 case MessageType.checkmate.toString():
                     ClientWebSocket.checkmate_from_server(message.sender_id, message.recipient_id, message.losing_king_id, message.winning_king_id)
+                    break
+                case MessageType.resignation.toString():
+                    ClientWebSocket.resignation_from_server()
                     break
                 case MessageType.pawn_promotion.toString():
                     ClientWebSocket.promote_pawn_from_server(message.pawn_id)
@@ -272,7 +275,7 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        const checkmate_window = new CheckmateElement()
+        const checkmate_window = new GameOverElement("Checkmate")
         setTimeout(() => {
             message_container_element.appendChild(checkmate_window)
         }, 1000);
@@ -285,6 +288,17 @@ export default class ClientWebSocket {
         }
 
         ClientWebSocket.send_message_to_server(new ActiveGamesMessage(active_games))
+    }
+
+    private static resignation_from_server() {
+        const message_container_element: HTMLElement | null = document.getElementById('message_container')
+        if (!message_container_element) {
+            throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
+        }
+
+        const game_over_window = new GameOverElement("Resignation")
+
+        message_container_element.appendChild(game_over_window)
     }
 
     private static promote_pawn_from_server(pawn_id: string) {

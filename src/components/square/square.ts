@@ -87,7 +87,7 @@ export default class Square extends HTMLElement {
 
 	public add_border(): void {
 		if (this.element != undefined) {
-			this.element.style.border = 'thick solid #0000FF'
+			this.element.style.border = 'thick solid #00b7a8'
 		}
 	}
 

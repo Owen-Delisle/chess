@@ -1,9 +1,10 @@
 import MessageStyles from "./styles"
 
-export default class CheckmateElement extends HTMLElement {
-    constructor() {
+export default class GameOverElement extends HTMLElement {
+    message: string
+    constructor(message: string) {
         super()
-
+        this.message = message
         this.attachShadow({ mode: 'open' })
     }
 
@@ -22,7 +23,7 @@ export default class CheckmateElement extends HTMLElement {
 
         // Title in the centre of the square
         const title = document.createElement('h2')
-        title.textContent = `Checkmate`
+        title.textContent = `${this.message}`
         title.className = 'header'
 
         const close_button = document.createElement('button')
@@ -47,4 +48,4 @@ export default class CheckmateElement extends HTMLElement {
 }
 
 // Define the custom element
-customElements.define('checkmate-element', CheckmateElement)
+customElements.define('game-over-element', GameOverElement)
