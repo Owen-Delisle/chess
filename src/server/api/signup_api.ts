@@ -1,7 +1,6 @@
-import { get_element_by_id } from "../../ui/utils/funcs"
 import redirect_to_login_page from "../redirects/login"
 
-export default class SingupAPI {
+export default class SignupAPI {
     public static async signup(username: string, email: string, password: string) {
         console.log(username, email, password)
 
@@ -15,6 +14,8 @@ export default class SingupAPI {
             })
 
             if (!response.ok) {
+                const json = await response.json()
+                alert(json.message)
                 throw new Error('Failed to signup')
             }
 
@@ -22,7 +23,7 @@ export default class SingupAPI {
 
         } catch (error) {
             console.error('Error:', error)
-            alert('Failed to login')
+            // alert('Failed to Signup')
         }
     }
 }

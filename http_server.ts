@@ -81,10 +81,18 @@ http_server.post('/signup', async (req, res) => {
     const { username, email, password } = req.body
     const id = uuidv4()
     try {
-
-        console.log(username, email, password)
-
         const db = await db_promise
+
+        const duplicate_email = await db.get('SELECT COUNT(*) AS count FROM users WHERE email = ?', [email])
+        if(duplicate_email.count > 0) {
+            res.status(500).send({message: 'Failed to Signup. That email already exists.'})
+        }
+
+        const duplicate_username = await db.get('SELECT COUNT(*) AS count FROM users WHERE username = ?', [username])
+        if(duplicate_username.count > 0) {
+            res.status(500).send({message: 'Failed to Signup. That username already exists.'})
+        }
+
         const saltRounds = 10
         const salt = await bcrypt.genSalt(saltRounds)
 
@@ -94,8 +102,8 @@ http_server.post('/signup', async (req, res) => {
 
         res.send('User signed up successfully!')
     } catch (error) {
-        console.error('Error signing up user:', error)
-        res.status(500).send('Error signing up user')
+        console.error('Error signing up user:', error.message)
+        res.status(500).send(`${error.message}`)
     }
 })
 
