@@ -8,7 +8,7 @@ import PlaceHolderBoard from "src/components/board/placeholder_board"
 import UserAPI from "src/server/api/user_api"
 import ClientWebSocket from "src/server/client_websocket"
 import ResignationMessage from "src/server/messages/resignation_message"
-import PlayerController from "src/server/controllers/player_controller"
+import PlayerController from "src/controllers/player_controller"
 
 const container: HTMLElement = get_element_by_id("board_element_container")
 

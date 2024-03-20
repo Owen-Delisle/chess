@@ -14,7 +14,7 @@ import { GridPoint } from '../../../global_types/grid_point'
 import GameType from '../../../global_types/enums/game_type'
 import ClientWebSocket from '../../../server/client_websocket'
 import PawnPromotionMessage from '../../../server/messages/pawn_promotion_message'
-import PlayerController from '../../../server/controllers/player_controller'
+import PlayerController from '../../../controllers/player_controller'
 import { UUID } from 'crypto'
 
 export default class Pawn extends Piece implements Piece_Interface {

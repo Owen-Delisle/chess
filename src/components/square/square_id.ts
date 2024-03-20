@@ -1,6 +1,6 @@
 import { GameController } from '../../controllers/game_controller'
 import type { GridPoint } from '../../global_types/grid_point'
-import PlayerController from '../../server/controllers/player_controller'
+import PlayerController from '../../controllers/player_controller'
 import { BlackOrWhite } from '../../global_types/enums/black_or_white'
 import GameType from '../../global_types/enums/game_type'
 

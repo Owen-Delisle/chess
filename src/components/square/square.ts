@@ -4,7 +4,7 @@ import Piece from '../piece/piece'
 import GameType from '../../global_types/enums/game_type'
 import ClientWebSocket from '../../server/client_websocket'
 import KingCheckStatusMessage, { CheckStatus } from '../../server/messages/king_check_message'
-import PlayerController from '../../server/controllers/player_controller'
+import PlayerController from '../../controllers/player_controller'
 import { UUID } from 'crypto'
 import Board from '../board/board'
 

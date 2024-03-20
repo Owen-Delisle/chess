@@ -1,5 +1,5 @@
 import TokenAPI from "./token_api"
-import redirect_to_online_page from "../redirects/online"
+import redirect_to_home_page from "../redirects/home"
 
 export default class LoginAPI {
     public static async login_with_form(username: string, password: string): Promise<void> {
@@ -22,7 +22,7 @@ export default class LoginAPI {
             }
 
             TokenAPI.add_token_to_storage(token_from_db)
-            redirect_to_online_page()
+            redirect_to_home_page()
 
         } catch (error: any) {
             console.error('Error:', error.message)

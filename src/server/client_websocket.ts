@@ -88,6 +88,7 @@ export default class ClientWebSocket {
 
     private static async user_id_of_client(): Promise<UUID> {
         if (!ClientWebSocket.token) {
+            redirect_to_login_page()
             throw new Error('Invalid token')
         }
 

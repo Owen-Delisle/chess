@@ -3,7 +3,7 @@ import type { GridPoint } from '../global_types/grid_point'
 import type Piece from '../components/piece/piece'
 import { are_coors_within_board_bounds } from '../utils/bounds'
 import { BlackOrWhite } from '../global_types/enums/black_or_white'
-import PlayerController from '../server/controllers/player_controller'
+import PlayerController from '../controllers/player_controller'
 
 export default class SquareGrid {
 	public static square_grid: Array<Array<Square>> = []

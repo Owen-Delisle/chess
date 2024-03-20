@@ -69,7 +69,7 @@ http_server.get('/tests', (req, res) => {
     res.sendFile(__dirname + '/public/pages/tests.html')
 })
 
-http_server.get('/redirect_to_online', (req, res) => {
+http_server.get('/redirect_to_home', (req, res) => {
     res.redirect('/')
 })
 
@@ -81,6 +81,9 @@ http_server.post('/signup', async (req, res) => {
     const { username, email, password } = req.body
     const id = uuidv4()
     try {
+
+        console.log(username, email, password)
+
         const db = await db_promise
         const saltRounds = 10
         const salt = await bcrypt.genSalt(saltRounds)
