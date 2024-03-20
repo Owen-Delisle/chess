@@ -17,7 +17,6 @@ import GameDeclinedMessage from './messages/game_declined_message'
 import GameRequestDeclined from '../components/message/game_request_declined'
 import GameCanceledMessage from './messages/game_canceled_message'
 import UserAPI from './api/user_api'
-import Pawn from '../components/piece/pieces/pawn'
 import Board from '../components/board/board'
 import GameOverElement from '../components/message/game_over'
 import ActiveGamesAPI from './api/active_games_api'
@@ -68,6 +67,9 @@ export default class ClientWebSocket {
                     break
                 case MessageType.castle_move.toString():
                     ClientWebSocket.castle_with_server_move(message.castle_move)
+                    break
+                case MessageType.en_passant.toString():
+                    ClientWebSocket.take_en_passant_pawn(message.pawn_to_take_pos)
                     break
                 case MessageType.king_check_status.toString():
                     ClientWebSocket.update_king_square_color_with_server(message.square, message.check_status)
@@ -247,6 +249,10 @@ export default class ClientWebSocket {
 
     private static castle_with_server_move(castle_move: CastleMove) {
         this.online_game_board.move_controller.move_castle_pieces(castle_move, MoveInitiator.server)
+    }
+
+    private static take_en_passant_pawn(pawn_to_take_pos: string) {
+        this.online_game_board.piece_list.remove_piece_by_position(pawn_to_take_pos)
     }
 
     private static update_king_square_color_with_server(square: Square, check_status: CheckStatus) {

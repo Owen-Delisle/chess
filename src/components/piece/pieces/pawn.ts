@@ -5,10 +5,8 @@ import SquareGrid from '../../../models/square_grid'
 import { PieceDirections, piece_direction_modifier } from '../piece_directions'
 import { BlackOrWhite } from '../../../global_types/enums/black_or_white'
 import SquareID from '../../../components/square/square_id'
-import { board_start_index } from '../../../utils/bounds'
 import { Move } from '../../../global_types/move'
 import { distance_between_aligned_positions } from '../../../utils/math'
-import { GridPoint } from '../../../global_types/grid_point'
 
 export default class Pawn extends Piece implements Piece_Interface {
 	private maximum_move_distance: number = 2
@@ -19,7 +17,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 	public attack_directions: PieceDirections[] = [PieceDirections.north_east, PieceDirections.north_west]
 	private all_attack_directions: PieceDirections[] = [...this.attack_directions, ...this.en_passant_directions]
 
-	private en_passant_position: string = ""
+	public en_passant_position: string = ""
 
 	//Global Properties
 	//Initial move distance
@@ -115,7 +113,6 @@ export default class Pawn extends Piece implements Piece_Interface {
 		}
 	}
 
-	//Public for testing
 	public conditions_for_en_passant(piece_at_attack_point: Piece | undefined, last_move: Move | undefined): boolean {
 		if(piece_at_attack_point === undefined) {
 			return false
@@ -126,7 +123,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 		}
 
 		if(piece_at_attack_point.type === PieceType.pawn) {
-			if(last_move.piece === piece_at_attack_point) {
+			if(last_move.piece.title === piece_at_attack_point.title) {
 				if(distance_between_aligned_positions(last_move.from, last_move.to) === this.maximum_move_distance) {
 					return true
 				}
@@ -150,11 +147,11 @@ export default class Pawn extends Piece implements Piece_Interface {
 		})
 	}
 
-	private should_en_passant(square_id: string): boolean {
+	public should_en_passant(square_id: string): boolean {
 		return square_id === this.en_passant_position
 	}
 
-	private en_passant() {
+	public en_passant() {
 		const point = SquareGrid.point_at_board_position(this.en_passant_position)
 		SquareGrid.square_by_grid_point({row: point.row+1, col: point.col}).remove_piece()
 	}

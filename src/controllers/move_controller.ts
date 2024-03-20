@@ -20,7 +20,7 @@ import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import { UUID } from 'crypto'
 import PieceList from 'src/models/piece_list'
 import { GameController } from './game_controller'
-import PawnPromotionMessage from '../server/messages/pawn_promotion_message'
+import EnPasssantMessage from 'src/server/messages/enpassant_message'
 
 export default class MoveController {
 	game_controller: GameController
@@ -313,16 +313,30 @@ export default class MoveController {
 			this.handle_player_move(move)	
 		}
 
-		this.attempt_pawn_promotion(move)
+		if(move.piece.type === PieceType.pawn) {
+			this.attempt_pawn_promotion(move)
+			this.attempt_en_passant(move)
+		}
 		this.redraw()
 	}
 
 	private attempt_pawn_promotion(move: Move) {
-		const piece: Piece = move.piece
+		const pawn: Pawn = move.piece as Pawn
 		const next_row: number = SquareGrid.point_at_board_position(move.to).row
-		if (piece.type === PieceType.pawn) {
-			if (next_row === 0 || next_row === 7) {
-				this.piece_list.swap_with_queen(move.to, piece.color)
+		if (next_row === 0 || next_row === 7) {
+			this.piece_list.swap_with_queen(move.to, pawn.color)
+		}
+	}
+
+	private attempt_en_passant(move: Move) {
+		const pawn: Pawn = move.piece as Pawn
+		if(pawn.en_passant_position === move.to) {
+			if(this.game_controller.game_type === GameType.online) {
+				const point: GridPoint = SquareGrid.point_at_board_position(move.to)
+				const pawn_to_take_pos: string = SquareID.pos_at_point({row: point.row+1, col: point.col})
+				ClientWebSocket.send_message_to_server(
+					new EnPasssantMessage(PlayerController.opponent_user_id, pawn_to_take_pos)
+					)
 			}
 		}
 	}

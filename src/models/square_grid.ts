@@ -53,7 +53,6 @@ export default class SquareGrid {
 	}
 
 	public static point_at_board_position(s: string): GridPoint {
-		//TODO Fix for offline
 		const color: BlackOrWhite = PlayerController.player_color
 		if (color === BlackOrWhite.white) {
 			return {

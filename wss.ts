@@ -47,6 +47,9 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             case MessageType.castle_move:
                 send_castle_move_to_recipient(data.recipient_id, data.castle_move)
             break
+            case MessageType.en_passant:
+                send_en_passant_to_recipient(data.recipient_id, data.pawn_to_take_pos)
+            break
             case MessageType.king_check_status:
                 send_check_status_to_recipient(data.recipient_id, data.square, data.check_status)
             break
@@ -143,6 +146,13 @@ function send_move_to_recipient(recipient_id: UUID, move: Move) {
 
 function send_castle_move_to_recipient(recipient_id: UUID, castle_move: CastleMove) {
     const data = {type: MessageType.castle_move.toString(), castle_move}
+    const json_data = JSON.stringify(data)
+
+    active_clients[recipient_id].send(json_data)
+}
+
+function send_en_passant_to_recipient(recipient_id: UUID, pawn_to_take_pos: string) {
+    const data = {type: MessageType.en_passant.toString(), pawn_to_take_pos}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)

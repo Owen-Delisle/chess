@@ -61,7 +61,9 @@ export default class TokenAPI {
                 throw new Error('Failed to fetch')
             }
         } catch (error) {
-            console.error('Error:', error)
+            console.error('MEGA ERROR:', error)
+            localStorage.removeItem('jwtToken')
+            redirect_to_login_page()
             return null
         }
     }
