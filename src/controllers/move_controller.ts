@@ -20,6 +20,7 @@ import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import { UUID } from 'crypto'
 import PieceList from 'src/models/piece_list'
 import { GameController } from './game_controller'
+import PawnPromotionMessage from '../server/messages/pawn_promotion_message'
 
 export default class MoveController {
 	game_controller: GameController
@@ -229,7 +230,7 @@ export default class MoveController {
 				piece.calculate_possible_moves()
 				if (piece.type === PieceType.pawn) {
 					const pawn: Pawn = piece as Pawn
-					pawn.build_possible_attack_list()
+					pawn.build_possible_attack_list(this.game_controller.move_list.last_move())
 				}
 			}
 		})
@@ -302,10 +303,7 @@ export default class MoveController {
 		}
 
 		this.game_controller.add_move_to_list(move)
-
 		this.handle_move(mover, move)
-
-		this.redraw()
 	}
 
 	private handle_move(mover: MoveInitiator, move: Move) {
@@ -314,23 +312,27 @@ export default class MoveController {
 		} else if(mover === MoveInitiator.player) {
 			this.handle_player_move(move)	
 		}
+
+		this.attempt_pawn_promotion(move)
+		this.redraw()
 	}
 
-	private handle_player_move(move: Move) {
-		if(this.game_controller.game_type === GameType.online) {
-			this.online_player_move(move)
-		} else if(this.game_controller.game_type === GameType.offline) {
-			this.offline_player_move(move)
+	private attempt_pawn_promotion(move: Move) {
+		const piece: Piece = move.piece
+		const next_row: number = SquareGrid.point_at_board_position(move.to).row
+		if (piece.type === PieceType.pawn) {
+			if (next_row === 0 || next_row === 7) {
+				this.piece_list.swap_with_queen(move.to, piece.color)
+			}
 		}
 	}
 
-	private async offline_player_move(move: Move) {
+	private async handle_player_move(move: Move) {
 		await move.piece.move_to(move.to)
-	}
 
-	private async online_player_move(move: Move) {
-		this.send_move_to_server(move)
-		await move.piece.move_to(move.to)
+		if(this.game_controller.game_type === GameType.online) {
+			this.send_move_to_server(move)
+		}
 	}
 
 	private send_move_to_server(move: Move) {

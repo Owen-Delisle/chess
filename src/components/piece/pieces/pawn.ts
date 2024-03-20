@@ -5,17 +5,10 @@ import SquareGrid from '../../../models/square_grid'
 import { PieceDirections, piece_direction_modifier } from '../piece_directions'
 import { BlackOrWhite } from '../../../global_types/enums/black_or_white'
 import SquareID from '../../../components/square/square_id'
-import PieceList from '../../../models/piece_list'
-import { board_start_index, row_and_column_size } from '../../../utils/bounds'
-import { GameController } from '../../../controllers/game_controller'
+import { board_start_index } from '../../../utils/bounds'
 import { Move } from '../../../global_types/move'
 import { distance_between_aligned_positions } from '../../../utils/math'
 import { GridPoint } from '../../../global_types/grid_point'
-import GameType from '../../../global_types/enums/game_type'
-import ClientWebSocket from '../../../server/client_websocket'
-import PawnPromotionMessage from '../../../server/messages/pawn_promotion_message'
-import PlayerController from '../../../controllers/player_controller'
-import { UUID } from 'crypto'
 
 export default class Pawn extends Piece implements Piece_Interface {
 	private maximum_move_distance: number = 2
@@ -40,7 +33,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 		this.directions = [PieceDirections.north]
 	}
 
-	public build_possible_attack_list(): void {
+	public build_possible_attack_list(last_move: Move | undefined): void {
 		this.all_attack_directions.forEach((direction) => {
 			const next_row: number =
 				SquareGrid.point_at_board_position(this.pos).row +
@@ -60,7 +53,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 				if(!this.en_passant_directions.includes(direction)) {
 					this.possible_moves.push(SquareID.pos_at_point({ row: next_row, col: next_col }))
 				} else {
-					this.add_en_passant_move(piece_at_attack_point)
+					this.add_en_passant_move(piece_at_attack_point, last_move)
 				}
 			}
 		})
@@ -107,12 +100,12 @@ export default class Pawn extends Piece implements Piece_Interface {
 		return false
 	}
 
-	private add_en_passant_move(piece_at_attack_point: Piece | undefined): void {
+	private add_en_passant_move(piece_at_attack_point: Piece | undefined, last_move: Move | undefined): void {
 		const piece_gp = SquareGrid.point_at_board_position(piece_at_attack_point!.pos)
 		const next_row: number = piece_gp.row
 		const next_col: number = piece_gp.col
 		try {
-			if(this.conditions_for_en_passant(piece_at_attack_point)) {
+			if(this.conditions_for_en_passant(piece_at_attack_point, last_move)) {
 				const en_passant_position = SquareID.pos_at_point({ row: next_row-1, col: next_col })
 				this.possible_moves.push(en_passant_position)
 				this.en_passant_position = en_passant_position
@@ -123,24 +116,22 @@ export default class Pawn extends Piece implements Piece_Interface {
 	}
 
 	//Public for testing
-	public conditions_for_en_passant(piece_at_attack_point: Piece | undefined): boolean {
+	public conditions_for_en_passant(piece_at_attack_point: Piece | undefined, last_move: Move | undefined): boolean {
 		if(piece_at_attack_point === undefined) {
 			return false
 		}
 
-		// if(GameController.move_list.last_move() === undefined) {
-		// 	throw(Error("Move list is empty and not functioning properly."))
-		// }
+		if(!last_move) {
+			return false
+		}
 
-		// const last_move: Move = GameController.move_list.last_move()!
-
-		// if(piece_at_attack_point.type === PieceType.pawn) {
-		// 	if(last_move.piece === piece_at_attack_point) {
-		// 		if(distance_between_aligned_positions(last_move.from, last_move.to) === this.maximum_move_distance) {
-		// 			return true
-		// 		}
-		// 	}
-		// }
+		if(piece_at_attack_point.type === PieceType.pawn) {
+			if(last_move.piece === piece_at_attack_point) {
+				if(distance_between_aligned_positions(last_move.from, last_move.to) === this.maximum_move_distance) {
+					return true
+				}
+			}
+		}
 		return false
 	}
 
@@ -155,26 +146,8 @@ export default class Pawn extends Piece implements Piece_Interface {
 			this.move_distance = this.minimum_move_distance
 			this.possible_moves = []
 
-			const point: GridPoint = SquareGrid.point_at_board_position(new_pos)
-			if (this.should_make_queen(point.row)) {
-				this.make_queen()
-			}
-
 			resolve()
 		})
-	}
-
-	// Public for testing
-	public should_make_queen(new_square_row: number): boolean {
-		return new_square_row === board_start_index
-	}
-
-	private make_queen() {
-		// PieceList.swap_with_queen(this.title, this.pos, this.color)
-		
-		// if(GameController.game_type === GameType.online) {
-		// 	ClientWebSocket.send_message_to_server(new PawnPromotionMessage(PlayerController.opponent_user_id as UUID, this.title))
-		// }
 	}
 
 	private should_en_passant(square_id: string): boolean {
@@ -183,6 +156,6 @@ export default class Pawn extends Piece implements Piece_Interface {
 
 	private en_passant() {
 		const point = SquareGrid.point_at_board_position(this.en_passant_position)
-		// PieceList.remove_piece_by_point({row: point.row+1, col: point.col})
+		SquareGrid.square_by_grid_point({row: point.row+1, col: point.col}).remove_piece()
 	}
 }

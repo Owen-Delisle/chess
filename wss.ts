@@ -56,9 +56,6 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             case MessageType.resignation:
                 send_resignation_message_to_recipient(data.recipient_id)
             break
-            case MessageType.pawn_promotion:
-                send_pawn_promotion_to_recipient(data.recipient_id, data.pawn_id)
-            break
             case MessageType.active_games:
                 send_active_users_to_clients()
             break
@@ -167,13 +164,6 @@ function send_checkmate_to_recipient(sender_id: UUID, recipient_id: UUID, losing
 
 function send_resignation_message_to_recipient(recipient_id: UUID) {
     const data = {type: MessageType.resignation.toString(), recipient_id}
-    const json_data = JSON.stringify(data)
-
-    active_clients[recipient_id].send(json_data)
-}
-
-function send_pawn_promotion_to_recipient(recipient_id: UUID, pawn_id: string) {
-    const data = {type: MessageType.pawn_promotion.toString(), pawn_id}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)

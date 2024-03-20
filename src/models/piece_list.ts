@@ -93,8 +93,8 @@ export default class PieceList {
 		})
 	}
 
-	public swap_with_queen(piece_id: string, position: string, color: BlackOrWhite) {
-		this.remove_piece_by_id(piece_id)
+	public swap_with_queen(position: string, color: BlackOrWhite) {
+		this.remove_piece_by_position(position)
 		this.list.push(
 			piece_factory(`queen_${++this.number_of_queens}`, position, PieceType.queen, color)
 		)

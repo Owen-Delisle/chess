@@ -78,9 +78,6 @@ export default class ClientWebSocket {
                 case MessageType.resignation.toString():
                     ClientWebSocket.resignation_from_server()
                     break
-                case MessageType.pawn_promotion.toString():
-                    ClientWebSocket.promote_pawn_from_server(message.pawn_id)
-                    break
                 case MessageType.logout.toString():
                     ClientWebSocket.logout()
                     break
@@ -306,17 +303,6 @@ export default class ClientWebSocket {
         const game_over_window = new GameOverElement("Resignation")
 
         message_container_element.appendChild(game_over_window)
-    }
-
-    private static promote_pawn_from_server(pawn_id: string) {
-        const pawn_to_promote: Pawn | undefined = this.online_game_board.piece_list.piece_by_id(pawn_id) as Pawn
-
-        if (!pawn_to_promote) {
-            throw new Error("The Pawn to Promote is undefined")
-        }
-
-        this.online_game_board.piece_list.swap_with_queen(pawn_to_promote.title, pawn_to_promote.pos, pawn_to_promote.color)
-        this.online_game_board.redraw()
     }
 
     private static message_channel_open(): boolean {
