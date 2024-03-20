@@ -18,7 +18,7 @@ export default class GameRequestDeclined extends HTMLElement {
         // Header title element
         const header = document.createElement('h2')
         header.textContent = "Game Request Was Declined"
-        header.classList.add('header')
+        header.className = 'header'
 
         const close_button = document.createElement('button')
         close_button.textContent = 'Close'
@@ -26,7 +26,7 @@ export default class GameRequestDeclined extends HTMLElement {
             this.remove_children_from_message_container()
         }
 
-        close_button.classList.add('button', 'close')
+        close_button.className = 'message_button'
 
         // Append elements to wrapper
         wrapper.appendChild(header)
@@ -35,8 +35,7 @@ export default class GameRequestDeclined extends HTMLElement {
         wrapper.className = 'request_message'
 
         this.appendChild(MessageStyles.square_style())
-
-        // Append wrapper to shadow DOM
+        this.shadowRoot?.appendChild(MessageStyles.shadow_styles())
         this.shadowRoot?.appendChild(wrapper)
     }
 

@@ -1,7 +1,8 @@
+import { get_element_by_id } from "../../ui/utils/funcs"
 import MessageStyles from "./styles"
 
 export default class WaitingElement extends HTMLElement {
-    
+
     cancel_game_request: Function
     constructor(cancel_game_request: Function) {
         super()
@@ -20,22 +21,22 @@ export default class WaitingElement extends HTMLElement {
 
         // Header title element
         const header = document.createElement('h2')
-        header.textContent = "Waiting for Game Request Response"
-        header.classList.add('header')
+        header.textContent = "Game Requested"
+        header.className = "header"
 
         // Title in the centre of the square
         const title = document.createElement('h3')
-        title.textContent = `Waiting...`
-        title.classList.add('title')
+        this.waiting_animation(title)
+        title.className = "header"
 
         const cancel_button = document.createElement('button')
         cancel_button.textContent = 'Cancel'
+        cancel_button.className = 'message_button'
+
         cancel_button.onclick = () => {
             this.cancel_game_request()
             this.remove_children_from_message_container()
         }
-
-        cancel_button.classList.add('button', 'cancel')
 
         // Append elements to wrapper
         wrapper.appendChild(header)
@@ -45,21 +46,49 @@ export default class WaitingElement extends HTMLElement {
         wrapper.className = 'request_message'
 
         this.appendChild(MessageStyles.square_style())
-
-        // Append wrapper to shadow DOM
+        this.shadowRoot?.appendChild(MessageStyles.shadow_styles())
         this.shadowRoot?.appendChild(wrapper)
     }
 
     private remove_children_from_message_container(): void {
         const message_container = document.getElementById("message_container")
 
-        if(!message_container) {
+        if (!message_container) {
             throw new Error("MESSAGE CONTAINER NOT FOUND")
         }
 
-        while(message_container?.firstChild) {
+        while (message_container?.firstChild) {
             message_container.removeChild(message_container.firstChild)
         }
+    }
+
+    private waiting_animation(waiting_message: HTMLElement): void {
+        console.log("WAITING")
+        let count = 0
+
+        const animate = () => {
+            console.log("ANIMININATEING")
+            switch (count) {
+                case 0:
+                    waiting_message.textContent = 'Waiting'
+                    break
+                case 1:
+                    waiting_message.textContent = 'Waiting.'
+                    break
+                case 2:
+                    waiting_message.textContent = 'Waiting..'
+                    break
+                case 3:
+                    waiting_message.textContent = 'Waiting...'
+                    count = -1
+                    break
+            }
+
+            count++
+            setTimeout(animate, 400)
+        }
+
+        animate()
     }
 }
 

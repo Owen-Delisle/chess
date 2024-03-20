@@ -109,7 +109,7 @@
 }
 
 .active_user_item:hover {
-    background-color: #45a049; /* Darker green */
+    background-color: #45a049;
 }
 
 .user_list_container {

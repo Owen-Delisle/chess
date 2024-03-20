@@ -27,23 +27,24 @@ export default class GameRequestElement extends HTMLElement {
         // Header title element
         const header = document.createElement('h2')
         header.textContent = 'Game Requested'
-        header.classList.add('header')
+        header.className = 'header'
 
         // Title in the centre of the square
         const title = document.createElement('h3')
-
+    
         const username: string | undefined = await UserAPI.username_from_id(this.requester_id)
         if(!username) {
             throw new Error("Could not query username")
         }
 
         title.textContent = `Game request from: ${username}`
-        title.classList.add('title')
+        title.className = "header"
 
         // Buttons
         const acceptButton = document.createElement('button')
         acceptButton.textContent = 'Accept'
-        acceptButton.classList.add('button', 'accept')
+        acceptButton.className = "message_button"
+        
         acceptButton.onclick = () => {
             this.accept_game_function()
             this.remove_children_from_message_container()
@@ -61,7 +62,7 @@ export default class GameRequestElement extends HTMLElement {
             message_container.removeChild(this)
         }
 
-        declineButton.classList.add('button', 'decline')
+        declineButton.className = 'message_button'
 
         // Append elements to wrapper
         wrapper.appendChild(header)
@@ -72,8 +73,7 @@ export default class GameRequestElement extends HTMLElement {
         wrapper.className = 'request_message'
 
         this.appendChild(MessageStyles.square_style())
-
-        // Append wrapper to shadow DOM
+        this.shadowRoot?.appendChild(MessageStyles.shadow_styles())
         this.shadowRoot?.appendChild(wrapper)
     }
 

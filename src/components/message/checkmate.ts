@@ -16,14 +16,14 @@ export default class CheckmateElement extends HTMLElement {
         wrapper.classList.add('game-request-wrapper')
 
         // Header title element
-        const header = document.createElement('h2')
+        const header = document.createElement('h1')
         header.textContent = "Game Over"
         header.classList.add('header')
 
         // Title in the centre of the square
-        const title = document.createElement('h3')
+        const title = document.createElement('h2')
         title.textContent = `Checkmate`
-        title.classList.add('title')
+        title.className = 'header'
 
         const close_button = document.createElement('button')
         close_button.textContent = 'Close'
@@ -31,7 +31,7 @@ export default class CheckmateElement extends HTMLElement {
             window.location.reload()
         }
 
-        close_button.classList.add('button', 'cancel')
+        close_button.className = 'message_button'
 
         // Append elements to wrapper
         wrapper.appendChild(header)
@@ -41,8 +41,7 @@ export default class CheckmateElement extends HTMLElement {
         wrapper.className = 'request_message'
 
         this.appendChild(MessageStyles.square_style())
-
-        // Append wrapper to shadow DOM
+        this.shadowRoot?.appendChild(MessageStyles.shadow_styles())
         this.shadowRoot?.appendChild(wrapper)
     }
 }
