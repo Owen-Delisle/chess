@@ -17,7 +17,6 @@ export default class SignupController {
                 const email = (get_element_by_id('email') as HTMLInputElement).value
                 const password = (get_element_by_id('password') as HTMLInputElement).value
 
-                console.log("submit clicked")
                 SignupAPI.signup(username, email, password)
             })
         })

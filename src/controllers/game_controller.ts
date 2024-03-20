@@ -57,7 +57,6 @@ export class GameController {
 			}
 		}
 		if(king.check_for_checkmate(this.piece_list) !== undefined) {
-			console.log(king.check_for_checkmate(this.piece_list))
 			king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.lose)
 
 			const winning_king = this.piece_list.king_by_color(not_color(king.color))

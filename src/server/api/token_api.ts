@@ -24,7 +24,6 @@ export default class TokenAPI {
     }
 
     static async retrieve_token_from_db_by_username(username: string): Promise<string | null> {
-        console.log("RETREIVING TOKEN")
         try {
             const response = await fetch('/active_token', {
                 method: 'POST',
@@ -47,7 +46,6 @@ export default class TokenAPI {
 
     static async userID_from_token(token: string): Promise<UUID | null> {
         const token_data = { token: token }
-        console.log(token_data)
         try {
             const response = await fetch('/userID_from_token', {
                 method: 'POST',
@@ -90,7 +88,6 @@ export default class TokenAPI {
     }
 
     static async check_token_in_storage() {
-        console.log("checking token in storage")
         try {
             const response = await fetch('/verify_jwt', {
                 method: 'POST',

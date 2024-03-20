@@ -63,11 +63,9 @@ export default class WaitingElement extends HTMLElement {
     }
 
     private waiting_animation(waiting_message: HTMLElement): void {
-        console.log("WAITING")
         let count = 0
 
         const animate = () => {
-            console.log("ANIMININATEING")
             switch (count) {
                 case 0:
                     waiting_message.textContent = 'Waiting'

@@ -2,8 +2,6 @@ import redirect_to_login_page from "../redirects/login"
 
 export default class SignupAPI {
     public static async signup(username: string, email: string, password: string) {
-        console.log(username, email, password)
-
         try {
             const response = await fetch('/signup', {
                 method: 'POST',
