@@ -28,6 +28,7 @@ export function instantiate_offline_game() {
 
     clear_container_children(container)
     container.appendChild(board)
+    ClientWebSocket.online_game_board = board
 }
 
 export function instantiate_placeholder_board() {

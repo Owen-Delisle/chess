@@ -20,7 +20,7 @@ export default class Square extends HTMLElement {
 		super()
 		this.square_id = SquareID.pos_at_index(square_id)
 		this.color = color
-		this.default_background = color === BlackOrWhite.white ? '#D8ECEC' : '#1FE5DF'
+		this.default_background = color === BlackOrWhite.white ? '#F0D9B5' : '#B58863'
 		this.board = board
 	}
 
