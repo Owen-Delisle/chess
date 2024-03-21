@@ -40,6 +40,7 @@ export default class Board extends HTMLElement {
 		this.add_styles_to_dom()
 		this.board_generator()
 		this.move_controller.load_possible_moves_lists()
+		this.id = "game_board"
 	}
 
 	private add_styles_to_dom() {

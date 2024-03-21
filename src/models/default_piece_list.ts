@@ -46,5 +46,4 @@ function default_piece_list(): Piece[] {
     ]
 }
 
-
 export default default_piece_list

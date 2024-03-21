@@ -25,11 +25,11 @@ import ActiveGame from './types/active_game_type'
 import redirect_to_login_page from './redirects/login'
 import { hide_game_types, hide_user_list, instantiate_online_game } from '../ui/board/board_dom_controller'
 import PlayerController from 'src/controllers/player_controller'
+import { get_element_by_id } from '../ui/utils/funcs'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
     static client_user_id: Promise<UUID> = ClientWebSocket.user_id_of_client()
-    static online_game_board: Board
     static requested_games_from: UUID[] = []
 
     //TODO:: UPDATE WHEN DEPLOYED
@@ -244,15 +244,15 @@ export default class ClientWebSocket {
     }
 
     private static move_piece_with_server_move(move: Move) {
-        this.online_game_board.move_controller.move_piece_to(move, MoveInitiator.server)
+        this.game_board().move_controller.move_piece_to(move, MoveInitiator.server)
     }
 
     private static castle_with_server_move(castle_move: CastleMove) {
-        this.online_game_board.move_controller.move_castle_pieces(castle_move, MoveInitiator.server)
+        this.game_board().move_controller.move_castle_pieces(castle_move, MoveInitiator.server)
     }
 
     private static take_en_passant_pawn(pawn_to_take_pos: string) {
-        this.online_game_board.piece_list.remove_piece_by_position(pawn_to_take_pos)
+        this.game_board().piece_list.remove_piece_by_position(pawn_to_take_pos)
     }
 
     private static update_king_square_color_with_server(square: Square, check_status: CheckStatus) {
@@ -270,8 +270,8 @@ export default class ClientWebSocket {
     }
 
     private static async checkmate_from_server(sender_id: UUID, recipient_id: UUID, losing_king_id: string, winning_king_id: string) {
-        const losing_king: King | undefined = this.online_game_board.piece_list.piece_by_id(losing_king_id) as King
-        const winning_king: King | undefined = this.online_game_board.piece_list.piece_by_id(winning_king_id) as King
+        const losing_king: King | undefined = this.game_board().piece_list.piece_by_id(losing_king_id) as King
+        const winning_king: King | undefined = this.game_board().piece_list.piece_by_id(winning_king_id) as King
 
         if (!losing_king || !winning_king) {
             throw new Error("One of the kings is not defined")
@@ -321,6 +321,10 @@ export default class ClientWebSocket {
             return false
         }
         return true
+    }
+
+    private static game_board(): Board {
+        return get_element_by_id("game_board") as Board
     }
 
     private static logout() {

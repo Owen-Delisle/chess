@@ -22,7 +22,6 @@ export function instantiate_offline_game() {
 
     clear_container_children(container)
     container.appendChild(board)
-    ClientWebSocket.online_game_board = board
 }
 
 export function instantiate_placeholder_board() {
@@ -50,15 +49,17 @@ export async function instantiate_online_game(color: BlackOrWhite, client_id: UU
     hide_user_list()
     hide_game_types()
 
-    const board: Board = new Board(GameType.online, color, client_id, opponent_id)
+    if(document.getElementById("game_board")) {
+        const game_board: Board = get_element_by_id("game_board") as Board
+        game_board.piece_list.list = new Array()
+    }
 
     clear_container_children(container)
+
+    const board: Board = new Board(GameType.online, color, client_id, opponent_id)
     container.appendChild(board)
 
-    //TODO MAKE BETTER
     PlayerController.in_online_game = true
-    ClientWebSocket.online_game_board = board
-    //END MAKE BETTER
 }
 
 function hide_online_elements() {
