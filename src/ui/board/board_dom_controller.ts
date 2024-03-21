@@ -9,6 +9,7 @@ import UserAPI from "src/server/api/user_api"
 import ClientWebSocket from "src/server/client_websocket"
 import ResignationMessage from "src/server/messages/resignation_message"
 import PlayerController from "src/controllers/player_controller"
+import redirect_to_login_page from "src/server/redirects/login"
 
 const container: HTMLElement = get_element_by_id("board_element_container")
 
@@ -48,6 +49,7 @@ export async function instantiate_online_game(color: BlackOrWhite, client_id: UU
     show_resign_button()
     hide_user_list()
     hide_game_types()
+    hide_logout_button()
 
     if(document.getElementById("game_board")) {
         const game_board: Board = get_element_by_id("game_board") as Board
@@ -93,4 +95,19 @@ export function hide_game_types() {
 export function resign() {
     ClientWebSocket.send_message_to_server(new ResignationMessage(PlayerController.opponent_user_id as UUID))
     window.location.reload()
+}
+
+export function logout() {
+    localStorage.removeItem('jwtToken')
+    redirect_to_login_page()
+}
+
+function hide_logout_button() {
+    const logout_element = get_element_by_id("logout_element")
+    hide_element(logout_element)
+}
+
+function show_logout_button() {
+    const logout_element = get_element_by_id("logout_element")
+    show_element(logout_element)
 }

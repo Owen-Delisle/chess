@@ -149,7 +149,7 @@ http_server.post('/login', [
             throw new Error("Secret Key was undefined")
         }
         
-        const token = jwt.sign({ userId: user.id }, secret_key, { expiresIn: '1s' })
+        const token = jwt.sign({ userId: user.id }, secret_key, { expiresIn: '1w' })
 
         const active_token = await db.get('SELECT * FROM active_tokens WHERE user_id = ?', [user.id])
 
@@ -197,7 +197,7 @@ http_server.post('/verify_jwt', async (req, res) => {
         jwt.verify(token, secret_key) as { [key: string]: any }
 
         const user = await db.get('SELECT user_id FROM active_tokens WHERE token = ?', [token])
-        const new_token = jwt.sign({ userId: user.user_id }, secret_key, { expiresIn: '24h' })
+        const new_token = jwt.sign({ userId: user.user_id }, secret_key, { expiresIn: '1w' })
 
         await db.run('UPDATE active_tokens SET token = ? WHERE user_id = ?', [new_token, user.user_id])
 
