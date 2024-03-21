@@ -12,6 +12,7 @@ import PlayerController from "src/controllers/player_controller"
 import redirect_to_login_page from "src/server/redirects/login"
 
 const container: HTMLElement = get_element_by_id("board_element_container")
+const message_container: HTMLElement = get_element_by_id("message_container")
 
 export function instantiate_offline_game() {
     const game_title_element = get_element_by_id("game_title")
@@ -33,6 +34,8 @@ export function instantiate_placeholder_board() {
 
     show_user_list()
 
+    PlayerController.in_online_game = false
+    clear_container_children(message_container)
     clear_container_children(container)
     container.appendChild(board)
 }
@@ -94,7 +97,7 @@ export function hide_game_types() {
 
 export function resign() {
     ClientWebSocket.send_message_to_server(new ResignationMessage(PlayerController.opponent_user_id as UUID))
-    window.location.reload()
+    instantiate_placeholder_board()
 }
 
 export function logout() {

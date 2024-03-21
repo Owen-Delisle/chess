@@ -1,3 +1,4 @@
+import { instantiate_placeholder_board } from "src/ui/board/board_dom_controller"
 import MessageStyles from "./styles"
 
 export default class GameOverElement extends HTMLElement {
@@ -29,7 +30,7 @@ export default class GameOverElement extends HTMLElement {
         const close_button = document.createElement('button')
         close_button.textContent = 'Close'
         close_button.onclick = () => {            
-            window.location.reload()
+            instantiate_placeholder_board()
         }
 
         close_button.className = 'message_button'
