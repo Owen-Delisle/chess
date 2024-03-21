@@ -25,7 +25,7 @@ import ActiveGame from './types/active_game_type'
 import redirect_to_login_page from './redirects/login'
 import { hide_game_types, hide_user_list, instantiate_online_game } from '../ui/board/board_dom_controller'
 import PlayerController from 'src/controllers/player_controller'
-import { get_element_by_id } from '../ui/utils/funcs'
+import { clear_container_children, get_element_by_id } from '../ui/utils/funcs'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -151,6 +151,7 @@ export default class ClientWebSocket {
                 throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
             }
 
+            clear_container_children(message_container_element)
             const game_over_el = new GameOverElement("Lost Connection to Opponent")
             message_container_element.appendChild(game_over_el)
         }
@@ -301,6 +302,7 @@ export default class ClientWebSocket {
 
         const checkmate_window = new GameOverElement("Checkmate")
         setTimeout(() => {
+            clear_container_children(message_container_element)
             message_container_element.appendChild(checkmate_window)
         }, 1000);
 
@@ -322,6 +324,7 @@ export default class ClientWebSocket {
 
         const game_over_window = new GameOverElement("Resignation")
 
+        clear_container_children(message_container_element)
         message_container_element.appendChild(game_over_window)
     }
 

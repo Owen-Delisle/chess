@@ -33,6 +33,9 @@ export function instantiate_placeholder_board() {
     game_title_element.innerHTML = "Online Game"
 
     show_user_list()
+    show_logout_button()
+    show_game_types()
+    hide_resign_button()
 
     PlayerController.in_online_game = false
     clear_container_children(message_container)
@@ -90,9 +93,19 @@ function show_resign_button() {
     show_element(resign_button_element)
 }
 
+function hide_resign_button() {
+    const resign_button_element = get_element_by_id("resign_button")
+    hide_element(resign_button_element)
+}
+
 export function hide_game_types() {
     const game_type_container = get_element_by_id("game_type_container")
     hide_element(game_type_container)
+}
+
+export function show_game_types() {
+    const game_type_container = get_element_by_id("game_type_container")
+    show_element(game_type_container)
 }
 
 export function resign() {
