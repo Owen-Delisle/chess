@@ -1,3 +1,5 @@
+import { moves } from '../../utils/colors'
+
 export default class SquareStyles {
 	public static square_style(): Element {
 		let style = document.createElement('style')
@@ -32,7 +34,7 @@ export default class SquareStyles {
 				position: absolute;
 				}
 				.dot {
-				background-color: #00b7a8;
+				background-color: ${moves};
 				border-radius: 50%;
 				height: 20px;
 				width: 20px;

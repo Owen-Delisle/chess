@@ -20,6 +20,7 @@ import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import { UUID } from 'crypto'
 import { GameController } from './game_controller'
 import EnPasssantMessage from 'src/server/messages/enpassant_message'
+import { from, to } from '../utils/colors'
 
 export default class MoveController {
 	game_controller: GameController
@@ -315,6 +316,8 @@ export default class MoveController {
 			this.attempt_en_passant(move)
 		}
 		this.redraw()
+		SquareGrid.square_by_board_position(move.from)?.add_move_color(`${from}`)
+		SquareGrid.square_by_board_position(move.to)?.add_move_color(`${to}`)
 	}
 
 	private attempt_pawn_promotion(move: Move) {
@@ -395,6 +398,9 @@ export default class MoveController {
 		}
 
 		this.redraw()
+
+		SquareGrid.square_by_board_position(castle_move.king_move.to)?.add_move_color(`${from}`)
+		SquareGrid.square_by_board_position(castle_move.rook_move.to)?.add_move_color(`${to}`)
 	}
 
 	private send_castle_move_to_server(castle_move: CastleMove) {

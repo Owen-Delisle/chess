@@ -7,6 +7,7 @@ import KingCheckStatusMessage, { CheckStatus } from '../../server/messages/king_
 import PlayerController from '../../controllers/player_controller'
 import { UUID } from 'crypto'
 import Board from '../board/board'
+import { moves, check } from 'src/utils/colors'
 
 export default class Square extends HTMLElement {
 	square_id: string
@@ -87,7 +88,7 @@ export default class Square extends HTMLElement {
 
 	public add_border(): void {
 		if (this.element != undefined) {
-			this.element.style.border = 'thick solid #00b7a8'
+			this.element.style.border = `thick solid ${ moves }`
 		}
 	}
 
@@ -119,10 +120,20 @@ export default class Square extends HTMLElement {
 		if(!this.element) {
 			throw new Error('Cannot add check color to undefined')
 		}
-		this.element.style.backgroundColor = 'red'
+		this.element.style.backgroundColor = check
 		if(this.board.game_controller.game_type === GameType.online) {
 			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id as UUID, this, CheckStatus.in_check))
 		}
+	}
+
+	public add_move_color(color: string) {
+		this.element = document.getElementById(`${this.square_id}`)
+
+		if(!this.element) {
+			throw new Error('Cannot add check color to undefined')
+		}
+
+		this.element.style.backgroundColor = color
 	}
 
 	public remove_check_border() {
