@@ -23,10 +23,12 @@ import EnPasssantMessage from 'src/server/messages/enpassant_message'
 import { from, to } from '../utils/colors'
 
 export default class MoveController {
+	square_grid: SquareGrid
 	game_controller: GameController
 	private focused_square: Square | undefined
 
-	constructor(game_controller: GameController) {
+	constructor(square_grid: SquareGrid, game_controller: GameController) {
+		this.square_grid = square_grid
 		this.game_controller = game_controller
 	}
 
@@ -92,7 +94,7 @@ export default class MoveController {
 				if (!king_piece.has_moved && !rook_piece.has_moved) {
 					if (
 						!king_piece.in_check &&
-						!king_piece.kings_castle_squares_attacked(this.game_controller.piece_list, rook_piece)
+						!king_piece.kings_castle_squares_attacked(this.square_grid, this.game_controller.piece_list, rook_piece)
 					) {
 						should_castle = true
 					}
@@ -112,9 +114,9 @@ export default class MoveController {
 
 		const castle_vars: CastleVars = king_piece.castle_vars_for_rook_type(rook_piece.rook_type)
 
-		if (king_piece.squares_between_king_and_rook_empty(this.game_controller.piece_list, rook_piece)) {
-			const king_gp: GridPoint = SquareGrid.point_at_board_position(king_piece.pos)
-			const rook_gp: GridPoint = SquareGrid.point_at_board_position(rook_piece.pos)
+		if (king_piece.squares_between_king_and_rook_empty(this.square_grid, this.game_controller.piece_list, rook_piece)) {
+			const king_gp: GridPoint = this.square_grid.point_at_board_position(king_piece.pos)
+			const rook_gp: GridPoint = this.square_grid.point_at_board_position(rook_piece.pos)
 			const next_king_point: GridPoint = {
 				row: king_gp.row,
 				col: king_gp.col + castle_vars.king_col_modifier,
@@ -220,15 +222,15 @@ export default class MoveController {
 		}
 
 		const king_of_color: King = this.game_controller.piece_list.king_by_color(king_color)
-		king_of_color.render_legal_squares_surrounding_king(this.game_controller.piece_list)
-		king_of_color.render_check_paths_list()
+		king_of_color.render_legal_squares_surrounding_king(this.square_grid, this.game_controller.piece_list)
+		king_of_color.render_check_paths_list(this.square_grid)
 
 		this.game_controller.piece_list.list.forEach((piece) => {
 			if (piece !== undefined) {
-				piece.calculate_possible_moves()
+				piece.calculate_possible_moves(this.square_grid)
 				if (piece.type === PieceType.pawn) {
 					const pawn: Pawn = piece as Pawn
-					pawn.build_possible_attack_list(this.game_controller.move_list.last_move())
+					pawn.build_possible_attack_list(this.square_grid, this.game_controller.move_list.last_move())
 				}
 			}
 		})
@@ -250,14 +252,14 @@ export default class MoveController {
 			this.add_border_to_attacked_piece_for(piece)
 			if (piece.type === PieceType.king) {
 				const king: King = piece as King
-				king.add_borders_to_castleable_rooks(this.game_controller.piece_list, king.rooks_for_king(this.game_controller.piece_list))
+				king.add_borders_to_castleable_rooks(this.square_grid, this.game_controller.piece_list, king.rooks_for_king(this.game_controller.piece_list))
 			}
 		}
 	}
 
 	private add_dots_to_possible_moves_for(piece: Piece | undefined): void {
 		piece!.possible_moves.forEach((possible_move) => {
-			let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
+			let square: Square | undefined = this.square_grid.square_by_board_position(possible_move)
 			if (square != undefined) {
 				if (square.piece_attached_to_square() == undefined) {
 					square.add_dot()
@@ -271,7 +273,7 @@ export default class MoveController {
 			const piece_at_position = this.game_controller.piece_list.piece_by_position(position)
 			if (piece_at_position !== undefined) {
 				if (piece!.color !== piece_at_position.color) {
-					SquareGrid.square_by_board_position(position)!.add_border()
+					this.square_grid.square_by_board_position(position)!.add_border()
 				}
 			}
 		})
@@ -282,7 +284,7 @@ export default class MoveController {
 			throw Error("Piece is undefined")
 		} 
 		piece.possible_moves.forEach((possible_move) => {
-			let square: Square | undefined = SquareGrid.square_by_board_position(possible_move)
+			let square: Square | undefined = this.square_grid.square_by_board_position(possible_move)
 			if (square != undefined) {
 				square.remove_dot()
 				square.remove_border()
@@ -291,7 +293,7 @@ export default class MoveController {
 	}
 
 	public async move_piece_to(move: Move, mover: MoveInitiator): Promise<void> {
-		const new_square = SquareGrid.square_by_board_position(move.to)
+		const new_square = this.square_grid.square_by_board_position(move.to)
 
 		if(!new_square) {
 			throw new Error("New Square Not Found in Move Piece To")
@@ -316,13 +318,13 @@ export default class MoveController {
 			this.attempt_en_passant(move)
 		}
 		this.redraw()
-		SquareGrid.square_by_board_position(move.from)?.add_move_color(`${from}`)
-		SquareGrid.square_by_board_position(move.to)?.add_move_color(`${to}`)
+		this.square_grid.square_by_board_position(move.from)?.add_move_color(`${from}`)
+		this.square_grid.square_by_board_position(move.to)?.add_move_color(`${to}`)
 	}
 
 	private attempt_pawn_promotion(move: Move) {
 		const pawn: Pawn = move.piece as Pawn
-		const next_row: number = SquareGrid.point_at_board_position(move.to).row
+		const next_row: number = this.square_grid.point_at_board_position(move.to).row
 		if (next_row === 0 || next_row === 7) {
 			this.game_controller.piece_list.swap_with_queen(move.to, pawn.color)
 		}
@@ -332,7 +334,7 @@ export default class MoveController {
 		const pawn: Pawn = move.piece as Pawn
 		if(pawn.en_passant_position === move.to) {
 			if(this.game_controller.game_type === GameType.online) {
-				const point: GridPoint = SquareGrid.point_at_board_position(move.to)
+				const point: GridPoint = this.square_grid.point_at_board_position(move.to)
 				const pawn_to_take_pos: string = SquareID.pos_at_point({row: point.row+1, col: point.col})
 				if(!PlayerController.opponent_user_id) {
 					throw new Error("Opponent User ID is undefined")
@@ -370,7 +372,7 @@ export default class MoveController {
 	}
 
 	private remove_piece_conditions(selected_pos: string): boolean {
-		const new_square: Square | undefined = SquareGrid.square_by_board_position(selected_pos)
+		const new_square: Square | undefined = this.square_grid.square_by_board_position(selected_pos)
 
 		if(!new_square) {
 			throw new Error("Square not found in Remove Piece Conditions")
@@ -402,8 +404,8 @@ export default class MoveController {
 
 		this.redraw()
 
-		SquareGrid.square_by_board_position(castle_move.king_move.to)?.add_move_color(`${from}`)
-		SquareGrid.square_by_board_position(castle_move.rook_move.to)?.add_move_color(`${to}`)
+		this.square_grid.square_by_board_position(castle_move.king_move.to)?.add_move_color(`${from}`)
+		this.square_grid.square_by_board_position(castle_move.rook_move.to)?.add_move_color(`${to}`)
 	}
 
 	private send_castle_move_to_server(castle_move: CastleMove) {

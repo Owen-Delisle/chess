@@ -13,9 +13,11 @@ import default_piece_list from './default_piece_list'
 export default class PieceList {
 	private number_of_queens: number = 2
 	list: Piece[]
+	square_grid: SquareGrid
 
-	constructor() {
+	constructor(square_grid: SquareGrid) {
 		this.list = default_piece_list()
+		this.square_grid = square_grid
 	}
 
 	public pieces_by_color(color: BlackOrWhite): Piece[] {
@@ -122,8 +124,8 @@ export default class PieceList {
             return false
         }
 
-        const bishop_1_square_color = SquareGrid.square_by_board_position(bishops[0].pos)!.color
-        const bishop_2_square_color = SquareGrid.square_by_board_position(bishops[1].pos)!.color
+        const bishop_1_square_color = this.square_grid.square_by_board_position(bishops[0].pos)!.color
+        const bishop_2_square_color = this.square_grid.square_by_board_position(bishops[1].pos)!.color
 
         if(bishop_1_square_color !== bishop_2_square_color) {
             return false

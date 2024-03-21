@@ -293,8 +293,8 @@ export default class ClientWebSocket {
             throw new Error("One of the kings is not defined")
         }
 
-        losing_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.lose)
-        winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
+        losing_king.switch_image_with_endgame_image(this.game_board().square_grid, GameEndType.checkmate, WinOrLose.lose)
+        winning_king.switch_image_with_endgame_image(this.game_board().square_grid, GameEndType.checkmate, WinOrLose.win)
 
         const message_container_element: HTMLElement | null = document.getElementById('message_container')
         if (!message_container_element) {

@@ -10,16 +10,19 @@ import { UUID } from 'crypto'
 import GameOverElement from '../components/message/game_over'
 import PieceList from '../models/piece_list'
 import Board from 'src/components/board/board'
+import SquareGrid from 'src/models/square_grid'
 
 export class GameController {
 	public game_type: GameType
 	public turn = BlackOrWhite.white
 	public move_list: MoveList = new MoveList()
+	square_grid: SquareGrid
 	piece_list: PieceList
 	
 	private insufficient_material_value: number = 3
 
-	constructor(piece_list: PieceList, game_type: GameType) {
+	constructor(square_grid: SquareGrid, piece_list: PieceList, game_type: GameType) {
+		this.square_grid = square_grid
 		this.piece_list = piece_list
 		this.game_type = game_type
 	}
@@ -57,10 +60,10 @@ export class GameController {
 			}
 		}
 		if(king.check_for_checkmate(this.piece_list) !== undefined) {
-			king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.lose)
+			king.switch_image_with_endgame_image(this.square_grid, GameEndType.checkmate, WinOrLose.lose)
 
 			const winning_king = this.piece_list.king_by_color(not_color(king.color))
-			winning_king.switch_image_with_endgame_image(GameEndType.checkmate, WinOrLose.win)
+			winning_king.switch_image_with_endgame_image(this.square_grid, GameEndType.checkmate, WinOrLose.win)
 
 			if(this.game_type === GameType.online) {
 				ClientWebSocket.send_message_to_server(new CheckmateMessage(PlayerController.player_id, PlayerController.opponent_user_id as UUID, king.title, winning_king.title))

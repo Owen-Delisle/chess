@@ -15,6 +15,7 @@ export default class Board extends HTMLElement {
 	container_node: Element = document.createElement('div')
 	board_size: number = Math.pow(row_and_column_size,2)
 	piece_list: PieceList
+	square_grid: SquareGrid
 	move_controller: MoveController
 	game_controller: GameController
 
@@ -30,9 +31,10 @@ export default class Board extends HTMLElement {
 			PlayerController.opponent_user_id = opponent_user_id
 		}
 		
-		this.piece_list = new PieceList()
-		this.game_controller = new GameController(this.piece_list, game_type)
-		this.move_controller = new MoveController(this.game_controller)
+		this.square_grid = new SquareGrid()
+		this.piece_list = new PieceList(this.square_grid)
+		this.game_controller = new GameController(this.square_grid, this.piece_list, game_type)
+		this.move_controller = new MoveController(this.square_grid, this.game_controller)
 		this.render()
 	}
 
@@ -79,7 +81,7 @@ export default class Board extends HTMLElement {
 			row_node.appendChild(next_square)
 
 			if (row_array.length === row_and_column_size) {
-				SquareGrid.square_grid.push(row_array)
+				this.square_grid.grid.push(row_array)
 				row_array = []
 			}
 		}
@@ -113,7 +115,7 @@ export default class Board extends HTMLElement {
 	}
 
 	public async redraw() {
-		SquareGrid.square_grid = []
+		this.square_grid.grid = []
 		document.querySelectorAll('.row').forEach((e) => e.remove())
 		this.add_squares_to_board()
 		this.move_controller.clear_possible_moves_lists()

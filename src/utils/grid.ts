@@ -3,8 +3,8 @@ import { are_coors_within_board_bounds } from './bounds'
 import { PieceDirections, piece_direction_modifier } from '../components/piece/piece_directions'
 import SquareGrid from '../models/square_grid'
 
-export function square_is_empty(point: GridPoint): boolean {
-	return SquareGrid.piece_by_grid_point(point)! === undefined
+export function square_is_empty(square_grid: SquareGrid, point: GridPoint): boolean {
+	return square_grid.piece_by_grid_point(point)! === undefined
 }
 
 export function surrounding_points(grid_point: GridPoint): GridPoint[] {

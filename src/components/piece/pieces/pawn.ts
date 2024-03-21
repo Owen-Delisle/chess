@@ -31,16 +31,16 @@ export default class Pawn extends Piece implements Piece_Interface {
 		this.directions = [PieceDirections.north]
 	}
 
-	public build_possible_attack_list(last_move: Move | undefined): void {
+	public build_possible_attack_list(square_grid: SquareGrid, last_move: Move | undefined): void {
 		this.all_attack_directions.forEach((direction) => {
 			const next_row: number =
-				SquareGrid.point_at_board_position(this.pos).row +
+				square_grid.point_at_board_position(this.pos).row +
 				piece_direction_modifier(direction).row
 			const next_col: number =
-				SquareGrid.point_at_board_position(this.pos).col +
+				square_grid.point_at_board_position(this.pos).col +
 				piece_direction_modifier(direction).col
 
-			const piece_at_attack_point: Piece | undefined = SquareGrid.piece_by_grid_point({
+			const piece_at_attack_point: Piece | undefined = square_grid.piece_by_grid_point({
 				row: next_row,
 				col: next_col,
 			})
@@ -51,7 +51,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 				if(!this.en_passant_directions.includes(direction)) {
 					this.possible_moves.push(SquareID.pos_at_point({ row: next_row, col: next_col }))
 				} else {
-					this.add_en_passant_move(piece_at_attack_point, last_move)
+					this.add_en_passant_move(square_grid, piece_at_attack_point, last_move)
 				}
 			}
 		})
@@ -98,12 +98,12 @@ export default class Pawn extends Piece implements Piece_Interface {
 		return false
 	}
 
-	private add_en_passant_move(piece_at_attack_point: Piece | undefined, last_move: Move | undefined): void {
-		const piece_gp = SquareGrid.point_at_board_position(piece_at_attack_point!.pos)
+	private add_en_passant_move(square_grid: SquareGrid, piece_at_attack_point: Piece | undefined, last_move: Move | undefined): void {
+		const piece_gp = square_grid.point_at_board_position(piece_at_attack_point!.pos)
 		const next_row: number = piece_gp.row
 		const next_col: number = piece_gp.col
 		try {
-			if(this.conditions_for_en_passant(piece_at_attack_point, last_move)) {
+			if(this.conditions_for_en_passant(square_grid, piece_at_attack_point, last_move)) {
 				const en_passant_position = SquareID.pos_at_point({ row: next_row-1, col: next_col })
 				this.possible_moves.push(en_passant_position)
 				this.en_passant_position = en_passant_position
@@ -113,7 +113,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 		}
 	}
 
-	public conditions_for_en_passant(piece_at_attack_point: Piece | undefined, last_move: Move | undefined): boolean {
+	public conditions_for_en_passant(square_grid: SquareGrid, piece_at_attack_point: Piece | undefined, last_move: Move | undefined): boolean {
 		if(piece_at_attack_point === undefined) {
 			return false
 		}
@@ -124,7 +124,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 
 		if(piece_at_attack_point.type === PieceType.pawn) {
 			if(last_move.piece.title === piece_at_attack_point.title) {
-				if(distance_between_aligned_positions(last_move.from, last_move.to) === this.maximum_move_distance) {
+				if(distance_between_aligned_positions(square_grid, last_move.from, last_move.to) === this.maximum_move_distance) {
 					return true
 				}
 			}
@@ -135,9 +135,9 @@ export default class Pawn extends Piece implements Piece_Interface {
 	public move_to(new_pos: string): Promise<void> {
 		return new Promise(async (resolve) => {
 
-			if(this.should_en_passant(new_pos)) {
-				this.en_passant()
-			}
+			// if(this.should_en_passant(new_pos)) {
+			// 	this.en_passant(square_grid)
+			// }
 			
 			this.pos = new_pos
 			this.move_distance = this.minimum_move_distance
@@ -151,8 +151,8 @@ export default class Pawn extends Piece implements Piece_Interface {
 		return square_id === this.en_passant_position
 	}
 
-	public en_passant() {
-		const point = SquareGrid.point_at_board_position(this.en_passant_position)
-		SquareGrid.square_by_grid_point({row: point.row+1, col: point.col}).remove_piece()
+	public en_passant(square_grid: SquareGrid) {
+		const point = square_grid.point_at_board_position(this.en_passant_position)
+		square_grid.square_by_grid_point({row: point.row+1, col: point.col}).remove_piece()
 	}
 }
