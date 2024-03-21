@@ -103,11 +103,11 @@ export function logout() {
 }
 
 function hide_logout_button() {
-    const logout_element = get_element_by_id("logout_element")
+    const logout_element = get_element_by_id("logout_button")
     hide_element(logout_element)
 }
 
 function show_logout_button() {
-    const logout_element = get_element_by_id("logout_element")
+    const logout_element = get_element_by_id("logout_button")
     show_element(logout_element)
 }

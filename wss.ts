@@ -66,9 +66,11 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
     })
 
     client_connection.on('close', function() {
+        console.log('Client Closed Connection')
         Object.keys(active_clients).find(user_id => {
             if(active_clients[user_id] === client_connection) {
                 delete active_clients[user_id]
+                send_lost_connection_to_clients(user_id as UUID)
             }
         })
         send_active_users_to_clients()
@@ -101,10 +103,19 @@ function update_active_users_table(client_connection: WebSocket, req: WebSocket.
     console.log('Client connected')
 }
 
+//TODO:: Probably shouldnt be sending the whole list every time
 function send_active_users_to_clients() {
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify({ type: MessageType.active_users.toString(), users: Object.keys(active_clients) }))
+        }
+    })
+}
+
+function send_lost_connection_to_clients(user_id: UUID) {
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ type: MessageType.connection_lost.toString(), user_id: user_id }))
         }
     })
 }

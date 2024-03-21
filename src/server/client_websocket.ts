@@ -47,8 +47,10 @@ export default class ClientWebSocket {
 
             switch (message_type) {
                 case MessageType.active_users.toString():
-                    console.log("active users from server", message.users)
                     ClientWebSocket.update_active_users_list_ui(message.users)
+                    break
+                case MessageType.connection_lost.toString():
+                    ClientWebSocket.handle_lost_connection(message.user_id)
                     break
                 case MessageType.game_request.toString():
                     ClientWebSocket.update_request_list_ui(message.requesting_user, message.recieving_user)
@@ -131,7 +133,7 @@ export default class ClientWebSocket {
 
                 list_item.textContent = username
 
-                list_item.addEventListener('click', async function () {
+                list_item.addEventListener('click', async function() {
                     if (ClientWebSocket.message_channel_open()) {
                         ClientWebSocket.request_game(typed_user_id)
                     }
@@ -140,6 +142,18 @@ export default class ClientWebSocket {
                 user_list_element.appendChild(list_item)
             }
         })
+    }
+
+    private static handle_lost_connection(user_id: UUID) {
+        if(PlayerController.opponent_user_id === user_id) {
+            const message_container_element: HTMLElement | null = document.getElementById('message_container')
+            if (!message_container_element) {
+                throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
+            }
+
+            const game_over_el = new GameOverElement("Lost Connection to Opponent")
+            message_container_element.appendChild(game_over_el)
+        }
     }
 
     private static async request_game(recieving_user: UUID) {
