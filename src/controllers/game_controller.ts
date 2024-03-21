@@ -70,7 +70,7 @@ export class GameController {
 				if (!message_container_element) {
 					throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
 				}
-				const checkmate_window = new GameOverElement("Checkmate")
+				const checkmate_window = new GameOverElement("Checkmate. You Lose.")
 				setTimeout(() => {
 					message_container_element.appendChild(checkmate_window)
 				}, 1000);

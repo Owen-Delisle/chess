@@ -47,7 +47,7 @@ http_server.use(express.json())
 http_server.use(express.static(path.join(__dirname, 'public')))
 
 http_server.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/pages/online_game.html')
+    res.sendFile(__dirname + '/public/pages/game.html')
 })
 
 http_server.get('/signup', (req, res) => {

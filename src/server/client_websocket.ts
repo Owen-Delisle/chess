@@ -26,6 +26,7 @@ import redirect_to_login_page from './redirects/login'
 import { hide_game_types, hide_user_list, instantiate_online_game } from '../ui/board/board_dom_controller'
 import PlayerController from 'src/controllers/player_controller'
 import { clear_container_children, get_element_by_id } from '../ui/utils/funcs'
+import { check } from '../utils/colors'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -277,7 +278,7 @@ export default class ClientWebSocket {
             throw new Error("Square Element is undefined or null")
         }
         if (check_status === CheckStatus.in_check) {
-            element.style.backgroundColor = 'red'
+            element.style.backgroundColor = check
         }
         if (check_status === CheckStatus.not_in_check) {
             element.style.backgroundColor = square.default_background
@@ -300,7 +301,7 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        const checkmate_window = new GameOverElement("Checkmate")
+        const checkmate_window = new GameOverElement("Checkmate. You Win.")
         setTimeout(() => {
             clear_container_children(message_container_element)
             message_container_element.appendChild(checkmate_window)
@@ -322,7 +323,7 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        const game_over_window = new GameOverElement("Resignation")
+        const game_over_window = new GameOverElement("You Won by Resignation")
 
         clear_container_children(message_container_element)
         message_container_element.appendChild(game_over_window)

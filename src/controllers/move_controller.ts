@@ -1,5 +1,5 @@
 import type Square from '../components/square/square'
-import type Piece from '../components/piece/piece'
+import Piece from '../components/piece/piece'
 import type { GridPoint } from '../global_types/grid_point'
 import SquareGrid from '../models/square_grid'
 import type King from '../components/piece/pieces/king'
@@ -238,7 +238,7 @@ export default class MoveController {
 
 	public clear_possible_moves_lists(): void {
 		this.game_controller.piece_list.list.forEach((piece) => {
-			if (piece != undefined) {
+			if (piece !== undefined) {
 				piece.possible_moves = []
 			}
 		})
@@ -334,9 +334,12 @@ export default class MoveController {
 			if(this.game_controller.game_type === GameType.online) {
 				const point: GridPoint = SquareGrid.point_at_board_position(move.to)
 				const pawn_to_take_pos: string = SquareID.pos_at_point({row: point.row+1, col: point.col})
-				ClientWebSocket.send_message_to_server(
-					new EnPasssantMessage(PlayerController.opponent_user_id, pawn_to_take_pos)
-					)
+				if(!PlayerController.opponent_user_id) {
+					throw new Error("Opponent User ID is undefined")
+				}
+
+				ClientWebSocket.send_message_to_server
+				(new EnPasssantMessage(PlayerController.opponent_user_id, pawn_to_take_pos))
 			}
 		}
 	}

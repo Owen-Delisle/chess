@@ -11,7 +11,10 @@ import ResignationMessage from "src/server/messages/resignation_message"
 import PlayerController from "src/controllers/player_controller"
 import redirect_to_login_page from "src/server/redirects/login"
 
-const container: HTMLElement = get_element_by_id("board_element_container")
+const offline_board_container: HTMLElement = get_element_by_id("offline_board_container")
+const placeholder_board_container: HTMLElement = get_element_by_id("placeholder_board_container")
+const online_board_container: HTMLElement = get_element_by_id("online_board_container")
+
 const message_container: HTMLElement = get_element_by_id("message_container")
 
 export function instantiate_offline_game() {
@@ -20,10 +23,16 @@ export function instantiate_offline_game() {
 
     hide_online_elements()
 
-    const board: Board = new Board(GameType.offline)
+    clear_container_children(offline_board_container)
 
-    clear_container_children(container)
-    container.appendChild(board)
+    const board: Board = new Board(GameType.offline, BlackOrWhite.white)
+    offline_board_container.appendChild(board)
+
+    board.redraw()
+
+    show_element(offline_board_container)
+    hide_element(placeholder_board_container)
+    hide_element(online_board_container)
 }
 
 export function instantiate_placeholder_board() {
@@ -38,9 +47,15 @@ export function instantiate_placeholder_board() {
     hide_resign_button()
 
     PlayerController.in_online_game = false
+    PlayerController.opponent_user_id = undefined
+
     clear_container_children(message_container)
-    clear_container_children(container)
-    container.appendChild(board)
+    clear_container_children(placeholder_board_container)
+    placeholder_board_container.appendChild(board)
+
+    hide_element(offline_board_container)
+    show_element(placeholder_board_container)
+    hide_element(online_board_container)
 }
 
 export async function instantiate_online_game(color: BlackOrWhite, client_id: UUID, opponent_id: UUID) {
@@ -57,17 +72,17 @@ export async function instantiate_online_game(color: BlackOrWhite, client_id: UU
     hide_game_types()
     hide_logout_button()
 
-    if(document.getElementById("game_board")) {
-        const game_board: Board = get_element_by_id("game_board") as Board
-        game_board.piece_list.list = new Array()
-    }
-
-    clear_container_children(container)
-
+    clear_container_children(online_board_container)
     const board: Board = new Board(GameType.online, color, client_id, opponent_id)
-    container.appendChild(board)
+    online_board_container.appendChild(board)
+
+    board.redraw()
 
     PlayerController.in_online_game = true
+
+    hide_element(offline_board_container)
+    hide_element(placeholder_board_container)
+    show_element(online_board_container)
 }
 
 function hide_online_elements() {
