@@ -16,9 +16,7 @@ export default class TokenAPI {
                 localStorage.setItem(this.jwt_token_id, token)
             }
         } catch (error: any) {
-            // Handle verification error
             console.error('Verification error:', error.message)
-            // Optionally rethrow the error to propagate it to the caller
             throw error
         }
     }
@@ -61,7 +59,8 @@ export default class TokenAPI {
                 throw new Error('Failed to fetch')
             }
         } catch (error) {
-            console.error('MEGA ERROR:', error)
+            alert('Bad Token. Log in again.')
+            console.error('Error:', error)
             localStorage.removeItem('jwtToken')
             redirect_to_login_page()
             return null
@@ -86,33 +85,6 @@ export default class TokenAPI {
         } catch (error) {
             console.error('Error:', error)
             return false
-        }
-    }
-
-    static async check_token_in_storage() {
-        try {
-            const response = await fetch('/verify_jwt', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ token: localStorage.getItem('jwtToken') }),
-            })
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch')
-            } 
-                
-            const data = await response.json()
-            if(data.success) {
-                localStorage.setItem('jwtToken', data.token)
-            } else {
-                redirect_to_login_page()
-            }
-
-        } catch (error) {
-            console.log('ERROR', error)
-            redirect_to_login_page()
         }
     }
 }

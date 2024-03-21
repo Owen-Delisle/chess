@@ -149,7 +149,7 @@ http_server.post('/login', [
             throw new Error("Secret Key was undefined")
         }
         
-        const token = jwt.sign({ userId: user.id }, secret_key, { expiresIn: '24h' })
+        const token = jwt.sign({ userId: user.id }, secret_key, { expiresIn: '1s' })
 
         const active_token = await db.get('SELECT * FROM active_tokens WHERE user_id = ?', [user.id])
 
