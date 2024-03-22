@@ -122,7 +122,7 @@ export default class Square extends HTMLElement {
 		}
 		this.element.style.backgroundColor = check
 		if(this.board.game_controller.game_type === GameType.online) {
-			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id as UUID, this, CheckStatus.in_check))
+			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id as UUID, this.square_id, CheckStatus.in_check))
 		}
 	}
 
@@ -147,7 +147,7 @@ export default class Square extends HTMLElement {
 		this.element.style.backgroundColor = this.default_background
 
 		if(this.board.game_controller.game_type === GameType.online) {
-			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id as UUID, this, CheckStatus.not_in_check))
+			ClientWebSocket.send_message_to_server(new KingCheckStatusMessage(PlayerController.opponent_user_id as UUID, this.square_id, CheckStatus.not_in_check))
 		}
 	}
 

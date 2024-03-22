@@ -5,13 +5,13 @@ import Square from "../../components/square/square";
 export default class KingCheckStatusMessage extends Message {
     recipient_id: UUID
     check_status: CheckStatus
-    square: Square
+    square_id: string
 
-    constructor(recipient_id: UUID, square: Square, check_status: CheckStatus) {
+    constructor(recipient_id: UUID, square_id: string, check_status: CheckStatus) {
         super(MessageType.king_check_status)
 
         this.recipient_id = recipient_id
-        this.square = square
+        this.square_id = square_id
         this.check_status = check_status
     }
 }

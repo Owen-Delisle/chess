@@ -75,7 +75,7 @@ export default class ClientWebSocket {
                     ClientWebSocket.take_en_passant_pawn(message.pawn_to_take_pos)
                     break
                 case MessageType.king_check_status.toString():
-                    ClientWebSocket.update_king_square_color_with_server(message.square, message.check_status)
+                    ClientWebSocket.update_king_square_color_with_server(message.square_id, message.check_status)
                     break
                 case MessageType.checkmate.toString():
                     ClientWebSocket.checkmate_from_server(message.sender_id, message.recipient_id, message.losing_king_id, message.winning_king_id)
@@ -271,8 +271,9 @@ export default class ClientWebSocket {
         this.game_board().piece_list.remove_piece_by_position(pawn_to_take_pos)
     }
 
-    private static update_king_square_color_with_server(square: Square, check_status: CheckStatus) {
-        const element: HTMLElement | null = document.getElementById(square.square_id)
+    private static update_king_square_color_with_server(square_id: string, check_status: CheckStatus) {
+        console.log(square_id)
+        const element: HTMLElement | null = document.getElementById(square_id)
 
         if (!element) {
             throw new Error("Square Element is undefined or null")
@@ -281,6 +282,7 @@ export default class ClientWebSocket {
             element.style.backgroundColor = check
         }
         if (check_status === CheckStatus.not_in_check) {
+            const square = element as Square
             element.style.backgroundColor = square.default_background
         }
     }

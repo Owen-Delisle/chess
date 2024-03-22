@@ -51,7 +51,7 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
                 send_en_passant_to_recipient(data.recipient_id, data.pawn_to_take_pos)
             break
             case MessageType.king_check_status:
-                send_check_status_to_recipient(data.recipient_id, data.square, data.check_status)
+                send_check_status_to_recipient(data.recipient_id, data.square_id, data.check_status)
             break
             case MessageType.checkmate:
                 send_checkmate_to_recipient(data.sender_id, data.recipient_id, data.losing_king_id, data.winning_king_id)
@@ -169,8 +169,8 @@ function send_en_passant_to_recipient(recipient_id: UUID, pawn_to_take_pos: stri
     active_clients[recipient_id].send(json_data)
 }
 
-function send_check_status_to_recipient(recipient_id: UUID, square: Square, check_status: CheckStatus) {
-    const data = {type: MessageType.king_check_status.toString(), square, check_status}
+function send_check_status_to_recipient(recipient_id: UUID, square_id: string, check_status: CheckStatus) {
+    const data = {type: MessageType.king_check_status.toString(), square_id, check_status}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)
