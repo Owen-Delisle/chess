@@ -7,16 +7,29 @@ import { board_start_index, row_and_column_size } from '../utils/bounds'
 import TestRunner from './test_runner'
 import TestStyles from './styles'
 import Test from './test'
+import PieceList from '../models/piece_list'
+import { GameController } from '../controllers/game_controller'
+import GameType from 'src/global_types/enums/game_type'
 
 export default class TestView extends HTMLElement {
-    constructor() {
+    square_grid: SquareGrid
+    piece_list: PieceList
+    move_controller: MoveController
+    game_controller: GameController
+    board: Board
+    constructor(square_grid: SquareGrid, piece_list: PieceList, move_controller: MoveController, game_controller: GameController) {
         super()
+        this.square_grid = square_grid
+        this.piece_list = piece_list
+        this.move_controller = move_controller
+        this.game_controller = game_controller
+        this.board = new Board(GameType.offline, BlackOrWhite.white)
         this.render()
     }
 
     render(): void {
         this.build_square_grid()
-        MoveController.load_possible_moves_lists()
+        this.move_controller.load_possible_moves_lists()
         this.append_children()
     }
 
@@ -29,7 +42,7 @@ export default class TestView extends HTMLElement {
             this.appendChild(test_view)
             this.className = "test_view"
 
-            const test_runner = new TestRunner()
+            const test_runner = new TestRunner(this.square_grid, this.piece_list, this.move_controller, this.game_controller)
 
             this.render_board_list(test_runner.build_checkmate_board_list(), test_view, "Checkmate Tests")
             this.render_board_list(test_runner.build_stalemate_board_list(), test_view, "Stalemate Tests")
@@ -75,13 +88,13 @@ export default class TestView extends HTMLElement {
     private build_square_grid(): void {
         let next_square: Square
         let row_array: Square[] = []
-        for (let col = board_start_index; col < Board.board_size; col++) {
+        for (let col = board_start_index; col < 64; col++) {
             next_square = this.instantiate_square(col)
 
             row_array.push(next_square)
 
             if (row_array.length === row_and_column_size) {
-                SquareGrid.square_grid.push(row_array)
+                this.square_grid.grid.push(row_array)
                 row_array = []
             }
         }
@@ -93,7 +106,7 @@ export default class TestView extends HTMLElement {
             color = BlackOrWhite.white
         }
 
-        let square: Square = new Square(color, index)
+        let square: Square = new Square(color, index, this.board)
 
         return square
     }
