@@ -133,12 +133,7 @@ export default class Pawn extends Piece implements Piece_Interface {
 	}
 
 	public move_to(new_pos: string): Promise<void> {
-		return new Promise(async (resolve) => {
-
-			// if(this.should_en_passant(new_pos)) {
-			// 	this.en_passant(square_grid)
-			// }
-			
+		return new Promise(async (resolve) => {			
 			this.pos = new_pos
 			this.move_distance = this.minimum_move_distance
 			this.possible_moves = []

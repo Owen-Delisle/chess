@@ -331,8 +331,12 @@ export default class MoveController {
 	}
 
 	private attempt_en_passant(move: Move) {
-		const pawn: Pawn = move.piece as Pawn
+		// const pawn: Pawn = move.piece as Pawn
+		const pawn: Pawn = this.game_controller.piece_list.piece_by_id(move.piece.title) as Pawn
 		if(pawn.en_passant_position === move.to) {
+
+			pawn.en_passant(this.square_grid)
+
 			if(this.game_controller.game_type === GameType.online) {
 				const point: GridPoint = this.square_grid.point_at_board_position(move.to)
 				const pawn_to_take_pos: string = SquareID.pos_at_point({row: point.row+1, col: point.col})
