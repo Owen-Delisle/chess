@@ -17,23 +17,28 @@ export default class TestView extends HTMLElement {
     move_controller: MoveController
     game_controller: GameController
     board: Board
-    constructor(square_grid: SquareGrid, piece_list: PieceList, move_controller: MoveController, game_controller: GameController) {
+    constructor() {
         super()
-        this.square_grid = square_grid
-        this.piece_list = piece_list
-        this.move_controller = move_controller
-        this.game_controller = game_controller
+        this.square_grid = new SquareGrid()
+        this.piece_list = new PieceList(this.square_grid)
+        this.game_controller = new GameController(this.square_grid, this.piece_list, GameType.offline)
+        this.move_controller = new MoveController(this.square_grid, this.game_controller)
         this.board = new Board(GameType.offline, BlackOrWhite.white)
+
+        // this.board.piece_list.list = anastasias_mate().board
+
         this.render()
     }
 
     render(): void {
-        this.build_square_grid()
-        this.move_controller.load_possible_moves_lists()
-        this.append_children()
+        const board_container: Board = document.getElementById("board_container") as Board
+        board_container!.append(this.board)
+
+        this.append_tests()
+        // clear_container_children(board_container)
     }
 
-    private append_children(): Promise<void> {
+    private append_tests(): Promise<void> {
         return new Promise(async (resolve) => {
             this.appendChild(TestStyles.test_style())
 
@@ -42,7 +47,7 @@ export default class TestView extends HTMLElement {
             this.appendChild(test_view)
             this.className = "test_view"
 
-            const test_runner = new TestRunner(this.square_grid, this.piece_list, this.move_controller, this.game_controller)
+            const test_runner = new TestRunner(this.board)
 
             this.render_board_list(test_runner.build_checkmate_board_list(), test_view, "Checkmate Tests")
             this.render_board_list(test_runner.build_stalemate_board_list(), test_view, "Stalemate Tests")
@@ -50,7 +55,7 @@ export default class TestView extends HTMLElement {
 
             const special_tests: Test[] = [
                 ...test_runner.build_castle_boards(), 
-                ...test_runner.build_promotion_boards(),
+                // ...test_runner.build_promotion_boards(),
                 ...test_runner.build_en_passant_boards(),
             ]
 
@@ -83,48 +88,6 @@ export default class TestView extends HTMLElement {
         let title: Element = document.createElement('p')
         title.textContent = content
         el.appendChild(title)
-    }
-
-    private build_square_grid(): void {
-        let next_square: Square
-        let row_array: Square[] = []
-        for (let col = board_start_index; col < 64; col++) {
-            next_square = this.instantiate_square(col)
-
-            row_array.push(next_square)
-
-            if (row_array.length === row_and_column_size) {
-                this.square_grid.grid.push(row_array)
-                row_array = []
-            }
-        }
-    }
-
-    private instantiate_square(index: number): Square {
-        let color: BlackOrWhite = BlackOrWhite.black
-        if (index % 2 === this.current_row(index)) {
-            color = BlackOrWhite.white
-        }
-
-        let square: Square = new Square(color, index, this.board)
-
-        return square
-    }
-
-    private current_row(i: number): number {
-        let mod: number = board_start_index
-
-        if (i > 7 && i < 16) {
-            mod = 1
-        } else if (i > 23 && i < 32) {
-            mod = 1
-        } else if (i > 39 && i < 48) {
-            mod = 1
-        } else if (i > 55) {
-            mod = 1
-        }
-
-        return mod
     }
 }
 

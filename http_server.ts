@@ -58,14 +58,6 @@ http_server.get('/login', (req, res) => {
     res.sendFile(__dirname + '/public/pages/login.html')
 })
 
-http_server.get('/dashboard', (req, res) => {
-    res.sendFile(__dirname + '/public/pages/dashboard.html')
-})
-
-http_server.get('/otb', (req, res) => {
-    res.sendFile(__dirname + '/public/pages/otb.html')
-})
-
 http_server.get('/tests', (req, res) => {
     res.sendFile(__dirname + '/public/pages/tests.html')
 })

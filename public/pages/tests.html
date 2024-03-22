@@ -2,17 +2,21 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" />
-  <script src="index.js" type="module"></script>
-  <title>Chess Tests</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" />
+	<!-- <script src="/components/board/board.js" type="module"></script> -->
+	<script src="/tests/startup_script.js" type="module"></script>
+	<title>Chess Tests</title>
 
 </head>
 
 <body>
-  
-<test-element></test-element>
-
+	<test_container id="test_container">
+		<!-- tests will be appended here -->
+	</test_container>
+	<div id="message_container"></div>
+	<div id="board_container" style="visibility: visible;"></div>
 </body>
+
 </html>

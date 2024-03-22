@@ -12,6 +12,7 @@ import PieceList from '../models/piece_list'
 import Board from 'src/components/board/board'
 import SquareGrid from 'src/models/square_grid'
 import DrawMessage from 'src/server/messages/draw_message'
+import { get_element_by_id } from 'src/ui/utils/funcs'
 
 export class GameController {
 	public game_type: GameType
@@ -52,36 +53,52 @@ export class GameController {
 	}
 
 	public should_game_end(king: King): void {
-		if(!this.piece_list.any_pawns_left_in_game()) {
-			const message = "Draw -- Insufficient Material"
-			const low_material: boolean = this.piece_list.material_value_in_game() <= this.insufficient_material_value
-			const same_color_bishops: boolean = this.piece_list.only_same_square_color_bishops_left_in_game()
-
-			if(low_material || same_color_bishops) {
+		if(this.check_for_stalemate()) {
+			if(this.game_type === GameType.online) {
+				const message = "Draw -- Insufficient Material"
 				ClientWebSocket.send_message_to_server(new DrawMessage(PlayerController.opponent_user_id as UUID, message))
 			}
 		}
-		if(king.check_for_checkmate(this.piece_list) !== undefined) {
+
+		if(king.check_for_checkmate(this.piece_list) === GameEndType.checkmate) {
 			king.switch_image_with_endgame_image(this.square_grid, GameEndType.checkmate, WinOrLose.lose)
 
 			const winning_king = this.piece_list.king_by_color(not_color(king.color))
 			winning_king.switch_image_with_endgame_image(this.square_grid, GameEndType.checkmate, WinOrLose.win)
 
 			if(this.game_type === GameType.online) {
-				ClientWebSocket.send_message_to_server(new CheckmateMessage(PlayerController.player_id, PlayerController.opponent_user_id as UUID, king.title, winning_king.title))
-
-				//TODO MAKE FUNCTION
-				const message_container_element: HTMLElement | null = document.getElementById('message_container')
-				if (!message_container_element) {
-					throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
-				}
-				const checkmate_window = new GameOverElement("Checkmate. You Lose.")
-				setTimeout(() => {
-					message_container_element.appendChild(checkmate_window)
-				}, 1000);
-				//END MAKE FUNCTION
+				const message: CheckmateMessage = new CheckmateMessage(PlayerController.player_id, PlayerController.opponent_user_id as UUID, king.title, winning_king.title)
+				ClientWebSocket.send_message_to_server(message)
+				this.show_checkmate_message()
 			}
 		}
+		if(king.check_for_checkmate(this.piece_list) === GameEndType.stalemate) {
+			if(this.game_type === GameType.online) {
+				const message = "Stalemate"
+				ClientWebSocket.send_message_to_server(new DrawMessage(PlayerController.opponent_user_id as UUID, message))
+			}
+		}
+	}
+
+	// public for testing
+	public check_for_stalemate(): boolean {
+		if(!this.piece_list.any_pawns_left_in_game()) {
+			const low_material: boolean = this.piece_list.material_value_in_game() <= this.insufficient_material_value
+			const same_color_bishops: boolean = this.piece_list.only_same_square_color_bishops_left_in_game()
+
+			if(low_material || same_color_bishops) {
+				return true
+			}
+		}
+		return false
+	}
+
+	private show_checkmate_message(): void {
+		const message_container = get_element_by_id('message_container')
+		const checkmate_window = new GameOverElement("Checkmate. You Lose.")
+		setTimeout(() => {
+			message_container.appendChild(checkmate_window)
+		}, 1000);
 	}
 }
 

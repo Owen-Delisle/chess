@@ -72,12 +72,12 @@ export default class King extends Piece implements Piece_Interface {
 		return surrounding_points(square_grid.point_at_board_position(this.pos))
 	}
 
-	public check_for_checkmate(piece_list: PieceList): string | undefined {
+	public check_for_checkmate(piece_list: PieceList): GameEndType | undefined {
 		if (!this.any_piece_can_move(piece_list)) {
 			if(this.in_check) {
-				return 'Game Over: Checkmate'
+				return GameEndType.checkmate
 			} else {
-				return 'Game Over: Stalemate'
+				return GameEndType.stalemate
 			}
 		}
 	}
