@@ -49,43 +49,46 @@ export default class ClientWebSocket {
             switch (message_type) {
                 case MessageType.active_users.toString():
                     ClientWebSocket.update_active_users_list_ui(message.users)
-                    break
+                break
                 case MessageType.connection_lost.toString():
                     ClientWebSocket.handle_lost_connection(message.user_id)
-                    break
+                break
                 case MessageType.game_request.toString():
                     ClientWebSocket.update_request_list_ui(message.requesting_user, message.recieving_user)
-                    break
+                break
                 case MessageType.game_accepted.toString():
                     ClientWebSocket.update_current_game_ui(message.accepting_user, message.color)
-                    break
+                break
                 case MessageType.game_declined.toString():
                     ClientWebSocket.swap_waiting_message_to_declined(message.message)
-                    break
+                break
                 case MessageType.game_canceled.toString():
                     ClientWebSocket.close_game_request_message()
-                    break
+                break
                 case MessageType.move.toString():
                     ClientWebSocket.move_piece_with_server_move(message.move)
-                    break
+                break
                 case MessageType.castle_move.toString():
                     ClientWebSocket.castle_with_server_move(message.castle_move)
-                    break
+                break
                 case MessageType.en_passant.toString():
                     ClientWebSocket.take_en_passant_pawn(message.pawn_to_take_pos)
-                    break
+                break
                 case MessageType.king_check_status.toString():
                     ClientWebSocket.update_king_square_color_with_server(message.square_id, message.check_status)
-                    break
+                break
                 case MessageType.checkmate.toString():
                     ClientWebSocket.checkmate_from_server(message.sender_id, message.recipient_id, message.losing_king_id, message.winning_king_id)
-                    break
+                break
+                case MessageType.draw.toString():
+                    ClientWebSocket.draw_from_server(message.message)
+                break
                 case MessageType.resignation.toString():
                     ClientWebSocket.resignation_from_server()
-                    break
+                break
                 case MessageType.logout.toString():
                     ClientWebSocket.logout()
-                    break
+                break
             }
         })
     }
@@ -317,6 +320,18 @@ export default class ClientWebSocket {
         }
 
         ClientWebSocket.send_message_to_server(new ActiveGamesMessage(active_games))
+    }
+
+    private static draw_from_server(message: string) {
+        const message_container_element: HTMLElement | null = document.getElementById('message_container')
+        if (!message_container_element) {
+            throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
+        }
+
+        const game_over_window = new GameOverElement(message)
+
+        clear_container_children(message_container_element)
+        message_container_element.appendChild(game_over_window)
     }
 
     private static resignation_from_server() {

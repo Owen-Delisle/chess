@@ -18,6 +18,7 @@ export enum MessageType {
     castle_move,
     king_check_status,
     checkmate,
+    draw,
     en_passant,
     active_games,
     resignation

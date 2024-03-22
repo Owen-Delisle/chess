@@ -26,7 +26,6 @@ import King_W_Win_SVG from '../piece_factory/assets/king-w-win.svg'
 import King_B_Win_SVG from '../piece_factory/assets/king-b-win.svg'
 import King_W_Loss_SVG from '../piece_factory/assets/king-w-loss.svg'
 import King_B_Loss_SVG from '../piece_factory/assets/king-b-loss.svg'
-import Square from '../../../components/square/square'
 import PieceList from '../../../models/piece_list'
 
 export default class King extends Piece implements Piece_Interface {

@@ -11,6 +11,7 @@ import GameOverElement from '../components/message/game_over'
 import PieceList from '../models/piece_list'
 import Board from 'src/components/board/board'
 import SquareGrid from 'src/models/square_grid'
+import DrawMessage from 'src/server/messages/draw_message'
 
 export class GameController {
 	public game_type: GameType
@@ -52,11 +53,12 @@ export class GameController {
 
 	public should_game_end(king: King): void {
 		if(!this.piece_list.any_pawns_left_in_game()) {
-			if(this.piece_list.material_value_in_game() <= this.insufficient_material_value) {
-				console.log("Game Over: Insufficient Material -- King and Minor Piece")
-			}
-			if(this.piece_list.only_same_square_color_bishops_left_in_game()) {
-				console.log("Game Over: Insufficient Material -- Same Color Bishops")
+			const message = "Draw -- Insufficient Material"
+			const low_material: boolean = this.piece_list.material_value_in_game() <= this.insufficient_material_value
+			const same_color_bishops: boolean = this.piece_list.only_same_square_color_bishops_left_in_game()
+
+			if(low_material || same_color_bishops) {
+				ClientWebSocket.send_message_to_server(new DrawMessage(PlayerController.opponent_user_id as UUID, message))
 			}
 		}
 		if(king.check_for_checkmate(this.piece_list) !== undefined) {
