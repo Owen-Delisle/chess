@@ -222,54 +222,12 @@ http_server.post('/userID_from_token', async (req, res) => {
     }
 })
 
-http_server.post('/post_active_game', async(req, res) => {
-    try {
-        const db = await db_promise
-
-        const active_game_id: UUID = uuidv4() as UUID
-        const user1_id: UUID = req.body.user1 as UUID
-        const user2_id: UUID = req.body.user2 as UUID
-
-        await db.run('INSERT INTO active_games (id, user1, user2) VALUES (?, ?, ?)', [active_game_id, user1_id, user2_id])
-        res.status(200).json({ message: 'Active game posted successfully' })
-
-    } catch(error) {
-        res.status(500).json({ error: 'Internal server error' })
-        console.log('Error posting active game:', error)
-    }
-})
-
-http_server.post('/delete_active_game', async (req, res) => {
-    try {
-        const db = await db_promise
-
-        const user1: UUID = req.body.user1 as UUID
-        const user2: UUID = req.body.user2 as UUID
-
-        db.run('DELETE FROM active_games WHERE (user1 = ? OR user1 = ?) AND (user2 = ? OR user2 = ?)', [user1, user2, user1, user2])
-
-        res.status(200).json({ message: 'Active game deleted successfully' })
-    } catch (error) {
-        console.log('Error deleting active game:', error)
-        res.status(500).json({ error: 'Internal server error' })
-    }
-})
-
 http_server.get('/users', async(req, res) => {
     const db = await db_promise
     const users = await db.all('SELECT * FROM users')
 
     if (users) {
         res.json({ users: users})
-    }
-})
-
-http_server.get('/active_games', async(req, res) => {
-    const db = await db_promise
-    const active_games = await db.all('SELECT * FROM active_games')
-
-    if(active_games) {
-        res.json({ active_games })
     }
 })
 

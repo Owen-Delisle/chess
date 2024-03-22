@@ -20,6 +20,5 @@ export enum MessageType {
     checkmate,
     draw,
     en_passant,
-    active_games,
     resignation
 }

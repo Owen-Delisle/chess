@@ -62,9 +62,6 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             case MessageType.resignation:
                 send_resignation_message_to_recipient(data.recipient_id)
             break
-            case MessageType.active_games:
-                send_active_users_to_clients()
-            break
         }
     })
 

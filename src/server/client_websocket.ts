@@ -19,9 +19,6 @@ import GameCanceledMessage from './messages/game_canceled_message'
 import UserAPI from './api/user_api'
 import Board from '../components/board/board'
 import GameOverElement from '../components/message/game_over'
-import ActiveGamesAPI from './api/active_games_api'
-import ActiveGamesMessage from './messages/active_games_message'
-import ActiveGame from './types/active_game_type'
 import redirect_to_login_page from './redirects/login'
 import { hide_game_types, hide_user_list, instantiate_online_game } from '../ui/board/board_dom_controller'
 import PlayerController from 'src/controllers/player_controller'
@@ -206,9 +203,6 @@ export default class ClientWebSocket {
     }
 
     private static async accept_game_button_functions(client_id: UUID, sender_id: UUID, player_piece_color: BlackOrWhite) {
-        await ActiveGamesAPI.post_active_game(client_id, sender_id)
-
-        const active_games: ActiveGame[] | undefined = await ActiveGamesAPI.active_games()
         ClientWebSocket.send_message_to_server(new GameAcceptedMessage(client_id, sender_id, not_color(player_piece_color))),
         ClientWebSocket.update_current_game_ui(sender_id, player_piece_color)
 
@@ -218,10 +212,6 @@ export default class ClientWebSocket {
             }
         })
         ClientWebSocket.requested_games_from = []
-
-        if (active_games) {
-            ClientWebSocket.send_message_to_server(new ActiveGamesMessage(active_games))
-        }
     }
 
     private static async update_current_game_ui(user_id_of_opponent: UUID, color: BlackOrWhite) {
@@ -311,15 +301,6 @@ export default class ClientWebSocket {
             clear_container_children(message_container_element)
             message_container_element.appendChild(checkmate_window)
         }, 1000);
-
-        ActiveGamesAPI.delete_active_game(sender_id, recipient_id)
-        const active_games: ActiveGame[] | undefined = await ActiveGamesAPI.active_games()
-
-        if (!active_games) {
-            throw new Error("Active Games in DB threw error")
-        }
-
-        ClientWebSocket.send_message_to_server(new ActiveGamesMessage(active_games))
     }
 
     private static draw_from_server(message: string) {
