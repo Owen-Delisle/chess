@@ -16,11 +16,15 @@
     "bun-types": "^1.0.29",
     "canvas-confetti": "^1.2.0",
     "dotenv": "^16.4.5",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
     "hono": "^4.0.7",
+    "htmx.org": "^1.9.10",
     "jsonwebtoken": "^9.0.2",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.0.0",

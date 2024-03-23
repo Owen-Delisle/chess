@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>Login</title>
+    <script src="/startup_scripts/login.js" type="module"></script>
+    <link rel="stylesheet" href="/pages/global_styles/global_styles.css">
 </head>
 
-<!-- page -->
-<main class="mx-auto flex min-h-screen w-full items-center justify-center bg-gray-900 text-white">
-    <!-- component -->
-    <form id="loginForm" action="/login" method="post" enctype="application/x-www-form-urlencoded">
-    <section class="flex w-[30rem] flex-col space-y-10">
-            <div class="text-center text-4xl font-medium">Log In</div>
-            <div class="w-full transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-indigo-500">
-                <input 
+<body class="body">
+    <form id="login_form" method="post" enctype="application/x-www-form-urlencoded">
+    <section class="login_form">
+            <h1 class="header">Log In</h1>
+            <div>
+                <input
+                class="text_input" 
                 type="text" 
-                placeholder="Email or Username"
+                placeholder="Username"
                 class="w-full border-none bg-transparent outline-none placeholder:italic focus:outline-none" 
                 type="text" 
                 id="username" 
@@ -24,8 +24,9 @@
                 required/>
             </div>
 
-            <div class="w-full transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-indigo-500">
-                <input 
+            <div>
+                <input
+                class="text_input" 
                 type="password" 
                 placeholder="Password"
                 class="w-full border-none bg-transparent outline-none placeholder:italic focus:outline-none" 
@@ -35,68 +36,14 @@
                 />
             </div>
 
-            <button class="transform rounded-sm bg-indigo-600 py-2 font-bold duration-300 hover:bg-indigo-400" type="submit">
+            <button class="button">
                 LOG IN
             </button>
 
-            <a href="#" class="transform text-center font-semibold text-gray-500 duration-300 hover:text-gray-300">FORGOT
-                PASSWORD?</a>
-
-            <p class="text-center text-lg">
+            <p class="header">
                 No account?
-                <a href="#" class="font-medium text-indigo-500 underline-offset-4 hover:underline">Create One</a>
+                <a class="header" href="/signup">Create One</a>
             </p>
     </section>
 </form>
-
-    <script>
-        const token = localStorage.getItem('jwtToken')
-
-        if (token) {
-            window.location.href = '/dashboard';
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const loginForm = document.getElementById('loginForm');
-
-            loginForm.addEventListener('submit', async function (event) {
-                event.preventDefault();
-
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-
-                const formData = {
-                    username,
-                    password
-                };
-
-                console.log("formData", formData)
-
-                try {
-                    const response = await fetch('/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to login');
-                    }
-
-                    const { token } = await response.json();
-
-                    // Store token in local storage
-                    localStorage.setItem('jwtToken', token);
-
-                    // Redirect user to dashboard or another page
-                    window.location.href = '/dashboard';
-                } catch (error) {
-                    console.error('Error:', error.message);
-                    alert('Thrown from Client - Failed to login on');
-                }
-            });
-        });
-    </script>
 </main>

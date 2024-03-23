@@ -1,7 +1,5 @@
-import PieceList from "../models/piece_list"
-import MoveController from "../controllers/move_controller";
 import King from "../components/piece/pieces/king";
-import { Color } from "../components/piece/color";
+import { BlackOrWhite } from "../global_types/enums/black_or_white";
 import VariableResultBoard from "./types/subject_result_board";
 import CheckmateBoard from "./types/check_mate_board";
 
@@ -31,25 +29,31 @@ import Assert, { AssertType } from "./assert";
 
 import Square from "../components/square/square";
 import SquareGrid from "../models/square_grid";
-import { GameController } from "../controllers/game_controller";
-import MoveList from "../utils/classes/MoveList";
+import { GameController, GameEndType } from "../controllers/game_controller";
+import MoveList from "../utils/classes/move_list";
+import Board from "src/components/board/board";
 
 export default class TestRunner {
-    constructor() {
+    test_board: Board
+
+    constructor(test_board: Board) {
+        this.test_board = test_board
     }
 
     private before_each(test_position: CheckmateBoard) {
-        PieceList.piece_list = test_position.board
-        MoveController.load_possible_moves_lists()
+        this.test_board.piece_list.list = test_position.board
+        // this.test_board.render()
+        this.test_board.redraw()
     }
 
     public build_checkmate_board_list(): Test[] {
         const test_list: Test[] = []
         list_of_checkmate_boards.forEach(board => {
             this.before_each(board)
-            const white_king: King = PieceList.king_by_color(Color.white)
+            
+            const white_king: King = this.test_board.piece_list.king_by_color(BlackOrWhite.white) as King
 
-            const assert = new Assert(AssertType.equals, white_king!.check_for_checkmate(), 'Game Over: Checkmate')
+            const assert = new Assert(AssertType.equals, white_king!.check_for_checkmate(this.test_board.piece_list), GameEndType.checkmate)
             test_list.push(new Test(board.title, assert))
         })
         return test_list
@@ -59,9 +63,10 @@ export default class TestRunner {
         const test_list: Test[] = []
         list_of_stalemates.forEach(board => {
             this.before_each(board)
-            const white_king: King = PieceList.king_by_color(Color.white)
 
-            const assert = new Assert(AssertType.equals, white_king!.check_for_checkmate(), 'Game Over: Stalemate')
+            const white_king: King = this.test_board.piece_list.king_by_color(BlackOrWhite.white) as King
+
+            const assert = new Assert(AssertType.equals, white_king!.check_for_checkmate(this.test_board.piece_list), GameEndType.stalemate)
             test_list.push(new Test(board.title, assert))
         })
         return test_list
@@ -108,10 +113,10 @@ export default class TestRunner {
 
         castle_boards.forEach(board => {
             this.before_each(board)
-            const king_square: Square | undefined = SquareGrid.square_by_board_position(board.subject[0].pos)
-            const rook_square: Square | undefined = SquareGrid.square_by_board_position(board.subject[1].pos)
+            const king_square: Square | undefined = this.test_board.square_grid.square_by_board_position(board.subject[0].pos)
+            const rook_square: Square | undefined = this.test_board.square_grid.square_by_board_position(board.subject[1].pos)
 
-            const assert = new Assert(AssertType.equals, MoveController.conditions_for_castle(king_square, rook_square!), board.expected_result)
+            const assert = new Assert(AssertType.equals, this.test_board.move_controller.conditions_for_castle(king_square, rook_square!), board.expected_result)
             test_list.push(new Test(board.title, assert))
         })
 
@@ -123,7 +128,7 @@ export default class TestRunner {
 
         promotion_boards.forEach(board => {
             this.before_each(board)
-            const pawn_row: number = SquareGrid.point_at_board_position(board.subject.pos)!.row
+            const pawn_row: number = this.test_board.square_grid.point_at_board_position(board.subject.pos)!.row
 
             const assert = new Assert(AssertType.equals, board.subject.should_make_queen(pawn_row), board.expected_result)
             test_list.push(new Test(board.title, assert))
@@ -137,10 +142,10 @@ export default class TestRunner {
 
         en_passant_boards.forEach(board => {
             this.before_each(board)
-            GameController.move_list = new MoveList()
-            GameController.move_list.add_move(board.subject.move)
+            this.test_board.game_controller.move_list = new MoveList()
+            this.test_board.game_controller.move_list.add_move(board.subject.move)
 
-            const res: boolean = board.subject.white_pawn.conditions_for_en_passant(board.subject.black_pawn)
+            const res: boolean = board.subject.white_pawn.conditions_for_en_passant(this.test_board.square_grid, board.subject.black_pawn, board.subject.move)
             const assert = new Assert(AssertType.equals, res, board.expected_result)
             test_list.push(new Test(board.title, assert))
         })

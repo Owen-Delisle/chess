@@ -1,9 +1,8 @@
 import { PieceType } from './piece_types'
 import SquareGrid from '../../models/square_grid'
 import type { GridPoint } from '../../global_types/grid_point'
-import type { Color } from './color'
+import type { BlackOrWhite } from '../../global_types/enums/black_or_white'
 import { are_coors_within_board_bounds } from '../../utils/bounds'
-import type Square from '../square/square'
 import SquareID from '../square/square_id'
 import { PieceDirections, piece_direction_modifier } from './piece_directions'
 import { square_is_empty } from '../../utils/grid'
@@ -13,7 +12,7 @@ export default abstract class Piece {
 	type: PieceType
 	pos: string
 	svg: string
-	color: Color
+	color: BlackOrWhite
 	image: HTMLImageElement
 	possible_moves: string[] = []
 	directions: PieceDirections[] = []
@@ -26,7 +25,7 @@ export default abstract class Piece {
 	move_distance: number = 0
 	piece_value: number = 0
 
-	constructor(title: string, type: PieceType, pos: string, svg: string, color: Color) {
+	constructor(title: string, type: PieceType, pos: string, svg: string, color: BlackOrWhite) {
 		this.title = title
 		this.type = type
 		this.pos = pos
@@ -44,125 +43,141 @@ export default abstract class Piece {
 		return image
 	}
 
-	public move_to(new_square: Square): Promise<void> {
+	public move_to(new_pos: string): Promise<void> {
 		return new Promise(async (resolve) => {
-			this.pos = new_square.square_id as string
+			this.pos = new_pos
 			this.possible_moves = []
 			resolve()
 		})
 	}
 
-	public calculate_possible_moves(): void {
+	public calculate_possible_moves(square_grid: SquareGrid): void {
 		this.directions.forEach((direction) => {
 			switch (direction) {
 				case PieceDirections.north:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.north),
 					)
 					break
 				case PieceDirections.north_east:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.north_east),
 					)
 					break
 				case PieceDirections.east:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.east),
 					)
 					break
 				case PieceDirections.south_east:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.south_east),
 					)
 					break
 				case PieceDirections.south:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.south),
 					)
 					break
 				case PieceDirections.south_west:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.south_west),
 					)
 					break
 				case PieceDirections.west:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.west),
 					)
 					break
 				case PieceDirections.north_west:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.north_west),
 					)
 					break
 				case PieceDirections.up_right:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.up_right),
 					)
 					break
 				case PieceDirections.right_up:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.right_up),
 					)
 					break
 				case PieceDirections.right_down:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.right_down),
 					)
 					break
 				case PieceDirections.down_right:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.down_right),
 					)
 					break
 				case PieceDirections.down_left:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.down_left),
 					)
 					break
 				case PieceDirections.left_down:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.left_down),
 					)
 					break
 				case PieceDirections.left_up:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.left_up),
 					)
 					break
 				case PieceDirections.up_left:
 					this.build_possible_moves_list(
-						SquareGrid.point_at_board_position(this.pos),
+						square_grid,
+						square_grid.point_at_board_position(this.pos),
 						this.move_distance,
 						piece_direction_modifier(PieceDirections.up_left),
 					)
@@ -174,6 +189,7 @@ export default abstract class Piece {
 	}
 
 	public build_possible_moves_list(
+		square_grid: SquareGrid,
 		current_pos: GridPoint,
 		distance: number,
 		modifier: GridPoint,
@@ -181,6 +197,7 @@ export default abstract class Piece {
 		const row_modifier = modifier.row
 		const col_modifier = modifier.col
 		this.add_positions_to_list_in_direction_for_distance(
+			square_grid,
 			current_pos,
 			distance,
 			row_modifier,
@@ -190,6 +207,7 @@ export default abstract class Piece {
 	}
 
 	private add_positions_to_list_in_direction_for_distance(
+		square_grid: SquareGrid,
 		current_pos: GridPoint,
 		distance: number,
 		row_modifier: number,
@@ -201,6 +219,7 @@ export default abstract class Piece {
 
 		while (
 			this.conditions_to_continue_adding_positions(
+				square_grid,
 				current_pos,
 				distance,
 				row_modifier,
@@ -223,6 +242,7 @@ export default abstract class Piece {
 	}
 
 	private conditions_to_continue_adding_positions(
+		square_grid: SquareGrid,
 		current_pos: GridPoint,
 		move_distance: number,
 		row_modifier: number,
@@ -242,13 +262,17 @@ export default abstract class Piece {
 		}
 
 		//If piece at square can be attacked
-		if (!square_is_empty({ row: new_row, col: new_col })) {
-			const piece_at_square: Piece = SquareGrid.piece_by_grid_point({
+		if (!square_is_empty(square_grid, { row: new_row, col: new_col })) {
+			const piece_at_square: Piece | undefined = square_grid.piece_by_grid_point({
 				row: new_row,
 				col: new_col,
-			})!
-			// Pawn has its own attacking logic
-			//TODO -- Move PieceType.pawn down an if statement
+			})
+
+			if(!piece_at_square) {
+				throw new Error("Piece is undefined")
+			}
+
+			// Pawn and King have their own attacking logic
 			if (piece_at_square.color !== this.color) {
 				if (this.type !== PieceType.king && this.type !== PieceType.pawn) {
 					moves_in_direction.push(SquareID.pos_at_point({ row: new_row, col: new_col }))
@@ -256,10 +280,10 @@ export default abstract class Piece {
 			}
 			return false
 		}
-
 		return true
 	}
 
+	// REFACTOR
 	private add_moves_in_direction_to_all_possible_moves(
 		moves_in_direction: string[],
 		possible_moves: string[],

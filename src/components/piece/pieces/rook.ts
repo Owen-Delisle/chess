@@ -1,9 +1,8 @@
-import type { Color } from '../color'
+import type { BlackOrWhite } from '../../../global_types/enums/black_or_white'
 import Piece from '../piece'
 import { PieceDirections } from '../piece_directions'
 import type Piece_Interface from '../piece_interface'
 import type { PieceType } from '../piece_types'
-import type Square from '../../../components/square/square'
 
 export default class Rook extends Piece implements Piece_Interface {
 	move_distance: number = 7
@@ -17,7 +16,7 @@ export default class Rook extends Piece implements Piece_Interface {
 		pos: string,
 		svg: string,
 		type: PieceType,
-		color: Color,
+		color: BlackOrWhite,
 		rook_type: RookType,
 	) {
 		super(title, type, pos, svg, color)
@@ -31,9 +30,9 @@ export default class Rook extends Piece implements Piece_Interface {
 		this.rook_type = rook_type
 	}
 
-	public move_to(new_square: Square): Promise<void> {
+	public move_to(new_pos: string): Promise<void> {
 		return new Promise(async (resolve) => {
-			this.pos = new_square.square_id as string
+			this.pos = new_pos
 			this.has_moved = true
 			this.possible_moves = []
 			resolve()
