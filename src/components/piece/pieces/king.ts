@@ -326,8 +326,15 @@ export default class King extends Piece implements Piece_Interface {
 			let piece_is_within_distance: boolean = false
 			
 			if(direction < index_of_knight_directions) {
-				if(piece.move_distance >= distance_between_aligned_points(piece_gp, king_gp)) {
-					piece_is_within_distance = true
+				if(piece.type !== PieceType.pawn) {
+					if(piece.move_distance >= distance_between_aligned_points(piece_gp, king_gp)) {
+						piece_is_within_distance = true
+					}
+				} else {
+					const pawn = piece as Pawn
+					if(pawn.attack_distance >= distance_between_aligned_points(piece_gp, king_gp)) {
+						piece_is_within_distance = true
+					}
 				}
 			} else {
 				if(is_within_one_knight_move(king_gp, piece_gp)) {

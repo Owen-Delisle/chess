@@ -217,9 +217,6 @@ export default class MoveController {
 		this.game_controller.piece_list.clear_position_restrictions_property()
 
 		let king_color: BlackOrWhite = this.game_controller.turn
-		if(this.game_controller.game_type === GameType.online) {
-			king_color = PlayerController.player_color
-		}
 
 		const king_of_color: King = this.game_controller.piece_list.king_by_color(king_color)
 		king_of_color.render_legal_squares_surrounding_king(this.square_grid, this.game_controller.piece_list)
@@ -331,8 +328,13 @@ export default class MoveController {
 	}
 
 	private attempt_en_passant(move: Move) {
-		// const pawn: Pawn = move.piece as Pawn
 		const pawn: Pawn = this.game_controller.piece_list.piece_by_id(move.piece.title) as Pawn
+
+		if(!pawn) {
+			// pawn just became queen
+			return
+		}
+
 		if(pawn.en_passant_position === move.to) {
 
 			pawn.en_passant(this.square_grid)

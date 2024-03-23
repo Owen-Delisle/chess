@@ -53,7 +53,7 @@ export class GameController {
 	}
 
 	public should_game_end(king: King): void {
-		if(this.check_for_stalemate()) {
+		if(this.check_for_low_material()) {
 			if(this.game_type === GameType.online) {
 				const message = "Draw -- Insufficient Material"
 				ClientWebSocket.send_message_to_server(new DrawMessage(PlayerController.opponent_user_id as UUID, message))
@@ -69,10 +69,12 @@ export class GameController {
 			if(this.game_type === GameType.online) {
 				const message: CheckmateMessage = new CheckmateMessage(PlayerController.player_id, PlayerController.opponent_user_id as UUID, king.title, winning_king.title)
 				ClientWebSocket.send_message_to_server(message)
-				this.show_checkmate_message()
+				this.show_end_game_message("Checkmate. You Lose.", GameType.online)
 			}
 		}
 		if(king.check_for_checkmate(this.piece_list) === GameEndType.stalemate) {
+			console.log('stalemate')
+			this.show_end_game_message("Stalemate", this.game_type)
 			if(this.game_type === GameType.online) {
 				const message = "Stalemate"
 				ClientWebSocket.send_message_to_server(new DrawMessage(PlayerController.opponent_user_id as UUID, message))
@@ -81,7 +83,7 @@ export class GameController {
 	}
 
 	// public for testing
-	public check_for_stalemate(): boolean {
+	public check_for_low_material(): boolean {
 		if(!this.piece_list.any_pawns_left_in_game()) {
 			const low_material: boolean = this.piece_list.material_value_in_game() <= this.insufficient_material_value
 			const same_color_bishops: boolean = this.piece_list.only_same_square_color_bishops_left_in_game()
@@ -93,11 +95,11 @@ export class GameController {
 		return false
 	}
 
-	private show_checkmate_message(): void {
+	public show_end_game_message(message: string, route: GameType) {
 		const message_container = get_element_by_id('message_container')
-		const checkmate_window = new GameOverElement("Checkmate. You Lose.")
+		const end_game_message = new GameOverElement(message, route)
 		setTimeout(() => {
-			message_container.appendChild(checkmate_window)
+			message_container.appendChild(end_game_message)
 		}, 1000);
 	}
 }

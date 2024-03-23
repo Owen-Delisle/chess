@@ -12,7 +12,6 @@ import PlayerController from "src/controllers/player_controller"
 import redirect_to_login_page from "src/server/redirects/login"
 
 const board_container: HTMLElement = get_element_by_id("board_container")
-
 const message_container: HTMLElement = get_element_by_id("message_container")
 
 export function instantiate_offline_game() {
@@ -21,6 +20,7 @@ export function instantiate_offline_game() {
 
     hide_online_elements()
 
+    clear_container_children(message_container)
     clear_container_children(board_container)
 
     const board: Board = new Board(GameType.offline, BlackOrWhite.white)

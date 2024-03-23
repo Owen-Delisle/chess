@@ -6,6 +6,12 @@ import Piece from "../components/piece/piece"
 
 function default_piece_list(): Piece[] {
     return [
+        // piece_factory('king_w', 'H3', PieceType.king, BlackOrWhite.white),
+        // piece_factory('king_b', 'H5', PieceType.king, BlackOrWhite.black),
+
+        // piece_factory('pawn_b1', 'F4', PieceType.pawn, BlackOrWhite.black),
+        // piece_factory('rook_b1', 'B1', PieceType.rook, BlackOrWhite.black, RookType.short_rook),
+            
         piece_factory('king_b', 'E8', PieceType.king, BlackOrWhite.black),
         piece_factory('king_w', 'E1', PieceType.king, BlackOrWhite.white),
 

@@ -10,7 +10,7 @@ import { CastleMove } from '../global_types/castle_move'
 import Square from '../components/square/square'
 import { CheckStatus } from './messages/king_check_message'
 import King from 'src/components/piece/pieces/king'
-import { GameEndType, WinOrLose } from 'src/controllers/game_controller'
+import { GameController, GameEndType, WinOrLose } from 'src/controllers/game_controller'
 import GameRequestElement from 'src/components/message/game_request'
 import WaitingElement from 'src/components/message/waiting'
 import GameDeclinedMessage from './messages/game_declined_message'
@@ -24,6 +24,7 @@ import { hide_game_types, hide_user_list, instantiate_online_game } from '../ui/
 import PlayerController from 'src/controllers/player_controller'
 import { clear_container_children, get_element_by_id } from '../ui/utils/funcs'
 import { check } from '../utils/colors'
+import GameType from 'src/global_types/enums/game_type'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -153,7 +154,7 @@ export default class ClientWebSocket {
             }
 
             clear_container_children(message_container_element)
-            const game_over_el = new GameOverElement("Lost Connection to Opponent")
+            const game_over_el = new GameOverElement("Lost Connection to Opponent", GameType.online)
             message_container_element.appendChild(game_over_el)
         }
     }
@@ -296,11 +297,7 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        const checkmate_window = new GameOverElement("Checkmate. You Win.")
-        setTimeout(() => {
-            clear_container_children(message_container_element)
-            message_container_element.appendChild(checkmate_window)
-        }, 1000);
+        this.game_board().game_controller.show_end_game_message("Checkmate. You Win.", GameType.online)
     }
 
     private static draw_from_server(message: string) {
@@ -309,7 +306,7 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        const game_over_window = new GameOverElement(message)
+        const game_over_window = new GameOverElement(message, GameType.online)
 
         clear_container_children(message_container_element)
         message_container_element.appendChild(game_over_window)
@@ -321,7 +318,7 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        const game_over_window = new GameOverElement("You Won by Resignation")
+        const game_over_window = new GameOverElement("You Won by Resignation", GameType.online)
 
         clear_container_children(message_container_element)
         message_container_element.appendChild(game_over_window)

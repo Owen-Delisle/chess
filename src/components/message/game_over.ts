@@ -1,11 +1,14 @@
-import { instantiate_placeholder_board } from "src/ui/board/board_dom_controller"
+import { instantiate_offline_game, instantiate_placeholder_board } from "src/ui/board/board_dom_controller"
 import MessageStyles from "./styles"
+import GameType from "src/global_types/enums/game_type"
 
 export default class GameOverElement extends HTMLElement {
     message: string
-    constructor(message: string) {
+    route: GameType
+    constructor(message: string, route: GameType) {
         super()
         this.message = message
+        this.route = route
         this.attachShadow({ mode: 'open' })
     }
 
@@ -29,8 +32,13 @@ export default class GameOverElement extends HTMLElement {
 
         const close_button = document.createElement('button')
         close_button.textContent = 'Close'
-        close_button.onclick = () => {            
-            instantiate_placeholder_board()
+        close_button.onclick = () => {
+            if(this.route === GameType.online) {
+                instantiate_placeholder_board()
+            }
+            if(this.route === GameType.offline) {
+                instantiate_offline_game()
+            }  
         }
 
         close_button.className = 'message_button'
