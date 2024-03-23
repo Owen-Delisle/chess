@@ -7,7 +7,7 @@ import KingCheckStatusMessage, { CheckStatus } from '../../server/messages/king_
 import PlayerController from '../../controllers/player_controller'
 import { UUID } from 'crypto'
 import Board from '../board/board'
-import { moves, check } from 'src/utils/colors'
+import { moves, check } from '../../utils/colors'
 
 export default class Square extends HTMLElement {
 	square_id: string

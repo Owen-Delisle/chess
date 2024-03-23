@@ -19,7 +19,7 @@ import CastleMoveMessage from '../server/messages/castle_move_message'
 import { BlackOrWhite } from '../global_types/enums/black_or_white'
 import { UUID } from 'crypto'
 import { GameController } from './game_controller'
-import EnPasssantMessage from 'src/server/messages/enpassant_message'
+import EnPasssantMessage from '../server/messages/enpassant_message'
 import { from, to } from '../utils/colors'
 
 export default class MoveController {

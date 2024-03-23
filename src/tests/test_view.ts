@@ -9,7 +9,7 @@ import TestStyles from './styles'
 import Test from './test'
 import PieceList from '../models/piece_list'
 import { GameController } from '../controllers/game_controller'
-import GameType from 'src/global_types/enums/game_type'
+import GameType from '../global_types/enums/game_type'
 
 export default class TestView extends HTMLElement {
     square_grid: SquareGrid

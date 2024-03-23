@@ -1,15 +1,15 @@
-import { BlackOrWhite } from "src/global_types/enums/black_or_white"
+import { BlackOrWhite } from "../../global_types/enums/black_or_white"
 import Board from "../../components/board/board"
 import GameType from "../../global_types/enums/game_type"
 import { UUID } from "crypto"
-import { get_element_by_id, hide_element, show_element } from "../utils/funcs"
+import { get_element_by_id, hide_element, show_element } from '../utils/funcs'
 import { clear_container_children } from "../utils/funcs"
-import PlaceHolderBoard from "src/components/board/placeholder_board"
-import UserAPI from "src/server/api/user_api"
-import ClientWebSocket from "src/server/client_websocket"
-import ResignationMessage from "src/server/messages/resignation_message"
-import PlayerController from "src/controllers/player_controller"
-import redirect_to_login_page from "src/server/redirects/login"
+import PlaceHolderBoard from "../../components/board/placeholder_board"
+import UserAPI from "../../server/api/user_api"
+import ClientWebSocket from "../../server/client_websocket"
+import ResignationMessage from "../../server/messages/resignation_message"
+import PlayerController from "../../controllers/player_controller"
+import redirect_to_login_page from "../../server/redirects/login"
 
 const board_container: HTMLElement = get_element_by_id("board_container")
 const message_container: HTMLElement = get_element_by_id("message_container")
