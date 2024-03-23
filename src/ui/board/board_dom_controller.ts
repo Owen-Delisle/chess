@@ -10,6 +10,8 @@ import ClientWebSocket from "../../server/client_websocket"
 import ResignationMessage from "../../server/messages/resignation_message"
 import PlayerController from "../../controllers/player_controller"
 import redirect_to_login_page from "../../server/redirects/login"
+import OfferDrawMessage from "../../server/messages/offer_draw_message"
+import WaitingElement from "../../components/message/waiting"
 
 const board_container: HTMLElement = get_element_by_id("board_container")
 const message_container: HTMLElement = get_element_by_id("message_container")
@@ -38,7 +40,7 @@ export function instantiate_placeholder_board() {
     show_user_list()
     show_logout_button()
     show_game_types()
-    hide_resign_button()
+    hide_resign_container()
 
     PlayerController.in_online_game = false
     PlayerController.opponent_user_id = undefined
@@ -59,7 +61,7 @@ export async function instantiate_online_game(color: BlackOrWhite, client_id: UU
     const game_title_element = get_element_by_id("game_title")
     game_title_element.innerHTML = `Online Game vs ${username}`
 
-    show_resign_button()
+    show_resign_container()
     hide_user_list()
     hide_game_types()
     hide_logout_button()
@@ -73,10 +75,10 @@ export async function instantiate_online_game(color: BlackOrWhite, client_id: UU
 
 function hide_online_elements() {
     const user_list_container = get_element_by_id("user_list_container")
-    const resign_button_element = get_element_by_id("resign_button")
+    const resign_container_element = get_element_by_id("resign_container")
 
     hide_element(user_list_container)
-    hide_element(resign_button_element)
+    hide_element(resign_container_element)
 }
 
 function show_user_list() {
@@ -89,14 +91,14 @@ export function hide_user_list() {
     hide_element(user_list_container)
 }
 
-function show_resign_button() {
-    const resign_button_element = get_element_by_id("resign_button")
-    show_element(resign_button_element)
+function show_resign_container() {
+    const resign_container_element = get_element_by_id("resign_container")
+    show_element(resign_container_element)
 }
 
-function hide_resign_button() {
-    const resign_button_element = get_element_by_id("resign_button")
-    hide_element(resign_button_element)
+function hide_resign_container() {
+    const resign_container_element = get_element_by_id("resign_container")
+    hide_element(resign_container_element)
 }
 
 export function hide_game_types() {
@@ -112,6 +114,16 @@ export function show_game_types() {
 export function resign() {
     ClientWebSocket.send_message_to_server(new ResignationMessage(PlayerController.opponent_user_id as UUID))
     instantiate_placeholder_board()
+}
+
+export function offer_draw() {
+    const message_container = get_element_by_id('message_container')
+    clear_container_children(message_container)
+
+    const waiting_element = new WaitingElement('Draw Offered')
+    message_container.appendChild(waiting_element)
+    
+    ClientWebSocket.send_message_to_server(new OfferDrawMessage(PlayerController.player_id as UUID, PlayerController.opponent_user_id as UUID))
 }
 
 export function logout() {

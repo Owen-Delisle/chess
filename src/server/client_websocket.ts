@@ -25,6 +25,8 @@ import PlayerController from '../controllers/player_controller'
 import { clear_container_children, get_element_by_id } from '../ui/utils/funcs'
 import { check } from '../utils/colors'
 import GameType from '../global_types/enums/game_type'
+import DrawOfferElement from '../components/message/draw_offer'
+import DrawDeclinedElement from '../components/message/draw_declined'
 
 export default class ClientWebSocket {
     static token: string | null = localStorage.getItem('jwtToken')
@@ -83,6 +85,12 @@ export default class ClientWebSocket {
                 break
                 case MessageType.resignation.toString():
                     ClientWebSocket.resignation_from_server()
+                break
+                case MessageType.offer_draw.toString():
+                    ClientWebSocket.offer_draw_from_server(message.sender_id)
+                break
+                case MessageType.draw_offer_declined.toString():
+                    ClientWebSocket.draw_declined_from_server()
                 break
                 case MessageType.logout.toString():
                     ClientWebSocket.logout()
@@ -164,6 +172,7 @@ export default class ClientWebSocket {
 
         const message_container_element: HTMLElement | null = document.getElementById('message_container')
         const waiting_element = new WaitingElement(
+            "Game Requested",
             () => {
                 ClientWebSocket.send_message_to_server(new GameCanceledMessage(recieving_user))
             }
@@ -321,6 +330,24 @@ export default class ClientWebSocket {
         clear_container_children(message_container_element)
         const game_over_window = new GameOverElement("You Won by Resignation", GameType.online)
         message_container_element.appendChild(game_over_window)
+    }
+
+    private static offer_draw_from_server(sender_id: UUID) {
+        const message_container = get_element_by_id('message_container')
+        
+        const draw_offer_element: HTMLElement = new DrawOfferElement(sender_id)
+
+        clear_container_children(message_container)
+        message_container.appendChild(draw_offer_element)
+    }
+
+    private static draw_declined_from_server() {
+        const message_container = get_element_by_id('message_container')
+
+        const draw_declined_element = new DrawDeclinedElement()
+
+        clear_container_children(message_container)
+        message_container.appendChild(draw_declined_element)
     }
 
     private static message_channel_open(): boolean {

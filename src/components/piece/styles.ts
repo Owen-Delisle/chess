@@ -9,6 +9,7 @@ export default class PieceStyles {
         top: 65%;
         left: 57%;
         margin: -50px 0 0 -50px;
+        cursor: pointer;
       }`
 
 		return style
