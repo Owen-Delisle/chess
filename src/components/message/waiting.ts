@@ -1,12 +1,14 @@
 import MessageStyles from "./styles"
 
 export default class WaitingElement extends HTMLElement {
+    cancel_game_request?: Function
+    message: string
 
-    cancel_game_request: Function
-    constructor(cancel_game_request: Function) {
+    constructor(message: string, cancel_game_request?: Function) {
         super()
 
         this.cancel_game_request = cancel_game_request
+        this.message = message
         this.attachShadow({ mode: 'open' })
     }
 
@@ -20,7 +22,7 @@ export default class WaitingElement extends HTMLElement {
 
         // Header title element
         const header = document.createElement('h2')
-        header.textContent = "Game Requested"
+        header.textContent = this.message
         header.className = "header"
 
         // Title in the centre of the square
@@ -28,19 +30,24 @@ export default class WaitingElement extends HTMLElement {
         this.waiting_animation(title)
         title.className = "header"
 
-        const cancel_button = document.createElement('button')
-        cancel_button.textContent = 'Cancel'
-        cancel_button.className = 'message_button'
-
-        cancel_button.onclick = () => {
-            this.cancel_game_request()
-            this.remove_children_from_message_container()
-        }
 
         // Append elements to wrapper
         wrapper.appendChild(header)
         wrapper.appendChild(title)
-        wrapper.appendChild(cancel_button)
+
+        if(this.cancel_game_request !== undefined) {
+            const button_func: Function = this.cancel_game_request
+            const cancel_button = document.createElement('button')
+            cancel_button.textContent = 'Cancel'
+            cancel_button.className = 'message_button'
+
+            cancel_button.onclick = () => {
+                button_func()
+                this.remove_children_from_message_container()
+            }
+
+            wrapper.appendChild(cancel_button)
+        }
 
         wrapper.className = 'request_message'
 

@@ -4,11 +4,10 @@ import { http_server, PORT } from './http_server.ts'
 import jwt, { VerifyErrors } from 'jsonwebtoken'
 import { parse } from 'url'
 import { UUID } from 'crypto'
-import { MessageType } from './src/server/messages/message.ts'
+import Message, { MessageType } from './src/server/messages/message.ts'
 import { Move } from './src/global_types/move.ts'
 import { CastleMove } from './src/global_types/castle_move.ts'
 import { CheckStatus } from './src/server/messages/king_check_message.ts'
-import Square from './src/components/square/square.ts'
 import { BlackOrWhite } from './src/global_types/enums/black_or_white.ts'
 require('dotenv').config()
 
@@ -61,6 +60,12 @@ wss.on('connection', function connection(ws: WebSocket, req: WebSocket.ServerOpt
             break
             case MessageType.resignation:
                 send_resignation_message_to_recipient(data.recipient_id)
+            break
+            case MessageType.offer_draw:
+                send_offer_draw_message_to_recipient(data.sender_id, data.receiver_id)
+            break
+            case MessageType.draw_offer_declined:
+                send_draw_declined_message_to_recipient(data.recipient_id)
             break
         }
     })
@@ -192,6 +197,20 @@ function send_draw_message_to_recipient(recipient_id: UUID, message: string) {
 
 function send_resignation_message_to_recipient(recipient_id: UUID) {
     const data = {type: MessageType.resignation.toString(), recipient_id}
+    const json_data = JSON.stringify(data)
+
+    active_clients[recipient_id].send(json_data)
+}
+
+function send_offer_draw_message_to_recipient(sender_id: UUID, receiver_id: UUID) {
+    const data = {type: MessageType.offer_draw.toString(), sender_id}
+    const json_data = JSON.stringify(data)
+
+    active_clients[receiver_id].send(json_data)
+}
+
+function send_draw_declined_message_to_recipient(recipient_id: UUID) {
+    const data = {type: MessageType.draw_offer_declined.toString(), recipient_id}
     const json_data = JSON.stringify(data)
 
     active_clients[recipient_id].send(json_data)

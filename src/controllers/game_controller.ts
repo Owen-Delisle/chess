@@ -12,7 +12,7 @@ import PieceList from '../models/piece_list'
 import Board from '../components/board/board'
 import SquareGrid from '../models/square_grid'
 import DrawMessage from '../server/messages/draw_message'
-import { get_element_by_id } from '../ui/utils/funcs'
+import { clear_container_children, get_element_by_id } from '../ui/utils/funcs'
 
 export class GameController {
 	public game_type: GameType
@@ -55,7 +55,7 @@ export class GameController {
 	public should_game_end(king: King): void {
 		if(this.check_for_low_material()) {
 			if(this.game_type === GameType.online) {
-				const message = "Draw -- Insufficient Material"
+				const message = "Stalemate"
 				ClientWebSocket.send_message_to_server(new DrawMessage(PlayerController.opponent_user_id as UUID, message))
 			}
 		}
@@ -68,8 +68,10 @@ export class GameController {
 
 			if(this.game_type === GameType.online) {
 				const message: CheckmateMessage = new CheckmateMessage(PlayerController.player_id, PlayerController.opponent_user_id as UUID, king.title, winning_king.title)
-				ClientWebSocket.send_message_to_server(message)
-				this.show_end_game_message("Checkmate. You Lose.", GameType.online)
+				if(this.turn === PlayerController.player_color) {
+					ClientWebSocket.send_message_to_server(message)
+					this.show_end_game_message("Checkmate. You Lose.", GameType.online)
+				}
 			}
 		}
 		if(king.check_for_checkmate(this.piece_list) === GameEndType.stalemate) {
@@ -89,6 +91,9 @@ export class GameController {
 			const same_color_bishops: boolean = this.piece_list.only_same_square_color_bishops_left_in_game()
 
 			if(low_material || same_color_bishops) {
+				if(this.game_type === GameType.offline) {
+					this.show_end_game_message("Stalemate", this.game_type)
+				}
 				return true
 			}
 		}
@@ -97,6 +102,7 @@ export class GameController {
 
 	public show_end_game_message(message: string, route: GameType) {
 		const message_container = get_element_by_id('message_container')
+		clear_container_children(message_container)
 		const end_game_message = new GameOverElement(message, route)
 		setTimeout(() => {
 			message_container.appendChild(end_game_message)

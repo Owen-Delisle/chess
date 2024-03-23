@@ -159,5 +159,10 @@ export default class Square extends HTMLElement {
 	}
 }
 
+export enum VisualChange {
+	add,
+	remove
+}
+
 // Register the custom element
 customElements.define('square-element', Square)
