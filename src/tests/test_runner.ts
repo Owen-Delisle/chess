@@ -28,10 +28,9 @@ import Test from "./test";
 import Assert, { AssertType } from "./assert";
 
 import Square from "../components/square/square";
-import SquareGrid from "../models/square_grid";
-import { GameController, GameEndType } from "../controllers/game_controller";
+import { GameEndType } from "../controllers/game_controller";
 import MoveList from "../utils/classes/move_list";
-import Board from "src/components/board/board";
+import Board from "../components/board/board";
 
 export default class TestRunner {
     test_board: Board

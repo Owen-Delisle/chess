@@ -1,4 +1,4 @@
-import { BlackOrWhite } from "src/global_types/enums/black_or_white"
+import { BlackOrWhite } from "../../global_types/enums/black_or_white"
 
 export default class PlaceHolderSquare extends HTMLElement {
 	color: BlackOrWhite

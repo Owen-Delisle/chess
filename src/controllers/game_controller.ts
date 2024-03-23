@@ -9,10 +9,10 @@ import PlayerController from './player_controller'
 import { UUID } from 'crypto'
 import GameOverElement from '../components/message/game_over'
 import PieceList from '../models/piece_list'
-import Board from 'src/components/board/board'
-import SquareGrid from 'src/models/square_grid'
-import DrawMessage from 'src/server/messages/draw_message'
-import { get_element_by_id } from 'src/ui/utils/funcs'
+import Board from '../components/board/board'
+import SquareGrid from '../models/square_grid'
+import DrawMessage from '../server/messages/draw_message'
+import { get_element_by_id } from '../ui/utils/funcs'
 
 export class GameController {
 	public game_type: GameType

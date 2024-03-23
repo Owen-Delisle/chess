@@ -1,4 +1,3 @@
-import { get_element_by_id } from "../../ui/utils/funcs"
 import MessageStyles from "./styles"
 
 export default class WaitingElement extends HTMLElement {

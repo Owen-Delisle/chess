@@ -1,6 +1,6 @@
-import { instantiate_offline_game, instantiate_placeholder_board } from "src/ui/board/board_dom_controller"
+import { instantiate_offline_game, instantiate_placeholder_board } from "../../ui/board/board_dom_controller"
 import MessageStyles from "./styles"
-import GameType from "src/global_types/enums/game_type"
+import GameType from "../../global_types/enums/game_type"
 
 export default class GameOverElement extends HTMLElement {
     message: string

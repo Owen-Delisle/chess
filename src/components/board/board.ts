@@ -9,7 +9,7 @@ import { GameController } from '../../controllers/game_controller'
 import PlayerController from '../../controllers/player_controller'
 import GameType from '../../global_types/enums/game_type'
 import { UUID } from 'crypto'
-import PieceList from 'src/models/piece_list'
+import PieceList from '../../models/piece_list'
 
 export default class Board extends HTMLElement {
 	container_node: Element = document.createElement('div')
