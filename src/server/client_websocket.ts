@@ -200,6 +200,7 @@ export default class ClientWebSocket {
             }
         )
         ClientWebSocket.requested_games_from.push(user_id_of_requester)
+        clear_container_children(message_container_element)
         message_container_element.appendChild(game_request_element)
     }
 
@@ -297,7 +298,7 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        this.game_board().game_controller.show_end_game_message("Checkmate. You Win.", GameType.online)
+        this.game_board().game_controller.show_end_game_message("Checkmate. You Win.", GameType.online)   
     }
 
     private static draw_from_server(message: string) {
@@ -306,9 +307,8 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        const game_over_window = new GameOverElement(message, GameType.online)
-
         clear_container_children(message_container_element)
+        const game_over_window = new GameOverElement(message, GameType.online)
         message_container_element.appendChild(game_over_window)
     }
 
@@ -318,9 +318,8 @@ export default class ClientWebSocket {
             throw new Error('MESSAGE CONTAINER ELEMENT NOT FOUND')
         }
 
-        const game_over_window = new GameOverElement("You Won by Resignation", GameType.online)
-
         clear_container_children(message_container_element)
+        const game_over_window = new GameOverElement("You Won by Resignation", GameType.online)
         message_container_element.appendChild(game_over_window)
     }
 
