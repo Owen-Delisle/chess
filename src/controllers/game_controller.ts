@@ -55,7 +55,7 @@ export class GameController {
 	public should_game_end(king: King): void {
 		if(this.check_for_low_material()) {
 			if(this.game_type === GameType.online) {
-				const message = "Draw -- Insufficient Material"
+				const message = "Stalemate"
 				ClientWebSocket.send_message_to_server(new DrawMessage(PlayerController.opponent_user_id as UUID, message))
 			}
 		}
@@ -91,6 +91,9 @@ export class GameController {
 			const same_color_bishops: boolean = this.piece_list.only_same_square_color_bishops_left_in_game()
 
 			if(low_material || same_color_bishops) {
+				if(this.game_type === GameType.offline) {
+					this.show_end_game_message("Stalemate", this.game_type)
+				}
 				return true
 			}
 		}

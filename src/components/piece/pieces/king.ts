@@ -22,11 +22,17 @@ import Pawn from './pawn'
 import { GameEndType } from '../../../controllers/game_controller'
 import { WinOrLose } from '../../../controllers/game_controller'
 
+//@ts-ignore
 import King_W_Win_SVG from '../piece_factory/assets/king-w-win.svg'
+//@ts-ignore
 import King_B_Win_SVG from '../piece_factory/assets/king-b-win.svg'
+//@ts-ignore
 import King_W_Loss_SVG from '../piece_factory/assets/king-w-loss.svg'
+//@ts-ignore
 import King_B_Loss_SVG from '../piece_factory/assets/king-b-loss.svg'
+
 import PieceList from '../../../models/piece_list'
+import { VisualChange } from '../../square/square'
 
 export default class King extends Piece implements Piece_Interface {
 	move_distance: number = 1
@@ -427,7 +433,7 @@ export default class King extends Piece implements Piece_Interface {
 		return rooks
 	}
 
-	public add_borders_to_castleable_rooks(square_grid: SquareGrid, piece_list: PieceList, rooks: Piece[]) {
+	public change_borders_to_castleable_rooks(square_grid: SquareGrid, piece_list: PieceList, rooks: Piece[], change: VisualChange) {
 		rooks.forEach((piece) => {
 			const rook = piece as Rook
 			const rook_gp: GridPoint = square_grid.point_at_board_position(rook.pos)
@@ -438,10 +444,16 @@ export default class King extends Piece implements Piece_Interface {
 				!this.in_check &&
 				!this.kings_castle_squares_attacked(square_grid, piece_list, rook)
 			) {
-				square_grid.square_by_grid_point({
+				const square = square_grid.square_by_grid_point({
 					row: rook_gp.row,
 					col: rook_gp.col,
-				}).add_border()
+				})
+				if(change === VisualChange.add) {
+					square.add_border()
+				}
+				if(change === VisualChange.remove) {
+					square.remove_border()
+				}
 			}
 		})
 	}

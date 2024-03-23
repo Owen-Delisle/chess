@@ -21,6 +21,7 @@ import { UUID } from 'crypto'
 import { GameController } from './game_controller'
 import EnPasssantMessage from '../server/messages/enpassant_message'
 import { from, to } from '../utils/colors'
+import { VisualChange } from '../components/square/square'
 
 export default class MoveController {
 	square_grid: SquareGrid
@@ -249,7 +250,7 @@ export default class MoveController {
 			this.add_border_to_attacked_piece_for(piece)
 			if (piece.type === PieceType.king) {
 				const king: King = piece as King
-				king.add_borders_to_castleable_rooks(this.square_grid, this.game_controller.piece_list, king.rooks_for_king(this.game_controller.piece_list))
+				king.change_borders_to_castleable_rooks(this.square_grid, this.game_controller.piece_list, king.rooks_for_king(this.game_controller.piece_list), VisualChange.add)
 			}
 		}
 	}
@@ -287,6 +288,10 @@ export default class MoveController {
 				square.remove_border()
 			}
 		})
+		if (piece.type === PieceType.king) {
+			const king: King = piece as King
+			king.change_borders_to_castleable_rooks(this.square_grid, this.game_controller.piece_list, king.rooks_for_king(this.game_controller.piece_list), VisualChange.remove)
+		}
 	}
 
 	public async move_piece_to(move: Move, mover: MoveInitiator): Promise<void> {
