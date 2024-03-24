@@ -10,7 +10,7 @@ import { UUID } from 'crypto'
 import { body, validationResult } from 'express-validator'
 
 const http_server = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 const secret_key = process.env.JWT_SECRET
 
 const db_promise = open({

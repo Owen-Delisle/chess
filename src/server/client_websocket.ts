@@ -34,7 +34,7 @@ export default class ClientWebSocket {
     static requested_games_from: UUID[] = []
 
     //TODO:: UPDATE WHEN DEPLOYED
-    static web_socket: WebSocket = new WebSocket(`ws://localhost:3000?token=${this.token}`)
+    static web_socket: WebSocket = new WebSocket(`ws://127.0.0.1:8080?token=${this.token}`)
 
     public static open_connection(): void {
         ClientWebSocket.web_socket.addEventListener('open', async function (event) {
@@ -42,7 +42,7 @@ export default class ClientWebSocket {
         })
 
         ClientWebSocket.web_socket.addEventListener('message', function (event) {
-            console.log('Event from WSS:', event.data)
+            // console.log('Event from WSS:', event.data)
             const message = JSON.parse(event.data)
             const message_type: string = message.type
 
