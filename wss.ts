@@ -224,7 +224,7 @@ function send_logout_message_to_client(user_id: UUID) {
 }
 
 server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`)
+    console.log(`Websocket Server is running on http://localhost:${PORT}`)
 })
 
 export  { wss }
