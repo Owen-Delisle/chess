@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken'
 import path from 'path'
 require('dotenv').config()
 import bcrypt from 'bcrypt'
-import { UUID } from 'crypto'
 import { body, validationResult } from 'express-validator'
 
 const http_server = express()
@@ -105,7 +104,7 @@ http_server.post('/signup', [
 
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        await db.run('INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)', [id, username, email, hashedPassword])
+        await db.run('INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)', [id, username.toLowerCase(), email.toLowerCase(), hashedPassword])
 
         res.send('User signed up successfully!')
     } catch (error) {
@@ -126,7 +125,7 @@ http_server.post('/login', [
         }
 
         const db = await db_promise
-        const user = await db.get('SELECT * FROM users WHERE username = ?', [username])
+        const user = await db.get('SELECT * FROM users WHERE username = ?', [username.toLowerCase()])
 
         if(!user) {
             res.status(401).send('Invalid username')

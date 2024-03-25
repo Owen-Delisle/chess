@@ -34,7 +34,7 @@ export default class ClientWebSocket {
     static requested_games_from: UUID[] = []
 
     //TODO:: UPDATE WHEN DEPLOYED
-    static web_socket: WebSocket = new WebSocket(`ws://127.0.0.1:8080?token=${this.token}`)
+    static web_socket: WebSocket = new WebSocket(`ws://142.93.147.133:8080?token=${this.token}`)
 
     public static open_connection(): void {
         ClientWebSocket.web_socket.addEventListener('open', async function (event) {
